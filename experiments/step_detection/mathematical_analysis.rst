@@ -21,6 +21,10 @@ provides the statistical motivation; the formulas here follow the local code
 where they differ. These are mathematical arguments and hand-worked examples,
 independent of the previous experiment results.
 
+The `correlation-fit design <correlation_design.rst>`_ implements the first
+result. Descriptions of the old search below refer to the pinned revision;
+the current branch uses a constrained weighted median.
+
 .. contents::
    :local:
    :depth: 1

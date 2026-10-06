@@ -60,11 +60,11 @@ dynamic programming, weighted-cost pruning, penalty-path structure, conditional
 correlation fitting, noise-scale profiling, and transformation invariances.
 Use those results to resolve three design questions:
 
-* **Correlation:** replace iterative minimization with a weighted median of
-  residual ratios, after specifying its allowed domain and numerical handling.
-  For residuals [-1, 0, 1], the exact score is ``2 + abs(rho)``; the current
-  equal-value stopping rule can return rho near -1 instead of the optimum 0.
-  Also resolve the expanded search bracket, which permits abs(rho) > 1.
+* **Correlation:** the weighted-median correction is implemented with an
+  explicit domain and numerical handling. For residuals [-1, 0, 1], the
+  exact score is ``2 + abs(rho)``; the old equal-value stopping rule could
+  return rho near -1 instead of the optimum 0. The corrected fit also
+  replaces the expanded bracket with [-1,1].
 * **Selection score:** decide whether to retain the current heuristic or use
   a specified noise model with a floor shared across candidate fits. The
   independent-error, shared-floor version admits a proof that an exact penalty
@@ -74,10 +74,12 @@ Use those results to resolve three design questions:
   constraint, together with a weighted interval-cost data structure. Establish
   correctness before evaluating computational savings.
 
-The next deliverable is a correlation-fit design with a declared domain,
-stable arithmetic, tie handling, and analytical acceptance cases. Implement
-that focused change after the design, then use the existing harness to assess
-its practical consequences. Wider search experiments follow the score decision.
+The `correlation-fit design <correlation_design.rst>`_ is now implemented:
+a weighted median constrained to [-1,1], with ties resolved toward zero and
+analytical acceptance tests. It replaces the premature-stopping search.
+The existing noise floor is retained while the shared-floor model's noise
+bound remains unspecified. That model decision comes before wider search
+experiments.
 
 Reproduce the initial observations
 ----------------------------------

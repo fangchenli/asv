@@ -9,6 +9,9 @@ For the next work, the `mathematical analysis <mathematical_analysis.rst>`_
 takes priority over extending these experiments. It identifies an exact
 correlation-fit solution and separates search guarantees from modeling choices.
 
+These measurements precede the weighted-median correlation correction.
+Revision ``d526c2e`` preserves the measured implementation and harness.
+
 Scope
 -----
 

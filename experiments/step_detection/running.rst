@@ -31,6 +31,11 @@ module imported elsewhere in the process.
 Reproduce the initial experiments
 ---------------------------------
 
+The recorded baseline uses the old correlation search at revision ``d526c2e``.
+To reproduce it, check out that revision in a separate worktree and follow
+the setup above there. Running these commands on the current branch instead
+measures the corrected weighted-median correlation fit.
+
 The baseline uses 15 scenario families, 100 observations, four seeds, both
 backends, and all five methods::
 
@@ -74,7 +79,7 @@ fresh production evaluation forced to use the same gamma.
 Grid and hybrid require ``current`` in the requested methods to establish the
 per-input budget. In the initial baseline, current used ten candidate fits,
 so grid used ten and hybrid used twenty. Their runtime differences include
-both candidate selection and reuse of correlation searches.
+both candidate selection and reuse of correlation fits.
 
 Correctness and detection metrics
 ---------------------------------
@@ -109,9 +114,13 @@ Peak resident memory covers the entire worker, including interpreter overhead
 and native allocations. It is unavailable on platforms without ``resource``.
 
 Phase times cover dynamic programming, merging, candidate fitting, and the
-correlation search. Candidate fitting contains the dynamic-programming and
+correlation fit. Candidate fitting contains the dynamic-programming and
 merge phases, so those times overlap. Internal C++ interval queries and cache
 hits are not instrumented in this first version.
+
+The corrected helper is recorded as ``rho_fits`` and ``rho_fit`` time.
+Historical artifacts instead have ``rho_objective_evaluations`` and
+``rho_search`` time from the numerical search.
 
 Each run writes:
 

@@ -1,7 +1,10 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
+import itertools
+import math
 import random
 import sysconfig
 import threading
+from fractions import Fraction
 
 import pytest
 
@@ -96,6 +99,75 @@ def test_autocorrelated():
     y = 0.2 * np.cos(j / 100.0) + 1.0 * (j >= 500)
     right, values, dists, gamma = solve_potts_autogamma(y.tolist(), w=[1] * len(y))
     assert right == [500, 1000]
+
+
+@pytest.mark.parametrize(
+    'residuals,weights,expected',
+    [
+        ([], [], 0),
+        ([3], [2], 0),
+        ([0, 0, 0], [1, 1, 1], 0),
+        ([0, 5], [1, 1], 0),
+        ([-1, 0, 1], [1, 1, 1], 0),
+        ([1, -1, -1], [1, 1, 1], 0),  # Every rho in [-1, 1] ties.
+        ([4, 1, 1], [1, 1, 4], 0.25),  # The closest point in [0.25, 1].
+        ([4, -1, 1], [1, 1, 4], -0.25),
+        ([4, 1, 1], [1, 1, 5], 1),  # Unequal weights move the optimum.
+        ([1, 2], [1, 1], 1),
+        ([1, -2], [1, 1], -1),
+        ([1e-300, 1e300], [1, 1], 1),  # Clip before dividing.
+        ([1e-300, -1e300], [1, 1], -1),
+        ([1e300, 0.5e300], [1e300, 1e300], 0.5),  # Product would overflow.
+        ([1e-300, 0.5e-300], [1e-300, 1e-300], 0.5),  # Product would underflow.
+    ],
+)
+def test_fit_ar1_analytical(residuals, weights, expected):
+    assert step_detect._fit_ar1(residuals, weights) == expected
+
+
+def test_fit_ar1_against_exact_breakpoint_costs():
+    # A convex piecewise-linear cost is minimized at an endpoint or a knot.
+    # Rational arithmetic is independent of the weighted-median implementation.
+    for residuals in itertools.product((-2, -1, 0, 1, 2), repeat=3):
+        for weights in ((1, 1, 1), (1, 2, 3), (3, 2, 1)):
+            candidates = {Fraction(-1), Fraction(0), Fraction(1)}
+            for previous, current in zip(residuals, residuals[1:]):
+                if previous and abs(current) <= abs(previous):
+                    candidates.add(Fraction(current, previous))
+
+            def cost(rho, weights=weights, residuals=residuals):
+                return weights[0] * abs(residuals[0]) + sum(
+                    weight * abs(current - rho * previous)
+                    for previous, current, weight in zip(residuals, residuals[1:], weights[1:])
+                )
+
+            expected = min(candidates, key=lambda rho: (cost(rho), abs(rho)))
+            actual = step_detect._fit_ar1(residuals, weights)
+            assert actual == pytest.approx(float(expected), rel=1e-14, abs=1e-14)
+
+
+@pytest.mark.parametrize('residual_scale', [1e-200, 1, 1e200])
+@pytest.mark.parametrize('weight_scale', [1e-200, 1, 1e200])
+def test_fit_ar1_scale_invariance(residual_scale, weight_scale):
+    residuals = [value * residual_scale for value in [4, 1, 1]]
+    weights = [value * weight_scale for value in [1, 1, 4]]
+    assert step_detect._fit_ar1(residuals, weights) == 0.25
+
+
+def test_autogamma_uses_exact_correlation_score(monkeypatch, use_rangemedian):
+    # Force the one-segment candidate with residuals [-1, 0, 1]. The former
+    # inner search stopped at equal costs 3 at +/-1; the true minimum is 2.
+    monkeypatch.setattr(step_detect, 'solve_potts_approx', lambda *a, **kw: ([3], [10], [2]))
+    scores = []
+
+    def evaluate_once(f, a, b, **kwargs):
+        scores.append(f(0))
+        return 0
+
+    monkeypatch.setattr(step_detect, 'golden_search', evaluate_once)
+    result = solve_potts_autogamma([9, 10, 11], [1, 1, 1], beta=1)
+    assert result[:3] == ([3], [10], [2])
+    assert scores == [pytest.approx(1 + math.log(0.01 + 2))]
 
 
 @pytest.mark.parametrize('left,right', [(1, 2), (1, 4), (0, 3)])

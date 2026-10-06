@@ -495,8 +495,11 @@ sequence of similar residuals count as less surprising than independent
 errors would suggest.
 
 The `mathematical analysis <mathematical_analysis.rst>`_ derives an exact
-weighted-median solution for rho and shows why the current stopping condition
-can return a nonoptimal value even for this convex subproblem.
+weighted-median solution for rho and shows why this stopping condition
+can return a nonoptimal value even for this convex subproblem. The current
+branch now implements that correction; see the
+`correlation-fit design <correlation_design.rst>`_. This reference's search
+description follows its original pinned revision.
 
 This correlation model only ranks candidate segmentations. Their medians and
 boundaries are fitted with the independent weighted absolute-error objective;

@@ -14,6 +14,8 @@ The `mathematical analysis <mathematical_analysis.rst>`_ derives what we can
 establish before further experiments and identifies an exact solution for
 the correlation fit. The existing `harness instructions <running.rst>`_ and
 `baseline findings <baseline_report.rst>`_ record the initial experiments.
+The `correlation-fit design <correlation_design.rst>`_ describes the first
+correction derived from that analysis and its analytical tests.
 
 .. contents:: On this page
    :local:

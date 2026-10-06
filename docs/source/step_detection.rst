@@ -328,10 +328,27 @@ exactly. Instead, we again minimize along the :math:`\mu_r^*(\gamma)`,
 :eq:`gamma-opt`, and use :eq:`bic-form-autocorr` only in selecting the
 optimal value of the :math:`\gamma` parameter.
 
-The minimization vs. :math:`\rho` can be done numerically for given
-:math:`\mu_r^*(\gamma)`, :math:`j_r^*(\gamma)`. This minimization step
-is computationally cheap compared to the piecewise fit, so including
-it will not significantly change the runtime of the total algorithm.
+For each fixed candidate, write its residuals as :math:`e_i=y_i-\mu_i`.
+The implementation minimizes the weighted conditional error
+
+.. math::
+
+   S(\rho) = w_0 |e_0| + \sum_{i=1}^{m-1} w_i |e_i - \rho e_{i-1}|.
+
+For :math:`e_{i-1}\ne 0`, each variable term can be written as
+
+.. math::
+
+   w_i |e_{i-1}|\left|\rho - \frac{e_i}{e_{i-1}}\right|.
+
+Thus the conditional fit is a weighted median of residual ratios, with
+weights :math:`w_i|e_{i-1}|`. The implementation constrains :math:`\rho` to
+the closed interval :math:`[-1,1]`, including the limiting cases of the
+stationary model. When several values minimize the error, it chooses the
+one closest to zero. Terms with a zero previous residual are constant in
+:math:`\rho` and still contribute to the final score. Correlation continues
+across segment boundaries. Sorting and weighted-median selection take
+:math:`O(m\log m)` time and :math:`O(m)` storage per candidate.
 
 Postprocessing
 --------------

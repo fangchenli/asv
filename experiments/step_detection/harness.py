@@ -272,17 +272,23 @@ class SearchExperiment:
         self.trace = []
         self.counts = defaultdict(int)
         self.seconds = defaultdict(float)
-        self.outer_active = False
         self.last_fit = None
         self.rho_cache = {}
         self.originals = {}
         self.bounds = None
 
     def __enter__(self):
-        for name in ('golden_search', 'solve_potts_approx', 'solve_potts', 'merge_pieces'):
+        for name in (
+            'golden_search',
+            'solve_potts_approx',
+            'solve_potts',
+            'merge_pieces',
+            '_fit_ar1',
+        ):
             self.originals[name] = getattr(self.module, name)
         self.module.golden_search = self.search
         self.module.solve_potts_approx = self.fit
+        self.module._fit_ar1 = self.fit_correlation
         for name, phase in [('solve_potts', 'dynamic_program'), ('merge_pieces', 'merge')]:
             original = self.originals[name]
 
@@ -313,91 +319,82 @@ class SearchExperiment:
         }
         return solution
 
+    def fit_correlation(self, residuals, weights):
+        key = (tuple(self.last_fit['right']), tuple(self.last_fit['values']))
+        if self.method != 'current' and key in self.rho_cache:
+            self.counts['rho_cache_hits'] += 1
+            return self.rho_cache[key]
+        start = time.perf_counter()
+        rho = self.originals['_fit_ar1'](residuals, weights)
+        self.counts['rho_fits'] += 1
+        self.seconds['rho_fit'] += time.perf_counter() - start
+        self.rho_cache[key] = rho
+        return rho
+
     def search(self, f, a, b, **kwargs):
         native_search = self.originals['golden_search']
-        if self.outer_active:
-            # Nested call: preserve production rho search, optionally reuse rho for an identical fit.
-            key = (tuple(self.last_fit['right']), tuple(self.last_fit['values']))
-            if self.method != 'current' and key in self.rho_cache:
-                self.counts['rho_cache_hits'] += 1
-                return self.rho_cache[key]
+        self.bounds = expanded_bounds(a, b)
+
+        def evaluate(x):
             start = time.perf_counter()
+            score = f(x)  # Production closure also updates its selected solution.
+            self.trace.append(
+                {
+                    **self.last_fit,
+                    'log_gamma_ratio': x,
+                    'score': score,
+                    'seconds': time.perf_counter() - start,
+                }
+            )
+            return score
 
-            def counted(rho):
-                self.counts['rho_objective_evaluations'] += 1
-                return f(rho)
-
-            rho = native_search(counted, a, b, **kwargs)
-            self.seconds['rho_search'] += time.perf_counter() - start
-            self.rho_cache[key] = rho
-            return rho
-
-        self.outer_active = True
-        try:
-            self.bounds = expanded_bounds(a, b)
-
-            def evaluate(x):
-                start = time.perf_counter()
-                score = f(x)  # Production closure also updates its selected solution.
-                self.trace.append(
-                    {
-                        **self.last_fit,
-                        'log_gamma_ratio': x,
-                        'score': score,
-                        'seconds': time.perf_counter() - start,
-                    }
-                )
-                return score
-
-            if self.method == 'current':
-                return native_search(evaluate, a, b, **kwargs)
-            if self.method == 'hybrid':
-                native_search(evaluate, a, b, **kwargs)
-            if self.method not in ('grid', 'hybrid'):
-                raise ValueError(f'Unknown search method: {self.method}')
-            if self.budget < 4:
-                raise ValueError('Grid budget must be at least 4')
-            initial = len(self.trace)
-            target_calls = initial + self.budget
-            lo, hi = self.bounds
-            # Spend half the budget on coverage, including production's initial points.
-            points = {lo, hi, a, b}
-            coarse_count = max(4, self.budget // 2)
-            for i in range(1, coarse_count - 1):
-                if len(points) >= coarse_count:
-                    break
-                points.add(lo + (hi - lo) * i / (coarse_count - 1))
-            seen = {r['log_gamma_ratio'] for r in self.trace}
-            for x in sorted(points):
-                if len(self.trace) >= target_calls:
-                    break
-                if x not in seen:
-                    evaluate(x)
-                    seen.add(x)
-            while len(self.trace) < target_calls:
-                samples = sorted(self.trace, key=lambda row: row['log_gamma_ratio'])
-                intervals = []
-                for left, right in zip(samples, samples[1:]):
-                    x = (left['log_gamma_ratio'] + right['log_gamma_ratio']) / 2
-                    if x in seen:
-                        continue
-                    changed = (left['right'], left['values']) != (right['right'], right['values'])
-                    width = right['log_gamma_ratio'] - left['log_gamma_ratio']
-                    # Refine partition transitions, favoring promising scores; otherwise cover gaps.
-                    priority = (
-                        changed,
-                        -min(left['score'], right['score']) if changed else 0,
-                        width,
-                    )
-                    intervals.append((priority, x))
-                if not intervals:
-                    break
-                _, x = max(intervals)
+        if self.method == 'current':
+            return native_search(evaluate, a, b, **kwargs)
+        if self.method == 'hybrid':
+            native_search(evaluate, a, b, **kwargs)
+        if self.method not in ('grid', 'hybrid'):
+            raise ValueError(f'Unknown search method: {self.method}')
+        if self.budget < 4:
+            raise ValueError('Grid budget must be at least 4')
+        initial = len(self.trace)
+        target_calls = initial + self.budget
+        lo, hi = self.bounds
+        # Spend half the budget on coverage, including production's initial points.
+        points = {lo, hi, a, b}
+        coarse_count = max(4, self.budget // 2)
+        for i in range(1, coarse_count - 1):
+            if len(points) >= coarse_count:
+                break
+            points.add(lo + (hi - lo) * i / (coarse_count - 1))
+        seen = {r['log_gamma_ratio'] for r in self.trace}
+        for x in sorted(points):
+            if len(self.trace) >= target_calls:
+                break
+            if x not in seen:
                 evaluate(x)
                 seen.add(x)
-            return min(self.trace, key=lambda row: row['score'])['log_gamma_ratio']
-        finally:
-            self.outer_active = False
+        while len(self.trace) < target_calls:
+            samples = sorted(self.trace, key=lambda row: row['log_gamma_ratio'])
+            intervals = []
+            for left, right in zip(samples, samples[1:]):
+                x = (left['log_gamma_ratio'] + right['log_gamma_ratio']) / 2
+                if x in seen:
+                    continue
+                changed = (left['right'], left['values']) != (right['right'], right['values'])
+                width = right['log_gamma_ratio'] - left['log_gamma_ratio']
+                # Refine partition transitions, favoring promising scores; otherwise cover gaps.
+                priority = (
+                    changed,
+                    -min(left['score'], right['score']) if changed else 0,
+                    width,
+                )
+                intervals.append((priority, x))
+            if not intervals:
+                break
+            _, x = max(intervals)
+            evaluate(x)
+            seen.add(x)
+        return min(self.trace, key=lambda row: row['score'])['log_gamma_ratio']
 
 
 def peak_rss_bytes():

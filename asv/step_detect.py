@@ -301,6 +301,52 @@ def solve_potts(y, w, gamma, min_size=1, max_size=None, min_pos=None, max_pos=No
     return right, values, dists
 
 
+def _fit_ar1(residuals, w):
+    """Minimize weighted absolute AR(1) innovations over rho in [-1, 1].
+
+    For nonzero previous residuals, the knots are e[i]/e[i-1] with
+    weights w[i]*abs(e[i-1]). Clipping knots to the allowed interval
+    preserves its minimizers. Choose the minimizer closest to zero.
+    Sorting and signed-weight searches take O(n log n) time and O(n) space.
+    Inputs are finite residuals and positive finite weights.
+    """
+    terms = []
+    for previous, current, weight in zip(residuals, residuals[1:], w[1:]):
+        if previous == 0:
+            continue
+        if abs(current) >= abs(previous):
+            knot = 1.0 if (current > 0) == (previous > 0) else -1.0
+        else:
+            knot = current / previous
+        # Scale products by a common power of two before forming weights.
+        # Neither huge products nor uniformly tiny products overflow/underflow.
+        mw, ew = math.frexp(weight)
+        me, ee = math.frexp(abs(previous))
+        terms.append((knot, mw * me, ew + ee))
+
+    if not terms:
+        return 0.0
+
+    exponent = max(term[2] for term in terms)
+    items = sorted((knot, math.ldexp(m, e - exponent)) for knot, m, e in terms)
+    items = [(knot, weight) for knot, weight in items if weight > 0]
+    # The signed weight balance crosses zero at a weighted median.
+    # fsum retains small contributions after cancellation.
+    lo, hi = 0, len(items) - 1
+    while lo < hi:
+        mid = (lo + hi) // 2
+        balance = math.fsum(weight if i <= mid else -weight for i, (_, weight) in enumerate(items))
+        if balance < 0:
+            lo = mid + 1
+        else:
+            hi = mid
+
+    lower = items[lo][0]
+    balance = math.fsum(weight if i <= lo else -weight for i, (_, weight) in enumerate(items))
+    upper = items[lo + 1][0] if balance == 0 and lo + 1 < len(items) else lower
+    return min(max(0.0, lower), upper)
+
+
 def solve_potts_autogamma(y, w, beta=None, **kw):
     """Solve Potts problem with automatically determined gamma.
 
@@ -346,25 +392,12 @@ def solve_potts_autogamma(y, w, beta=None, **kw):
         gamma = gamma_0 * math.exp(x)
         r, v, d = solve_potts_approx(y, w, gamma=gamma, mu_dist=mu_dist, **kw)
 
-        # MLE fit noise correlation
-        def sigma_star(rights, values, rho):
-            """
-            |E_0| + sum_{j>0} |E_j - rho E_{j-1}|
-            """
-            l = 1
-            E_prev = y[0] - values[0]
-            s = abs(E_prev) * w[0]
-            for r, v in zip(rights, values):
-                for yv, wv in zip(y[l:r], w[l:r]):
-                    E = yv - v
-                    s += abs(E - rho * E_prev) * wv
-                    E_prev = E
-                l = r
-            return s
-
-        rho_best = golden_search(
-            lambda rho: sigma_star(r, v, rho), -1, 1, xatol=0.05, expand_bounds=True
-        )
+        residuals = []
+        left = 0
+        for right, value in zip(r, v):
+            residuals.extend(yv - value for yv in y[left:right])
+            left = right
+        rho_best = _fit_ar1(residuals, w)
 
         # Measurement noise floor
         if len(v) > 2:
@@ -376,7 +409,10 @@ def solve_potts_autogamma(y, w, beta=None, **kw):
         sigma_0 = max(1e-300, sigma_0)
 
         # Objective function
-        s = sigma_star(r, v, rho_best)
+        s = abs(residuals[0]) * w[0] + math.fsum(
+            weight * abs(current - rho_best * previous)
+            for previous, current, weight in zip(residuals, residuals[1:], w[1:])
+        )
         obj = beta * len(r) + math.log(sigma_0 + s)
 
         # Done
