@@ -47,6 +47,41 @@ about a single boundary. An empty confidence set returns
 200 retained observations; remove missing readings explicitly and do not
 treat weighted or correlated readings as independent replicates.
 
+Evaluate the jointly calibrated reporting rule
+----------------------------------------------
+
+The `reporting protocol <reporting_protocol.rst>`_ calibrates interval
+constraints jointly using fair signs, then freezes them before evaluating
+new Gaussian and Laplace histories. Reproduce the held-out evaluation::
+
+    .venv/bin/python -m experiments.step_detection.reporting_study run \
+        --frozen experiments/step_detection/data/reporting_v1_frozen.json \
+        --output experiments/step_detection/runs/reporting_replay
+
+The runner verifies source, protocol, and native-extension hashes. On a
+different build, regenerate the calibration to a new file after verifying
+the inherited component-study provenance; do not overwrite the recorded
+freeze or call changed-code results an exact replay. The original freeze
+command was::
+
+    .venv/bin/python -m experiments.step_detection.reporting_study freeze \
+        --inherited experiments/step_detection/data/ablation_v1_frozen.json \
+        --output experiments/step_detection/data/reporting_v1_frozen.json
+
+That command refuses to overwrite an existing file. It uses sign sequences
+only, without generating evaluation histories. The frozen JSON preserves
+all calibration maxima, selected ranks, cutoffs, and failure bounds. The
+run saves numerical inputs, fits, existing reports, both confidence-set
+results, summaries, and condition breakdowns. Infinite lower bounds are
+serialized as the explicit string ``-infinity``.
+
+Run the analytical and pipeline checks::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_reference.py \
+        experiments/step_detection/test_reporting_signs.py \
+        experiments/step_detection/test_reporting_study.py -q
+
 Run the original harness
 -------------------------
 

@@ -59,14 +59,24 @@ per-history false-alert bound for independent observations with positive
 medians and at most one true change. Analytical tests verify its binomial
 ranks and confidence-set construction. It is not a production default.
 
-Next, compare reporting rules with the shared-floor detector held fixed,
-starting with independent, one-change histories. Preserve observations and
-usable counts; fitted step tuples alone are insufficient. Derive any more
-powerful rule's calibration before evaluating new data, and include exactly
-5% changes in the null cases. Correlation, multiple changes, and recovery
-semantics need explicit extensions before claiming broader coverage.
-Continue investigating scale estimation under varying noise and gaps.
-Production defaults remain unchanged.
+The `joint calibration study <reporting_report.rst>`_ now compares those
+rules on 2400 fresh independent histories, with the shared-floor detector
+held fixed. Fair-sign calibration was frozen before evaluation. Joint
+calibration detects 126 of 960 above-threshold histories versus 73 for the
+original reference, adding one false alert among 1440 null histories.
+Exactly 5% is included in the null. Both rules miss every recent change.
+Standalone and gated evidence agree throughout, identifying the confidence
+construction itself as the sensitivity limit in this study.
+
+Next, derive a test aimed directly at ``D <= 0`` that avoids requiring a
+confidence set for the entire step function. Retain unknown boundaries in
+the null and state any stronger noise assumptions needed for useful power.
+Freeze new calibration before evaluating fresh data rather than adjusting
+the completed study's rule. Preserve observations and usable counts;
+fitted step tuples alone are insufficient. Correlation, multiple changes,
+and recovery semantics need explicit extensions before claiming broader
+coverage. Continue investigating scale estimation under varying noise and
+gaps. Production defaults remain unchanged.
 
 The initial `baseline report <baseline_report.rst>`_ retains its historical
 results; `running the experiments <running.rst>`_ explains reproduction.

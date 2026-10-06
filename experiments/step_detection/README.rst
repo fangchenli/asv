@@ -40,6 +40,10 @@ how to ask whether a slowdown convincingly exceeds 5%. An independent-noise
 reference accounts for every possible single-change boundary and provides
 a conservative error bound. It also shows why three post-change readings
 and correlated noise require more care than the current residual allowance.
+The `joint calibration study <reporting_report.rst>`_ then calibrates the
+interval checks together and compares reporting rules on fresh independent
+histories, with the shared-floor detector held fixed and exactly 5% changes
+included among the null cases.
 
 .. contents:: On this page
    :local:
