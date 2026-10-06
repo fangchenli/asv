@@ -131,11 +131,21 @@ also drops stationary information: the full-history likelihood contains a
 square-root determinant factor that rules out correlations sufficiently close
 to 1 when the limiting residual cost is positive.
 
-Next, specify a proper full-history predictive density and derive practical
-continuous confidence certificates for its ratio to the stationary profile
-likelihood. Account for the cost of predicting the training prefix; restoring
-the likelihood alone does not guarantee useful sensitivity. Check the saved
-witness and deterministic examples before freezing another fresh evaluation.
+The `full-history reference <full_history_confidence.rst>`_ now uses a proper
+mixture over no change, one change, plateau levels, and noise variance. Exact
+Bernstein bounds on low-degree GLS polynomials certify continuous confidence
+exclusion without expanding their nth powers. Its reference unit must be
+specified externally. The saved case excludes correlation 0.9999 at the true
+location but still retains 4095/4096, which fails both reporting tests.
+A short deterministic 20% step also remains inconclusive; a longer fixture
+supplies a complete alert certificate. These are development diagnostics.
+
+Next, decompose the predictive density's cost and derive a common-baseline
+model with a separate jump prior. Establish its integrated density and
+assumptions before choosing new settings. Crossing the saved witness's
+confidence cutoff needs about a 1.51-fold density gain, but other pairs may
+survive; this is not a promised detection gain. Freeze a fresh evaluation
+only after the mathematical checks justify a candidate.
 Keep the completed study's settings and evidence intact.
 Unknown variance ratios and noise-transition locations remain subsequent
 mathematical tasks; use the completed studies as diagnostics.

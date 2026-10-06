@@ -347,6 +347,33 @@ against the frozen result index. The saved output is
         experiments/step_detection/test_ar1_information.py \
         experiments/step_detection/test_reporting_ar1.py -q
 
+Check the full-history confidence reference
+-------------------------------------------
+
+The `full-history derivation <full_history_confidence.rst>`_ specifies the
+proper predictive mixture and continuous interval checks. The API requires
+an external reference unit, expressed in the same units as the observations::
+
+    from experiments.step_detection.reporting_ar1_full import evidence
+
+    result = evidence(values, unit=1)
+    print(result['status'], result['witness'])
+
+Reproduce one archived missed slowdown and two deterministic fixtures::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.full_history_diagnosis
+
+The saved output is ``data/full_history_v1_diagnosis.json``. This is a
+development diagnosis, not a fresh statistical evaluation. It preserves
+the full certificates and witnesses. Verify the density, likelihoods,
+and continuous bounds with::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_ar1_full.py \
+        experiments/step_detection/test_ar1_information.py \
+        experiments/step_detection/test_reporting_ar1.py -q
+
 Run the original harness
 -------------------------
 

@@ -255,8 +255,11 @@ farther from 1 could still defeat the size test.
 What to build next
 ------------------
 
-Develop the full-history density construction before implementing another
-reporting variant. Two parts need explicit treatment:
+The follow-up `full-history reference <full_history_confidence.rst>`_ now
+implements these parts and checks the saved example. It restores endpoint
+exclusion but still retains the previous stationary witness.
+
+Developing the full-history construction requires two parts:
 
 * Choose a proper joint predictor. One option is a proper density g for
   the training prefix multiplied by the existing conditional predictor:

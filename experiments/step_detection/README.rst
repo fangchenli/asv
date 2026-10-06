@@ -78,6 +78,11 @@ candidate on a saved missed slowdown. Combining both directions still keeps
 the problematic correlation, even after tightening the candidate likelihood.
 The derivation separates prediction cost from discarded stationary
 information and motivates a full-history confidence construction.
+The `full-history reference <full_history_confidence.rst>`_ now integrates a
+proper predictive mixture and certifies confidence exclusion over correlation
+intervals. It removes sufficiently persistent explanations but still retains
+the saved 8% slowdown's witness. Improving the predictive model is the next
+mathematical task; no new sensitivity study has been run.
 
 .. contents:: On this page
    :local:
