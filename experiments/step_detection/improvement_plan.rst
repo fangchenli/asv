@@ -77,10 +77,23 @@ joint-sign gate, with 10 versus zero false alerts among 1440 null histories.
 It detects 225 of 480 recent changes, where the sign references detect none.
 Nine false alerts occur under Laplace noise, outside its Gaussian guarantee.
 
-Next, stress the frozen direct test's common-variance and independence
-assumptions, and derive extensions before claiming broader coverage. Examine
-Laplace behavior near exactly 5%, especially on short plateaus. Keep the
-cutoffs fixed rather than adjusting them to the completed evaluation.
+The `variance and correlation study <direct_stress_report.rst>`_ now keeps
+that rule fixed across 2400 versions of 400 fresh paired Gaussian histories.
+Direct-gate false alerts rise from 3/240 in the independent constant-variance
+control to 22/240 with rising variance, 22/240 with correlation, and 33/240
+with both. True detections in the last condition fall from 124/160 to 97/160.
+Both size and shape checks reject valid below-threshold explanations.
+
+Next, derive a reference for known Gaussian covariance up to an unknown
+overall scale. Use generalized least squares for the size contrast and
+nested residual comparisons for the shape scan, transforming the plateau
+design as well as the observations. Prove both tests under that common
+model before running another comparison. Then address uncertainty in the
+covariance estimate; plugging in fitted correlation or variance ratios
+does not preserve the known-covariance guarantee. Keep the completed
+evaluation as a diagnostic set and use fresh cases for a frozen extension.
+Laplace behavior near exactly 5%, especially on short plateaus, remains
+a separate distributional question.
 Preserve observations and usable counts; fitted step tuples alone are
 insufficient. Multiple changes, recovery semantics, weights, and repeated
 publication remain separate tasks. Continue investigating scale estimation

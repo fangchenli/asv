@@ -118,6 +118,44 @@ Run the new analytical and pipeline checks::
         experiments/step_detection/test_reporting_direct.py \
         experiments/step_detection/test_direct_study.py -q
 
+Stress variance and independence
+--------------------------------
+
+The `stress protocol <direct_stress_protocol.rst>`_ derives covariance
+diagnostics and reuses the entire frozen direct-test pipeline. Reproduce
+the six paired noise conditions without changing any cutoff::
+
+    .venv/bin/python -m experiments.step_detection.direct_stress run \
+        --frozen experiments/step_detection/data/direct_stress_v1_frozen.json \
+        --output experiments/step_detection/runs/direct_stress_replay
+
+The original freeze command, committed before generating histories, was::
+
+    .venv/bin/python -m experiments.step_detection.direct_stress freeze \
+        --inherited experiments/step_detection/data/direct_v1_frozen.json \
+        --output experiments/step_detection/data/direct_stress_v1_frozen.json
+
+The same source/build/SciPy checks apply. Existing freeze files and output
+directories are refused. A new build needs separately recorded provenance.
+The run saves numerical inputs, complete pipeline outputs, condition
+breakdowns, paired gains/losses against the independent constant-variance
+control, and rejection routes at the generating split. That split is used
+only by the evaluator. ``neither`` must never occur on a direct alert.
+
+Run the mathematical and pipeline checks::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_direct_stress.py \
+        experiments/step_detection/test_reporting_direct.py \
+        experiments/step_detection/test_direct_study.py -q
+
+The `stress report <direct_stress_report.rst>`_ links the committed result
+index and compressed archives. The index records filenames, counts, and
+SHA-256 hashes; decompress each ``*.jsonl.gz`` file with Python's ``gzip``
+module. Join inputs by ``id`` to results by ``case.id``. ``pair_id`` connects
+the six versions of each base history, so aggregate versions are not
+independent statistical trials.
+
 Run the original harness
 -------------------------
 

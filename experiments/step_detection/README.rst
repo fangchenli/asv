@@ -49,6 +49,10 @@ below-threshold explanation using size and shape tests. Its derivation
 accounts for the unknown boundary under a stronger assumption: independent
 Gaussian noise with one common variance. A fresh evaluation compares it
 with both references and treats Laplace noise as a stress check.
+The `variance and correlation study <direct_stress_report.rst>`_ then holds
+that test fixed and shows where its assumptions matter. Rising noise and
+correlation increase false alerts through both the size and extra-step
+checks, motivating a covariance model shared by the two tests.
 
 .. contents:: On this page
    :local:
