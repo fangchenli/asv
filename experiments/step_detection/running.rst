@@ -141,6 +141,14 @@ an optimizer finding a lower score from a method finding a more accurate change.
 Checks
 ------
 
+The shared-floor prototype has analytical tests that do not run the
+benchmark harness::
+
+    .venv/bin/python -m pytest experiments/step_detection/test_noise_model.py -q
+
+See `the shared-floor design <shared_noise_floor.rst>`_ for its required
+noise-scale and complexity-penalty inputs. Production uses its existing score.
+
 Run the experiment tests and the production step-detection tests::
 
     .venv/bin/python -m pytest \

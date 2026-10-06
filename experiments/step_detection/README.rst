@@ -16,6 +16,8 @@ the correlation fit. The existing `harness instructions <running.rst>`_ and
 `baseline findings <baseline_report.rst>`_ record the initial experiments.
 The `correlation-fit design <correlation_design.rst>`_ describes the first
 correction derived from that analysis and its analytical tests.
+The `shared noise-floor analysis <shared_noise_floor.rst>`_ derives a new
+score and shows why noise persistence needs a separate modeling decision.
 
 .. contents:: On this page
    :local:

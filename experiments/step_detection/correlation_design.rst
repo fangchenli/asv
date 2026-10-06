@@ -119,6 +119,11 @@ next modeling question. Exact conditional correlation fitting does not make
 the full segmentation problem jointly optimal, establish the outer search's
 unimodality, or calibrate regression alerts.
 
+The subsequent `shared-floor analysis <shared_noise_floor.rst>`_ derives that
+score and shows that allowing rho arbitrarily close to one can hide a lasting
+step. The closed correlation domain solves the specified conditional fit;
+the persistence assumption remains a separate model decision.
+
 Validation and historical results
 ----------------------------------
 

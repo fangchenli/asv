@@ -10,10 +10,11 @@ The `conceptual guide <README.rst>`_ explains why those layers exist. The
 `implementation reference <implementation_details.rst>`_ maps them to the
 code at revision ``d33754e129c025beb5c2ca440c3c280433b264f7``.
 
-Start the next work with the `mathematical analysis <mathematical_analysis.rst>`_.
-Establish the objective, guarantees, and noise assumptions before extending
-the experiments. In particular, correlation fitting has an exact solution
-that is more focused than replacing the outer penalty search.
+Continue from the `mathematical analysis <mathematical_analysis.rst>`_ and
+`shared noise-floor design <shared_noise_floor.rst>`_. Establish the objective,
+guarantees, and noise assumptions before extending the experiments. Exact
+conditional correlation fitting is implemented; the next model decisions
+concern absolute noise scale and allowed persistence.
 
 The initial harness, bounded search comparison, and scaling sample are now
 implemented. The `baseline report <baseline_report.rst>`_ records the findings;
@@ -65,11 +66,11 @@ Use those results to resolve three design questions:
   exact score is ``2 + abs(rho)``; the old equal-value stopping rule could
   return rho near -1 instead of the optimum 0. The corrected fit also
   replaces the expanded bracket with [-1,1].
-* **Selection score:** decide whether to retain the current heuristic or use
-  a specified noise model with a floor shared across candidate fits. The
-  independent-error, shared-floor version admits a proof that an exact penalty
-  path contains an optimum; the current score does not meet that proof's
-  assumptions.
+* **Selection score:** the constrained-Laplace shared-floor score is derived
+  and implemented in an experimental helper with an explicit floor and beta.
+  Its independent-error version admits an exact penalty-path guarantee.
+  The floor still needs an absolute measurement-scale interpretation, and
+  correlation near one can hide a lasting step even with this new score.
 * **Exact fitting:** specify pruning and tie rules under each supported segment
   constraint, together with a weighted interval-cost data structure. Establish
   correctness before evaluating computational savings.
@@ -77,9 +78,10 @@ Use those results to resolve three design questions:
 The `correlation-fit design <correlation_design.rst>`_ is now implemented:
 a weighted median constrained to [-1,1], with ties resolved toward zero and
 analytical acceptance tests. It replaces the premature-stopping search.
-The existing noise floor is retained while the shared-floor model's noise
-bound remains unspecified. That model decision comes before wider search
-experiments.
+The `shared-floor analysis <shared_noise_floor.rst>`_ establishes the new
+score, its invariances, and a persistence counterexample. Production retains
+its existing floor until absolute-scale metadata and the intended persistence
+model have been specified. Those decisions come before wider search experiments.
 
 Reproduce the initial observations
 ----------------------------------

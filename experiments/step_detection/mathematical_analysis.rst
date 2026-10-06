@@ -24,6 +24,9 @@ independent of the previous experiment results.
 The `correlation-fit design <correlation_design.rst>`_ implements the first
 result. Descriptions of the old search below refer to the pinned revision;
 the current branch uses a constrained weighted median.
+The `shared-floor analysis <shared_noise_floor.rst>`_ extends the likelihood
+derivation, proves a limit on data-only floor estimation, and works through
+the ambiguity between persistent noise and a lasting step.
 
 .. contents::
    :local:
