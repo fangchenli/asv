@@ -113,3 +113,18 @@ def test_tuning_uses_both_errors_and_declared_ties():
     alternative = next(c for c in configs if c['family'] == 'independent')
     summary[alternative['name']] = {'false_rate': 0, 'miss_rate': 0.5}
     assert t.select_settings(summary, configs) == chosen
+
+
+@pytest.mark.parametrize(
+    'rho,location', [(0, 'middle'), (0, 'recent'), (0.7, 'middle'), (0.7, 'recent')]
+)
+def test_backend_agreement(rho, location):
+    try:
+        h.load_detector('native')
+    except RuntimeError:
+        pytest.skip('Build the C++ extension to compare backends')
+    case = t.make_case(40, 0.06, 0.02, rho, location, 100)
+    settings = [c for c in t.configurations() if c['penalty'] == 2 and c['floor_factor'] == 0.5]
+    python = t.evaluate(case, settings, 'python')
+    native = t.evaluate(case, settings, 'native')
+    assert python['methods'] == native['methods']

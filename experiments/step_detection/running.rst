@@ -108,6 +108,48 @@ not establish a global optimum for the correlated score.
 See `the version comparison <version_comparison.rst>`_ for measured results
 and their interpretation.
 
+Run the near-threshold study
+-----------------------------
+
+The `protocol <threshold_protocol.rst>`_ specifies the simulation and setting
+selection before evaluation. The `results <threshold_report.rst>`_ report
+the observed sensitivity/false-alert tradeoff. Run development first::
+
+    .venv/bin/python -m experiments.step_detection.threshold_study development \
+        --output experiments/step_detection/runs/threshold_development
+
+This evaluates 360 histories and writes ``frozen.json`` with one independent
+and one bounded-persistence configuration. Evaluate the 600 fresh histories
+using that file::
+
+    .venv/bin/python -m experiments.step_detection.threshold_study heldout \
+        --frozen experiments/step_detection/runs/threshold_development/frozen.json \
+        --output experiments/step_detection/runs/threshold_heldout
+
+Every output directory must be new. Each phase saves all inputs, per-history
+results, aggregate results, and breakdowns. Held-out execution checks the
+frozen protocol, source, design, and native-extension hashes before generating
+cases. In another environment, run both phases to create a freeze matching
+that build. The archived original configuration deliberately pins its original
+extension binary. Use ``--backend python`` in both phases to avoid the extension.
+
+Validate the runner and its exact reference::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_threshold_study.py \
+        experiments/step_detection/test_exact_reference.py -q
+
+Compressed input and result snapshots live in ``data/threshold_v1_*.jsonl.gz``.
+For example, inspect the saved held-out results without rerunning fitting::
+
+    import gzip
+    import json
+
+    with gzip.open(
+        'experiments/step_detection/data/threshold_v1_heldout_records.jsonl.gz', 'rt'
+    ) as stream:
+        rows = [json.loads(line) for line in stream]
+
 What the methods compare
 ------------------------
 

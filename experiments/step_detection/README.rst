@@ -25,6 +25,9 @@ shared-floor optimum and exposes the best fit at every feasible segment count.
 The `before/after comparison <version_comparison.rst>`_ measures the correction:
 identical decisions across 190 histories, faster short-history detection,
 and no consistent speedup on long histories.
+The `near-threshold study <threshold_report.rst>`_ tests statistical changes:
+bounded persistence finds more small slowdowns, with an explicit increase in
+below-threshold alerts. Its settings were frozen before evaluating fresh cases.
 
 .. contents:: On this page
    :local:

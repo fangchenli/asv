@@ -25,11 +25,20 @@ length-100 runs take about 11% less time at the median; longer runs show no
 consistent gain and use more memory. Exact checks of seven representative
 boundary-error cases find no fixed-penalty optimization gap.
 
-Next, evaluate changes near the 5 percent reporting threshold under varying
-noise and persistence. Compare the existing and experimental scores with
-settings frozen before held-out evaluation. Profile long-history correlation
-fitting separately. The remaining phases are the backlog; the new evidence
-does not justify changing the statistical defaults yet.
+The `near-threshold study <threshold_report.rst>`_ now evaluates that harder
+statistical comparison. Settings selected on 360 development histories were
+frozen before 600 held-out histories. Bounded persistence reduces missed
+above-threshold histories from 147/240 to 71/240, while below-threshold alert
+histories rise from 0/240 to 10/240. The common-pool control leaves the current
+detector's decisions unchanged. This is a scoring tradeoff, with no demonstrated
+need for a faster solver on these small histories.
+
+Next, separate the correlation cap, segment penalty, and floor in controlled
+comparisons, and compare sensitivity at matched false-alert rates. Choose an
+acceptable false-alert rate before calibrating a production setting. Keep
+settings frozen for further evaluation with additional seeds, outliers,
+missing observations, and changing noise levels. Production defaults remain
+unchanged while this tradeoff is being established.
 
 The initial `baseline report <baseline_report.rst>`_ retains its historical
 results; `running the experiments <running.rst>`_ explains reproduction.
@@ -312,5 +321,6 @@ The initial harness, baseline, bounded search comparison, mathematical
 analysis, correlation correction, experimental noise model, and exact
 reference are available. The controlled version comparison adds fresh timing,
 real-history replay, and exact diagnoses of remaining boundary errors.
-The next experiment should measure the missed-alert/false-alert tradeoff
-near the reporting threshold before choosing new model defaults.
+The near-threshold study adds a frozen development/evaluation split and
+measured alert tradeoffs for independent and bounded-persistence scoring.
+Component comparisons and false-alert calibration now precede a new default.
