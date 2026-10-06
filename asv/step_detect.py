@@ -247,7 +247,7 @@ def solve_potts(y, w, gamma, min_size=1, max_size=None, min_pos=None, max_pos=No
     mu, dist = mu_dist.mu, mu_dist.dist
 
     if min_size >= max_pos - min_pos:
-        return [len(y)], [mu(0, len(y) - 1)], [dist(0, len(y) - 1)]
+        return [max_pos], [mu(min_pos, max_pos - 1)], [dist(min_pos, max_pos - 1)]
 
     # Perform the Bellman recursion for the optimal partition.
     # Routine "Find best partition" in [1]

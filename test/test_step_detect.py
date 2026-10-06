@@ -98,6 +98,16 @@ def test_autocorrelated():
     assert right == [500, 1000]
 
 
+@pytest.mark.parametrize('left,right', [(1, 2), (1, 4), (0, 3)])
+def test_solve_potts_single_segment_subrange(use_rangemedian, left, right):
+    y = [100, 1, 2, 3, 100]
+    w = [1] * len(y)
+    expected = solve_potts(y[left:right], w[left:right], gamma=10, min_size=right - left)
+    result = solve_potts(y, w, gamma=10, min_size=right - left, min_pos=left, max_pos=right)
+    assert result[0] == [right]
+    assert result[1:] == expected[1:]
+
+
 def test_zero_variance():
     # Should not choke on this data
     y = [1.0] * 1000
