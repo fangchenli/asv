@@ -84,14 +84,22 @@ control to 22/240 with rising variance, 22/240 with correlation, and 33/240
 with both. True detections in the last condition fall from 124/160 to 97/160.
 Both size and shape checks reject valid below-threshold explanations.
 
-Next, derive a reference for known Gaussian covariance up to an unknown
-overall scale. Use generalized least squares for the size contrast and
-nested residual comparisons for the shape scan, transforming the plateau
-design as well as the observations. Prove both tests under that common
-model before running another comparison. Then address uncertainty in the
-covariance estimate; plugging in fitted correlation or variance ratios
-does not preserve the known-covariance guarantee. Keep the completed
-evaluation as a diagnostic set and use fresh cases for a frozen extension.
+The `known-covariance reference <known_covariance.rst>`_ is now derived and
+implemented for Gaussian noise with known covariance up to an unknown
+overall scale. It transforms both the plateau design and observations,
+uses GLS for the size contrast, and compares nested weighted residuals
+for the shape scan. Orthogonal Gaussian projections give the same t/F
+cutoffs and per-history error bound. Deterministic tests recover the old
+test at identity covariance and check independent GLS calculations.
+
+Next, freeze an oracle comparison and evaluate fresh histories with their
+true covariance supplied. Measure sensitivity and false alerts separately
+by variance and correlation condition. Then address covariance estimation:
+plugging in fitted correlation or variance ratios does not preserve the
+known-covariance guarantee. The derivation gives one possible route through
+a covariance confidence set, with its coverage failure charged to the
+error budget. Constructing that set and handling all its members remain
+open. Keep the completed stress evaluation as a diagnostic set.
 Laplace behavior near exactly 5%, especially on short plateaus, remains
 a separate distributional question.
 Preserve observations and usable counts; fitted step tuples alone are

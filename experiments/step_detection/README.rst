@@ -53,6 +53,11 @@ The `variance and correlation study <direct_stress_report.rst>`_ then holds
 that test fixed and shows where its assumptions matter. Rising noise and
 correlation increase false alerts through both the size and extra-step
 checks, motivating a covariance model shared by the two tests.
+The `known-covariance derivation <known_covariance.rst>`_ supplies that
+reference: generalized least squares corrects both tests when relative
+variances and correlations are known. Analytical checks recover the
+independent-noise test and verify the projection identities behind the
+error bound. Estimating covariance remains a separate problem.
 
 .. contents:: On this page
    :local:

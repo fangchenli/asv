@@ -156,6 +156,45 @@ module. Join inputs by ``id`` to results by ``case.id``. ``pair_id`` connects
 the six versions of each base history, so aggregate versions are not
 independent statistical trials.
 
+Check the known-covariance reference
+--------------------------------------
+
+The `derivation <known_covariance.rst>`_ extends both direct tests to a
+supplied Gaussian covariance shape. The checks compare deterministic GLS
+calculations and projection identities; they do not generate an evaluation
+sample or estimate covariance::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_covariance.py \
+        experiments/step_detection/test_reporting_direct.py -q
+
+Use the reference from Python at the repository root::
+
+    import numpy as np
+    from experiments.step_detection.reporting_covariance import evidence
+    from experiments.step_detection.reporting_direct import critical_values
+
+    n = 16
+    positions = np.arange(n)
+    values = 10 + 0.001*np.sin(2.1*positions) + 0.8*(positions >= 8)
+    amplitudes = np.where(positions >= 8, 3.0, 1.0)
+    covariance = (np.outer(amplitudes, amplitudes)
+                  * 0.7**np.abs(positions[:, None] - positions[None, :]))
+    result = evidence(values, covariance, critical_values(n))
+    print(result['status'], result['has_alert'])
+
+This deterministic example returns ``ok True``. The covariance matrix is a
+declared input, used unchanged for every candidate mean split. The example
+demonstrates the API, not an estimate of detection power. A positive scalar
+multiple of the covariance gives the same statistics. The overall noise
+scale is estimated from weighted residuals separately under each model.
+
+``insufficient_precision`` means the helper abstained, with ``has_alert=False``
+and diagnostic arrays set to None. It is distinct from an ordinary non-alert
+with surviving ``null_splits``. Malformed, non-positive-definite, or excessively
+ill-conditioned covariance raises ValueError. Histories are limited to 200
+readings; this is a mathematical reference with no production integration.
+
 Run the original harness
 -------------------------
 
