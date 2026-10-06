@@ -15,8 +15,8 @@ Continue from the `mathematical analysis <mathematical_analysis.rst>`_ and
 guarantees, and noise assumptions before extending the experiments. Exact
 conditional correlation fitting is implemented. The experimental score now
 requires explicit noise-scale and persistence inputs; their default values
-remain uncalibrated. The next implementation is an exact independent-noise
-reference for that declared score.
+remain uncalibrated. An `exact independent-noise reference <exact_reference.rst>`_
+now establishes the global optimum for a declared floor and beta.
 
 The initial harness, bounded search comparison, and scaling sample are now
 implemented. The `baseline report <baseline_report.rst>`_ records the findings;
@@ -88,10 +88,12 @@ its existing floor until absolute-scale metadata and the intended persistence
 model have been specified. Those decisions come before wider search experiments.
 
 The bounded-persistence prototype implements a chosen model without assigning
-automatic defaults. Build the exact independent-noise reference next, using
-explicit floor and beta inputs. This can establish candidate-generation
-correctness while uncertainty metadata and persistence calibration remain
-separate tasks.
+automatic defaults. The exact independent-noise reference now computes the
+minimum error at every feasible segment count and selects the global shared-floor
+optimum. It is verified by exhaustive partition enumeration on both backends.
+Use it to check a faster exact penalty path next; the derivation supplies
+a sufficient penalty range. Uncertainty metadata and persistence calibration
+remain separate tasks.
 
 Reproduce the initial observations
 ----------------------------------

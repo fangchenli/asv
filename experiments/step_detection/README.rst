@@ -20,6 +20,8 @@ The `shared noise-floor analysis <shared_noise_floor.rst>`_ derives a new
 score and shows why noise persistence needs a separate modeling decision.
 The `persistence bound <noise_persistence.rst>`_ gives that decision an
 explicit half-life parameter and proves what a strict bound guarantees.
+The `exact independent reference <exact_reference.rst>`_ now finds the global
+shared-floor optimum and exposes the best fit at every feasible segment count.
 
 .. contents:: On this page
    :local:

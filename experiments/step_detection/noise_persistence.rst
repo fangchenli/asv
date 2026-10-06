@@ -207,8 +207,7 @@ The prototype now has an explicit noise scale and an explicit persistence
 limit, each with a mathematical interpretation. Independent noise is the
 r=0 member of the same family. No data-derived cap or floor is claimed.
 
-The next useful implementation is an exact independent-noise reference for
-the shared-floor score. It can establish a global optimum for a declared
-floor and beta, separating candidate-generation errors from the choice of
-noise model. That provides a mathematical reference before evaluating the
-correlated candidates or calibrating defaults on real histories.
+The `exact independent-noise reference <exact_reference.rst>`_ now establishes
+a global optimum for a declared floor and beta, separating candidate-generation
+errors from the choice of noise model. It provides a mathematical reference
+before evaluating correlated candidates or calibrating defaults on real histories.

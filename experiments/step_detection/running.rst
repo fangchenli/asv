@@ -141,6 +141,15 @@ an optimizer finding a lower score from a method finding a more accurate change.
 Checks
 ------
 
+The `exact independent reference <exact_reference.rst>`_ has a Python API
+and exhaustive correctness checks::
+
+    .venv/bin/python -m pytest experiments/step_detection/test_exact_reference.py -q
+
+It returns the best fit at each feasible segment count and the global
+shared-floor optimum. Inputs are already prepared values and weights; the
+floor and beta are explicit. Histories are limited to 200 observations.
+
 The shared-floor prototype has analytical tests that do not run the
 benchmark harness::
 

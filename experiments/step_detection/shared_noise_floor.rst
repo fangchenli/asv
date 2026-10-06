@@ -18,6 +18,8 @@ without changing ASV's production default. Its checks evaluate analytical
 cases; no new benchmark campaign is needed for these conclusions.
 The subsequent `persistence design <noise_persistence.rst>`_ adds an explicit
 half-life cap and proves a bound on the discounted residual error.
+The `exact independent reference <exact_reference.rst>`_ finds the global
+optimum of this score for declared floor and beta inputs.
 
 .. contents::
    :local:
