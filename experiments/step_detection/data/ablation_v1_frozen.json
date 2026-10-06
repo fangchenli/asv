@@ -1,0 +1,225 @@
+{
+  "source_hashes": {
+    "experiments/step_detection/threshold_study.py": "61aab455fa9591eec7407c49d8ae052473eb5f17bfedf719d4fda5eb411d97c3",
+    "experiments/step_detection/threshold_protocol.rst": "786b823088f733c36c26a8218ac391058a4164578fd45f3ba75e671f5383a5f0",
+    "experiments/step_detection/harness.py": "0995338c0d393ca573fd7583c9e1b6241041ba4fefd3459a02797dd271af5b73",
+    "experiments/step_detection/exact_reference.py": "0ce45253731a398e1083faa15afbefd5a115587ffd4a75ba435d9941f2d8e558",
+    "experiments/step_detection/noise_model.py": "169b581771bc2c3fe2e7ba3bab2ff213b702bd3d8235ceda3f09c69366100d11",
+    "experiments/step_detection/inspect_comparison.py": "6962a558a1f74f6f891fdceb4ba41d1ea16dc03c77659ac77def9c8d40a9b0b3",
+    "experiments/step_detection/compare_versions.py": "f940d89ee45b39519b83cbb09dcd064814f3c08b7e619d55dcae058423dbe424",
+    "asv/step_detect.py": "671c688b9a3b83fc31bc069896c595f094dca5e1fc71d01b2031bb1d1fb32ff3",
+    "native_extension": "87b9e92a2dbecd61f71e8d2da937f625c158f333e601b8bbaf47ad7f9806634c",
+    "experiments/step_detection/ablation_study.py": "b4a0225f374dc3bb0516e2cf18d00866969f3c589a583a97d6676ead51298471",
+    "experiments/step_detection/ablation_protocol.rst": "799bb78b82edc512a97974f96c1934c8fd71cdd843d76cd2686da974084b80ad"
+  },
+  "design": {
+    "sizes": [
+      40,
+      100
+    ],
+    "changes": [
+      0,
+      0.04,
+      0.05,
+      0.06,
+      0.08
+    ],
+    "noise": [
+      0.005,
+      0.02,
+      0.05
+    ],
+    "correlations": [
+      0,
+      0.7
+    ],
+    "locations": [
+      "middle",
+      "recent"
+    ],
+    "development_seeds": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209
+    ],
+    "heldout_seeds": [
+      300,
+      301,
+      302,
+      303,
+      304,
+      305,
+      306,
+      307,
+      308,
+      309,
+      310,
+      311,
+      312,
+      313,
+      314,
+      315,
+      316,
+      317,
+      318,
+      319
+    ]
+  },
+  "backend": "native",
+  "penalties": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    8,
+    12,
+    16
+  ],
+  "budgets": [
+    0,
+    0.01,
+    0.05
+  ],
+  "selections": [
+    {
+      "family": "current-r0.5",
+      "budget": 0,
+      "config": {
+        "name": "current-r0.5-c16",
+        "family": "current-r0.5",
+        "floor": "current",
+        "cap": 0.5,
+        "penalty": 16
+      }
+    },
+    {
+      "family": "current-r0.5",
+      "budget": 0.01,
+      "config": {
+        "name": "current-r0.5-c6",
+        "family": "current-r0.5",
+        "floor": "current",
+        "cap": 0.5,
+        "penalty": 6
+      }
+    },
+    {
+      "family": "current-r0.5",
+      "budget": 0.05,
+      "config": {
+        "name": "current-r0.5-c3",
+        "family": "current-r0.5",
+        "floor": "current",
+        "cap": 0.5,
+        "penalty": 3
+      }
+    },
+    {
+      "family": "current-r1",
+      "budget": 0,
+      "config": {
+        "name": "current-r1-c6",
+        "family": "current-r1",
+        "floor": "current",
+        "cap": 1,
+        "penalty": 6
+      }
+    },
+    {
+      "family": "current-r1",
+      "budget": 0.01,
+      "config": {
+        "name": "current-r1-c4",
+        "family": "current-r1",
+        "floor": "current",
+        "cap": 1,
+        "penalty": 4
+      }
+    },
+    {
+      "family": "current-r1",
+      "budget": 0.05,
+      "config": {
+        "name": "current-r1-c3",
+        "family": "current-r1",
+        "floor": "current",
+        "cap": 1,
+        "penalty": 3
+      }
+    },
+    {
+      "family": "shared-r0.5",
+      "budget": 0,
+      "config": {
+        "name": "shared-r0.5-c16",
+        "family": "shared-r0.5",
+        "floor": "shared",
+        "cap": 0.5,
+        "penalty": 16
+      }
+    },
+    {
+      "family": "shared-r0.5",
+      "budget": 0.01,
+      "config": {
+        "name": "shared-r0.5-c6",
+        "family": "shared-r0.5",
+        "floor": "shared",
+        "cap": 0.5,
+        "penalty": 6
+      }
+    },
+    {
+      "family": "shared-r0.5",
+      "budget": 0.05,
+      "config": {
+        "name": "shared-r0.5-c3",
+        "family": "shared-r0.5",
+        "floor": "shared",
+        "cap": 0.5,
+        "penalty": 3
+      }
+    },
+    {
+      "family": "shared-r1",
+      "budget": 0,
+      "config": {
+        "name": "shared-r1-c6",
+        "family": "shared-r1",
+        "floor": "shared",
+        "cap": 1,
+        "penalty": 6
+      }
+    },
+    {
+      "family": "shared-r1",
+      "budget": 0.01,
+      "config": {
+        "name": "shared-r1-c3",
+        "family": "shared-r1",
+        "floor": "shared",
+        "cap": 1,
+        "penalty": 3
+      }
+    },
+    {
+      "family": "shared-r1",
+      "budget": 0.05,
+      "config": {
+        "name": "shared-r1-c2",
+        "family": "shared-r1",
+        "floor": "shared",
+        "cap": 1,
+        "penalty": 2
+      }
+    }
+  ]
+}
