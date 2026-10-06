@@ -14,6 +14,12 @@ Start with a reproducible evaluation harness, then compare penalty searches.
 Those experiments will show whether a larger investment in the solver or
 noise model is justified.
 
+The initial harness, bounded search comparison, and scaling sample are now
+implemented. The `baseline report <baseline_report.rst>`_ records the findings;
+`running the experiments <running.rst>`_ explains how to reproduce them.
+The broader corpus, internal cache profiling, and replacement solver experiments
+below remain follow-up work.
+
 .. contents:: On this page
    :local:
    :depth: 1
