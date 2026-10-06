@@ -35,6 +35,11 @@ The `robustness study <robustness_report.rst>`_ keeps those settings fixed
 under outliers, gaps, heavy tails, and changing noise. The overall improvement
 persists, but false-alert rates vary by condition; uncertainty about change
 size and location is the next modeling question.
+The `reporting uncertainty derivation <reporting_uncertainty.rst>`_ now explains
+how to ask whether a slowdown convincingly exceeds 5%. An independent-noise
+reference accounts for every possible single-change boundary and provides
+a conservative error bound. It also shows why three post-change readings
+and correlated noise require more care than the current residual allowance.
 
 .. contents:: On this page
    :local:

@@ -51,13 +51,22 @@ type measured over 3840 eligible histories. Its observed false-alert rate
 exceeds 5% with positive outliers and falling noise amplitude. Missing data
 also changes the sensitivity/false-alert tradeoff.
 
-Next, derive an alert rule that measures evidence that a change exceeds the
-reporting threshold, using usable observation counts, serial correlation,
-and uncertainty from selecting the boundary. Many remaining false alerts
-occur on genuine 4% slowdowns, with either an overstated size or misplaced
-boundary. Validate any proposed rule on new data rather than adjusting it
-to this stress set. Continue investigating scale estimation under varying
-noise and gaps. Production defaults remain unchanged.
+The `reporting uncertainty derivation <reporting_uncertainty.rst>`_ now defines
+the claim as a positive lower bound on ``later - 1.05*earlier``. A mathematical
+reference uses simultaneous median bounds to keep every plausible one-change
+explanation, including uncertainty about the boundary. It gives a conservative
+per-history false-alert bound for independent observations with positive
+medians and at most one true change. Analytical tests verify its binomial
+ranks and confidence-set construction. It is not a production default.
+
+Next, compare reporting rules with the shared-floor detector held fixed,
+starting with independent, one-change histories. Preserve observations and
+usable counts; fitted step tuples alone are insufficient. Derive any more
+powerful rule's calibration before evaluating new data, and include exactly
+5% changes in the null cases. Correlation, multiple changes, and recovery
+semantics need explicit extensions before claiming broader coverage.
+Continue investigating scale estimation under varying noise and gaps.
+Production defaults remain unchanged.
 
 The initial `baseline report <baseline_report.rst>`_ retains its historical
 results; `running the experiments <running.rst>`_ explains reproduction.

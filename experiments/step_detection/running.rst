@@ -13,6 +13,43 @@ From the repository root, create an environment and build the extension::
     uv venv .venv --python python3
     uv pip install --python .venv/bin/python -e '.[test,dev]' ruff==0.13.3
 
+Check the reporting mathematics
+-------------------------------
+
+The `reporting derivation <reporting_uncertainty.rst>`_ has a standalone,
+standard-library reference for independent observations with positive
+medians and at most one true change. Its checks enumerate sign patterns and
+level constraints; they do not run a new statistical experiment::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_reference.py -q
+
+Inspect the known-boundary and unknown-boundary calculations directly::
+
+    .venv/bin/python - <<'PY'
+    from experiments.step_detection.reporting_reference import (
+        known_boundary_lower,
+        single_change_evidence,
+    )
+
+    for count in (20, 40):
+        values = [10] * count + [12] * count
+        print("readings on each side:", count)
+        print("known split, lower excess:", known_boundary_lower(values, count))
+        print("unknown split:", single_change_evidence(values))
+    PY
+
+Both fixed-split lower bounds are 1.5. The unknown-boundary reference returns
+``insufficient`` for twenty readings per side and ``evidence`` for forty.
+``feasible_splits`` uses retained-observation indices and represents uncertainty
+about a single boundary. An empty confidence set returns
+``incompatible_model`` and never becomes an alert. Inputs are limited to
+200 retained observations; remove missing readings explicitly and do not
+treat weighted or correlated readings as independent replicates.
+
+Run the original harness
+-------------------------
+
 Run a small comparison::
 
     .venv/bin/python experiments/step_detection/harness.py \
