@@ -11,6 +11,67 @@ The `implementation walkthrough <README.rst>`_ describes the baseline at
 ``d33754e129c025beb5c2ca440c3c280433b264f7``. This plan proposes experiments;
 it does not change the production detector or its defaults.
 
+.. contents:: On this page
+   :local:
+   :depth: 1
+
+What we are trying to improve
+-----------------------------
+
+Think of ASV as trying to explain a noisy picture of performance history.
+There are three different ways the result can disappoint us:
+
+* It can do a poor job solving the mathematical problem we gave it. Another
+  partition may have a lower cost at the same gamma. This is an optimization
+  problem, and changing the solver may help.
+* It can solve that problem well, but the chosen noise assumptions or penalty
+  may make it prefer the wrong explanation of the data. This is a modeling
+  or model-selection problem. Faster C++ alone will not fix it.
+* It can find a real step, but report something unhelpful, such as a slowdown
+  that later fully recovered. This is a reporting-policy problem.
+
+For example, imagine we generated 100 observations with a true change from
+10 to 12 after observation 50, then added random noise. If ASV finds a boundary
+at 52, that is a localization error of two positions. If it finds no boundary,
+that is a missed change. If it also finds a boundary at 20, that extra boundary
+is a false detection. These judgments use the history we deliberately
+generated, rather than just the detector's own cost function.
+
+The proposed order of work is:
+
+1. Build a repeatable way to measure current behavior.
+2. Test whether searching more carefully for gamma helps.
+3. Test whether we can fit candidates exactly at an acceptable cost.
+4. Revisit how noise is modeled and scored.
+5. Check the effect on the reports users actually see.
+
+This order makes the causes of improvements easier to identify. Changing
+the optimizer, noise floor, and reporting threshold together could produce
+different answers without telling us which change helped or hurt.
+
+Terms used in the experiments
+-----------------------------
+
+An **evaluation harness** is a small program that runs the same datasets
+through several detector variants and saves comparable results. It is not a
+new detection algorithm. A **baseline** is the current implementation used
+as the reference for those comparisons.
+
+An **oracle** is a deliberately simple, trusted way to compute the answer
+for small inputs, even if it is too slow for real histories. Here we can
+try every possible partition of a tiny list and keep the cheapest one.
+The oracle tells us the optimum of a cost function, not the true history
+behind noisy measurements.
+
+**Synthetic data** are observations we generate ourselves so the underlying
+changes are known. A **seed** makes random generation repeatable. **Held-out
+data** are examples we reserve for evaluation rather than use while choosing
+settings. Otherwise we risk tuning the detector to the examples we keep seeing.
+
+An **acceptance criterion** states what evidence would justify continuing
+with an idea. It prevents a visually appealing plot or a single favorable
+example from becoming the whole argument for a change.
+
 Initial evidence and open questions
 -----------------------------------
 
@@ -27,6 +88,25 @@ These examples establish possibility, not frequency or practical severity.
 The first is expected from an approximation. The second requires a modeling
 decision: baseline dependence may be appropriate for relative measurement
 accuracy, but should be explicit and calibrated.
+
+In the first example, the exact solution pays 16.05 in residual error and
+zero boundary charges. The approximate solution pays 14.52 in residual error
+and two boundary charges of 1, for 16.52 in total. It fits the observations
+more closely, but the improvement is not enough to pay for its extra steps.
+That is precisely the tradeoff the fixed-penalty objective is supposed to
+make.
+
+The generated data actually change their mean halfway through that example.
+The exact solver's preference for one segment therefore does not prove it
+found the true generating history. It proves only that the approximation
+missed the cheapest solution at this particular gamma. This distinction is
+why the plan measures both optimization error and statistical detection error.
+
+In the second example, the absolute change remains 0.02 after adding 1000,
+but its relative size shrinks from 2 percent to about 0.002 percent. A detector
+of absolute changes might want the same answer; a detector designed around
+relative measurement accuracy might not. We need to decide which behavior
+is intended before labeling the difference a bug.
 
 Source inspection raises further questions to evaluate:
 
@@ -90,6 +170,10 @@ refer to the pinned source revision.
 Phase 1 establishes an evaluation baseline
 ------------------------------------------
 
+This phase asks: what does the current implementation do well, where does it
+fail, and which part consumes the time? Its output is a comparison report,
+not a new default algorithm.
+
 Build a small harness in this directory before changing the detector. Record
 the source revision, interpreter, backend, random seed, input arrays, all
 parameters, fitted boundaries and levels, objective, selected gamma, runtime,
@@ -147,8 +231,30 @@ between the exact solver and the independent oracle on valid small cases,
 and a saved baseline report. Any oracle disagreement must be understood before
 using that solver to judge replacements.
 
+A small first batch can use 100 observations with a known step at position
+50, repeat that dataset with different noise samples, then repeat the entire
+batch with no step. The changed histories measure sensitivity; the flat
+histories measure false alarms. A method that always reports a step would
+look excellent on the first batch and fail immediately on the second.
+
+For boundary matching, specify a tolerance before examining results. For
+example, a detected boundary within two positions of a true boundary might
+count as a match, with each true and detected boundary matched at most once.
+Report the actual position error too, so that a tolerant matching rule does
+not hide imprecise localization. The choice of two is illustrative; suitable
+tolerances depend on the histories and intended use.
+
+Keep the output readable: one row per method and scenario can summarize
+missed changes, false changes, typical location error, time, and memory.
+Save the detailed per-run records behind that summary so surprising results
+can be reproduced and inspected.
+
 Phase 2 evaluates penalty search
 --------------------------------
+
+This phase asks whether ASV is overlooking good candidate histories because
+it tries too few penalties or tries them in the wrong places. The candidate
+fitting algorithm stays the same, so any differences can be traced to search.
 
 Keep the current segment cost, approximate solver, correlation score, and
 noise floor fixed. Compare the existing search against a logarithmic grid
@@ -175,8 +281,31 @@ to the underlying penalized problem. It neither guarantees every possible
 segment count appears on that path nor makes ASV's distinct correlation score
 globally optimal over all segmentations.
 
+Why might search matter? As gamma rises, a fit can stay exactly the same for
+a while, then suddenly lose a boundary. Its outer score can therefore look
+like a staircase, with several low regions, rather than one smooth bowl.
+Golden-section search efficiently narrows a region when the objective falls
+toward one minimum and then rises. That shape is not guaranteed here.
+
+A grid experiment simply tries a list of penalties spaced by a fixed ratio.
+If several adjacent trials produce the same partition, they give us the same
+history to score. Refinement tries more penalties near a transition between
+different partitions. This is easy to inspect, but a coarse grid can miss a
+narrow useful region, and a dense grid can be slow.
+
+CROPS means Changepoints for a Range of Penalties. Its purpose in this plan
+is to explore changes in the optimal partition as the boundary charge varies,
+rather than spending many trials rediscovering the same partition. It depends
+on having an exact solver for each penalty; using the current approximation
+does not automatically inherit that guarantee.
+
 Phase 3 evaluates faster exact fitting
 --------------------------------------
+
+This phase asks whether we can remove approximation error without making
+publishing impractically slow. There are two separate costs to attack:
+how many candidate intervals we examine, and how much work each interval
+requires. Improving only one may leave the other as the main bottleneck.
 
 Profile interval evaluation before choosing a data structure. Candidate
 approaches include maintaining weighted order statistics while an interval
@@ -209,8 +338,33 @@ change regimes. Evaluate compiled and fallback behavior. Keep any new solver
 selectable in experiments until its practical limits and tie behavior are
 understood.
 
+The intuition behind incremental interval statistics is simple. Suppose we
+already know the sorted values and weighted sums for positions 0 through 99.
+To extend the interval through position 100, we would like to insert one new
+observation and update those statistics, rather than sort all 101 values
+again. A weighted order-statistics data structure maintains enough information
+to find the halfway point in cumulative weight. Efficient insertion, median
+lookup, and error calculation must all be considered together.
+
+PELT stands for Pruned Exact Linear Time. Pruning means proving that some
+candidate starts of future segments can never beat another candidate, then
+stopping consideration of those starts. This differs from limiting every
+segment to 20 observations: the aim is to discard only choices proven
+unnecessary for the optimum. The proof conditions and interval-cost work
+still matter, which is why the name alone is not a runtime guarantee for ASV.
+
+Treat these as two experiments first: faster interval calculations with the
+same search, and fewer candidate intervals with the same cost calculations.
+Then combine them if both are useful. This identifies which idea provides
+the gain and whether their memory costs interact badly.
+
 Phase 4 calibrates the noise model
 ----------------------------------
+
+This phase asks whether the score favors the right kinds of histories.
+Calibration here means choosing settings by measured detection behavior
+across many examples, rather than because one setting looks convincing on
+one graph. It does not turn the current score into a formal significance test.
 
 First decide which invariances the model should have. The fixed-penalty
 absolute-error fit is invariant to adding a constant to all measurements.
@@ -245,8 +399,30 @@ and representative histories. Report false alerts and sensitivity together.
 Do not describe the selected information score as a p-value or posterior
 probability of regression.
 
+An invariance is a change to the input that we believe should leave the
+answer unchanged. Converting timings from seconds to milliseconds changes
+their numerical scale but not which commits became slow. Adding a constant
+baseline is a different operation: it preserves absolute changes while
+altering percentage changes. Keeping those examples separate prevents a
+useful unit-conversion property from being confused with a modeling choice.
+
+To isolate the noise-floor question, score the same saved candidate
+segmentations with the current floor and with each proposed replacement.
+Then compare their selected histories against the known generating histories.
+Only after that should we rerun the full search, where a changed score may
+also alter which penalties are tried.
+
+For logarithmic timing data, a change from 10 to 12 and a change from 100 to
+120 have the same difference: ``log(1.2)``. That makes relative changes easier
+to express. It also changes the measurement-error model, so it is a separate
+statistical experiment rather than a harmless preprocessing step.
+
 Phase 5 validates reporting and prepares integration
 ----------------------------------------------------
+
+This phase asks whether an improvement in the fitting experiments makes ASV
+more useful in practice. The detector is one part of a publishing pipeline;
+users see commit ranges and regression records, not just lists of boundaries.
 
 Replay candidate fits through graph coordinate mapping and regression
 postprocessing. Exercise missing revisions, recovered slowdowns, brief fast
@@ -266,6 +442,13 @@ then larger solver or model changes. Run the repository's relevant step,
 graph, and publishing tests for implementation changes, plus broader required
 checks before integration. Keep the existing implementation available for
 controlled comparisons during the experiment.
+
+For example, a fit of ``10 -> 12 -> 10`` contains a real upward step, but the
+last plateau shows full recovery. A fit of ``10 -> 14 -> 12`` retains a lasting
+slowdown. Reporting tests must encode that difference. Likewise, a boundary
+between two observations may correspond to a range of commits if measurements
+are sparse. A numerical improvement in boundary placement should not create
+false certainty about the exact responsible commit.
 
 Concrete first deliverable
 --------------------------
