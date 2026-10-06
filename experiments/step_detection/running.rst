@@ -179,6 +179,39 @@ See `the component results <ablation_report.rst>`_ for interpretation. Archived
 inputs and results use ``data/ablation_v1_*.jsonl.gz``, readable in the same
 way as the preceding threshold-study snapshots.
 
+Run the frozen robustness study
+--------------------------------
+
+The `robustness protocol <robustness_protocol.rst>`_ reuses the component
+study's full-correlation-cap settings at all three calibration budgets.
+There is no new configuration search. Freeze settings from a completed
+component-development run in the same environment::
+
+    .venv/bin/python -m experiments.step_detection.robustness_study freeze \
+        --calibration experiments/step_detection/runs/ablation_development/frozen.json \
+        --output experiments/step_detection/runs/robustness_frozen.json
+
+Then run the paired control and stress cases::
+
+    .venv/bin/python -m experiments.step_detection.robustness_study run \
+        --frozen experiments/step_detection/runs/robustness_frozen.json \
+        --output experiments/step_detection/runs/robustness
+
+The original study used ``data/robustness_v1_frozen.json``; it pins its original
+sources and extension build. As with previous studies, a different build
+requires a matching calibration/freeze rather than changing the archived
+hashes. Supply ``--backend python`` consistently when using that backend.
+
+The study saves all 7680 inputs and per-history results, condition breakdowns,
+and paired gains/losses against the Gaussian control. Missing readings are
+filtered through production, and fits are mapped back to original revision
+coordinates before reporting. Validate these mechanisms with::
+
+    .venv/bin/python -m pytest experiments/step_detection/test_robustness_study.py -q
+
+See `the robustness results <robustness_report.rst>`_ for findings. Archived
+``data/robustness_v1_*.jsonl.gz`` files preserve the input and result snapshots.
+
 What the methods compare
 ------------------------
 

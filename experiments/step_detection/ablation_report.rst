@@ -11,6 +11,9 @@ This updates the `previous study's recommendation <threshold_report.rst>`_.
 Prioritize the shared floor and penalty calibration; keep the cap as an
 experimental option. Production defaults remain unchanged.
 
+The subsequent `robustness study <robustness_report.rst>`_ checks these frozen
+settings under outliers, missing readings, heavy tails, and varying noise.
+
 What was frozen and measured
 ----------------------------
 

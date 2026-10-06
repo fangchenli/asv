@@ -43,11 +43,21 @@ each out of 960 eligible histories per error type. The cap provides little
 advantage after calibration. Actual held-out rates remain essential because
 some settings exceed their development budgets.
 
-Next, stress-test the frozen shared-floor family on outliers, missing
-observations, non-Gaussian noise, and changing noise levels. The floor formula
-and the adjacent-difference scale estimator need separate validation. Choose
-an acceptable false-alert rate before calibrating a production setting.
-Production defaults remain unchanged while this tradeoff is being established.
+The `robustness study <robustness_report.rst>`_ now evaluates 7680 fresh paired
+histories without changing those settings. At the inherited 5% budget, the
+shared floor reduces misses from 1696 to 1347 and below-threshold alert
+histories from 208 to 163 versus the calibrated current floor, each error
+type measured over 3840 eligible histories. Its observed false-alert rate
+exceeds 5% with positive outliers and falling noise amplitude. Missing data
+also changes the sensitivity/false-alert tradeoff.
+
+Next, derive an alert rule that measures evidence that a change exceeds the
+reporting threshold, using usable observation counts, serial correlation,
+and uncertainty from selecting the boundary. Many remaining false alerts
+occur on genuine 4% slowdowns, with either an overstated size or misplaced
+boundary. Validate any proposed rule on new data rather than adjusting it
+to this stress set. Continue investigating scale estimation under varying
+noise and gaps. Production defaults remain unchanged.
 
 The initial `baseline report <baseline_report.rst>`_ retains its historical
 results; `running the experiments <running.rst>`_ explains reproduction.
@@ -333,5 +343,6 @@ real-history replay, and exact diagnoses of remaining boundary errors.
 The near-threshold study adds a frozen development/evaluation split and
 measured alert tradeoffs for independent and bounded-persistence scoring.
 The component study adds controlled factor comparisons and frozen calibration
-at three false-alert budgets. Robustness under less regular measurement noise
-now precedes a new default.
+at three false-alert budgets. The frozen robustness study measures how those
+settings behave under less regular noise and missing readings. Statistical
+meaning and calibration of near-threshold alerts now precede a new default.
