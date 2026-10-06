@@ -44,6 +44,11 @@ The `joint calibration study <reporting_report.rst>`_ then calibrates the
 interval checks together and compares reporting rules on fresh independent
 histories, with the shared-floor detector held fixed and exactly 5% changes
 included among the null cases.
+The `direct threshold test <direct_report.rst>`_ then checks every
+below-threshold explanation using size and shape tests. Its derivation
+accounts for the unknown boundary under a stronger assumption: independent
+Gaussian noise with one common variance. A fresh evaluation compares it
+with both references and treats Laplace noise as a stress check.
 
 .. contents:: On this page
    :local:

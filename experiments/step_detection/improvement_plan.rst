@@ -68,15 +68,23 @@ Exactly 5% is included in the null. Both rules miss every recent change.
 Standalone and gated evidence agree throughout, identifying the confidence
 construction itself as the sensitivity limit in this study.
 
-Next, derive a test aimed directly at ``D <= 0`` that avoids requiring a
-confidence set for the entire step function. Retain unknown boundaries in
-the null and state any stronger noise assumptions needed for useful power.
-Freeze new calibration before evaluating fresh data rather than adjusting
-the completed study's rule. Preserve observations and usable counts;
-fitted step tuples alone are insufficient. Correlation, multiple changes,
-and recovery semantics need explicit extensions before claiming broader
-coverage. Continue investigating scale estimation under varying noise and
-gaps. Production defaults remain unchanged.
+The `direct threshold study <direct_report.rst>`_ now tests every fixed-location
+null using size and shape checks, then requires all locations to be rejected.
+Its finite-sample error argument assumes independent Gaussian noise with a
+common variance. With analytical cutoffs frozen before 2400 fresh histories,
+the direct gate detects 530 of 960 positive histories versus 119 for the
+joint-sign gate, with 10 versus zero false alerts among 1440 null histories.
+It detects 225 of 480 recent changes, where the sign references detect none.
+Nine false alerts occur under Laplace noise, outside its Gaussian guarantee.
+
+Next, stress the frozen direct test's common-variance and independence
+assumptions, and derive extensions before claiming broader coverage. Examine
+Laplace behavior near exactly 5%, especially on short plateaus. Keep the
+cutoffs fixed rather than adjusting them to the completed evaluation.
+Preserve observations and usable counts; fitted step tuples alone are
+insufficient. Multiple changes, recovery semantics, weights, and repeated
+publication remain separate tasks. Continue investigating scale estimation
+under varying noise and gaps. Production defaults remain unchanged.
 
 The initial `baseline report <baseline_report.rst>`_ retains its historical
 results; `running the experiments <running.rst>`_ explains reproduction.

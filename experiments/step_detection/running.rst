@@ -82,6 +82,42 @@ Run the analytical and pipeline checks::
         experiments/step_detection/test_reporting_signs.py \
         experiments/step_detection/test_reporting_study.py -q
 
+Evaluate the direct Gaussian threshold test
+-------------------------------------------
+
+The `direct-test protocol <direct_protocol.rst>`_ derives fixed critical
+values from Gaussian t and F distributions, without a calibration simulation.
+It reuses the previous detector and reporting references on new histories::
+
+    .venv/bin/python -m experiments.step_detection.direct_study run \
+        --frozen experiments/step_detection/data/direct_v1_frozen.json \
+        --output experiments/step_detection/runs/direct_replay
+
+The original freeze command was::
+
+    .venv/bin/python -m experiments.step_detection.direct_study freeze \
+        --inherited experiments/step_detection/data/reporting_v1_frozen.json \
+        --output experiments/step_detection/data/direct_v1_frozen.json
+
+Existing freeze files and output directories are never overwritten. The
+runner checks the inherited hashes, new source/protocol hashes, native
+extension, and SciPy version. Reproduction requires the matching environment;
+a changed build needs separately recorded provenance and calibration.
+
+Each result includes the existing fit and all previous evidence decisions.
+In ``direct``, array entry i refers to retained-observation split i+1:
+``size_t`` tests the relative increase, ``lack_of_fit_f`` tests the largest
+improvement from an extra boundary, and ``best_extra_split`` identifies that
+boundary. ``null_splits`` contains locations not rejected by either route.
+It is not a confidence interval for the change location. Infinite statistics
+in deterministic cases are serialized as explicit strings.
+
+Run the new analytical and pipeline checks::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_direct.py \
+        experiments/step_detection/test_direct_study.py -q
+
 Run the original harness
 -------------------------
 
