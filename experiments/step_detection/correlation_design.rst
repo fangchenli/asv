@@ -123,6 +123,9 @@ The subsequent `shared-floor analysis <shared_noise_floor.rst>`_ derives that
 score and shows that allowing rho arbitrarily close to one can hide a lasting
 step. The closed correlation domain solves the specified conditional fit;
 the persistence assumption remains a separate model decision.
+The `bounded-persistence design <noise_persistence.rst>`_ now implements
+that assumption as an explicit experimental input. The helper accepts
+``rho_max`` while retaining 1 as the default for production calls.
 
 Validation and historical results
 ----------------------------------

@@ -16,6 +16,8 @@ The experimental implementation in ``noise_model.py`` therefore requires
 an explicit floor and complexity penalty. It implements the derived score
 without changing ASV's production default. Its checks evaluate analytical
 cases; no new benchmark campaign is needed for these conclusions.
+The subsequent `persistence design <noise_persistence.rst>`_ adds an explicit
+half-life cap and proves a bound on the discounted residual error.
 
 .. contents::
    :local:

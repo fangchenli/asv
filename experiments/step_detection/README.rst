@@ -18,6 +18,8 @@ The `correlation-fit design <correlation_design.rst>`_ describes the first
 correction derived from that analysis and its analytical tests.
 The `shared noise-floor analysis <shared_noise_floor.rst>`_ derives a new
 score and shows why noise persistence needs a separate modeling decision.
+The `persistence bound <noise_persistence.rst>`_ gives that decision an
+explicit half-life parameter and proves what a strict bound guarantees.
 
 .. contents:: On this page
    :local:

@@ -110,3 +110,64 @@ def test_correlation_can_hide_a_persistent_step(n, split_wins):
     # Independent error for the same one-level fit is n, so it still splits.
     independent = model.selection_score(n, n, 1, 0.1, beta)
     assert split < independent
+
+
+@pytest.mark.parametrize(
+    'half_life,expected', [(0, 0), (1, 0.5), (2, math.sqrt(0.5)), (4, 2**-0.25)]
+)
+def test_half_life_cap(half_life, expected):
+    cap = model.correlation_cap(half_life)
+    assert cap == pytest.approx(expected)
+    if half_life:
+        assert cap**half_life == pytest.approx(0.5)
+
+
+@pytest.mark.parametrize('half_life', [-1, math.inf, math.nan, 1e300])
+def test_invalid_or_unresolvable_half_life(half_life):
+    with pytest.raises(ValueError, match='max_half_life'):
+        model.correlation_cap(half_life)
+
+
+@pytest.mark.parametrize('cap', [0, 0.5, 0.9, 1])
+def test_bounded_step_score(cap):
+    residuals = [-1] * 4 + [1] * 4
+    result = model.fit_correlated_score(residuals, [1] * 8, 1, 0.1, 0.2, cap)
+    assert result['rho'] == cap
+    assert result['error_sum'] == pytest.approx(8 - 5 * cap)
+    assert result['score'] == pytest.approx(model.selection_score(8 - 5 * cap, 8, 1, 0.1, 0.2))
+
+
+@pytest.mark.parametrize('cap', [0, 0.5, 0.9])
+@pytest.mark.parametrize('weights', [[1, 1, 1], [1, 4, 2]])
+def test_contraction_bound(cap, weights):
+    for residuals in itertools.product((-2, -1, 0, 1, 2), repeat=3):
+        result = model.fit_correlated_score(residuals, weights, 1, 0.1, 0.2, cap)
+        independent = sum(w * abs(e) for w, e in zip(weights, residuals))
+        lower = (1 - cap) * min(weights) / max(weights) * independent
+        assert lower - 1e-12 <= result['error_sum'] <= independent + 1e-12
+        assert abs(result['rho']) <= cap
+
+
+def test_zero_residuals_choose_zero_correlation():
+    result = model.fit_correlated_score([0, 0, 0], [1, 2, 3], 1, 0.1, 0.2, 0.5)
+    assert result == {'rho': 0, 'rho_max': 0.5, 'error_sum': 0, 'score': 0.2}
+
+
+def test_half_life_bound_restores_lasting_step_preference():
+    n = 4096
+    residuals = [-1] * (n // 2) + [1] * (n // 2)
+    beta = 4 * math.log(n) / n
+    split = model.selection_score(0, n, 2, 0.1, beta)
+    unbounded = model.fit_correlated_score(residuals, [1] * n, 1, 0.1, beta, 1)
+    cap = model.correlation_cap(4)
+    bounded = model.fit_correlated_score(residuals, [1] * n, 1, 0.1, beta, cap)
+    assert unbounded['score'] < split < bounded['score']
+
+
+@pytest.mark.parametrize(
+    'residuals,weights',
+    [([], []), ([1], [1, 2]), ([math.nan], [1]), ([math.inf], [1]), ([1], [0]), ([1], [math.inf])],
+)
+def test_invalid_residual_score_inputs(residuals, weights):
+    with pytest.raises(ValueError):
+        model.fit_correlated_score(residuals, weights, 1, 0.1, 0.2, 0.5)

@@ -149,6 +149,26 @@ benchmark harness::
 See `the shared-floor design <shared_noise_floor.rst>`_ for its required
 noise-scale and complexity-penalty inputs. Production uses its existing score.
 
+The same test file covers the `bounded-persistence scorer <noise_persistence.rst>`_.
+For a fixed candidate, it can be used from Python at the repository root::
+
+    from experiments.step_detection.noise_model import (
+        correlation_cap, fit_correlated_score,
+    )
+
+    result = fit_correlated_score(
+        residuals=[-1, -1, -1, -1, 1, 1, 1, 1],
+        weights=[1] * 8,
+        segments=1,
+        noise_floor=0.1,
+        beta=0.2,
+        rho_max=correlation_cap(4),
+    )
+
+These values illustrate the API; the half-life, floor, and beta are caller
+inputs rather than calibrated defaults. The scorer imports ASV's production
+correlation helper, so use the environment from the setup section.
+
 Run the experiment tests and the production step-detection tests::
 
     .venv/bin/python -m pytest \

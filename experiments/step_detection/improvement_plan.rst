@@ -13,8 +13,10 @@ code at revision ``d33754e129c025beb5c2ca440c3c280433b264f7``.
 Continue from the `mathematical analysis <mathematical_analysis.rst>`_ and
 `shared noise-floor design <shared_noise_floor.rst>`_. Establish the objective,
 guarantees, and noise assumptions before extending the experiments. Exact
-conditional correlation fitting is implemented; the next model decisions
-concern absolute noise scale and allowed persistence.
+conditional correlation fitting is implemented. The experimental score now
+requires explicit noise-scale and persistence inputs; their default values
+remain uncalibrated. The next implementation is an exact independent-noise
+reference for that declared score.
 
 The initial harness, bounded search comparison, and scaling sample are now
 implemented. The `baseline report <baseline_report.rst>`_ records the findings;
@@ -71,6 +73,8 @@ Use those results to resolve three design questions:
   Its independent-error version admits an exact penalty-path guarantee.
   The floor still needs an absolute measurement-scale interpretation, and
   correlation near one can hide a lasting step even with this new score.
+  The `persistence design <noise_persistence.rst>`_ adds an explicit half-life
+  cap and proves a lower bound on how much error correlation can remove.
 * **Exact fitting:** specify pruning and tie rules under each supported segment
   constraint, together with a weighted interval-cost data structure. Establish
   correctness before evaluating computational savings.
@@ -82,6 +86,12 @@ The `shared-floor analysis <shared_noise_floor.rst>`_ establishes the new
 score, its invariances, and a persistence counterexample. Production retains
 its existing floor until absolute-scale metadata and the intended persistence
 model have been specified. Those decisions come before wider search experiments.
+
+The bounded-persistence prototype implements a chosen model without assigning
+automatic defaults. Build the exact independent-noise reference next, using
+explicit floor and beta inputs. This can establish candidate-generation
+correctness while uncertainty metadata and persistence calibration remain
+separate tasks.
 
 Reproduce the initial observations
 ----------------------------------

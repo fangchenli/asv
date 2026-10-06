@@ -301,8 +301,8 @@ def solve_potts(y, w, gamma, min_size=1, max_size=None, min_pos=None, max_pos=No
     return right, values, dists
 
 
-def _fit_ar1(residuals, w):
-    """Minimize weighted absolute AR(1) innovations over rho in [-1, 1].
+def _fit_ar1(residuals, w, rho_max=1.0):
+    """Minimize weighted absolute AR(1) innovations over [-rho_max, rho_max].
 
     For nonzero previous residuals, the knots are e[i]/e[i-1] with
     weights w[i]*abs(e[i-1]). Clipping knots to the allowed interval
@@ -310,6 +310,10 @@ def _fit_ar1(residuals, w):
     Sorting and signed-weight searches take O(n log n) time and O(n) space.
     Inputs are finite residuals and positive finite weights.
     """
+    if not math.isfinite(rho_max) or not 0 <= rho_max <= 1:
+        raise ValueError('rho_max must be finite and between 0 and 1')
+    if rho_max == 0:
+        return 0.0
     terms = []
     for previous, current, weight in zip(residuals, residuals[1:], w[1:]):
         if previous == 0:
@@ -344,7 +348,9 @@ def _fit_ar1(residuals, w):
     lower = items[lo][0]
     balance = math.fsum(weight if i <= lo else -weight for i, (_, weight) in enumerate(items))
     upper = items[lo + 1][0] if balance == 0 and lo + 1 < len(items) else lower
-    return min(max(0.0, lower), upper)
+    rho = min(max(0.0, lower), upper)
+    # Projection of a convex minimizer solves the smaller symmetric domain.
+    return min(max(rho, -rho_max), rho_max)
 
 
 def solve_potts_autogamma(y, w, beta=None, **kw):

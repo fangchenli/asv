@@ -125,15 +125,18 @@ def test_fit_ar1_analytical(residuals, weights, expected):
     assert step_detect._fit_ar1(residuals, weights) == expected
 
 
-def test_fit_ar1_against_exact_breakpoint_costs():
+@pytest.mark.parametrize('rho_max', [0, 0.25, 0.5, 1])
+def test_fit_ar1_against_exact_breakpoint_costs(rho_max):
     # A convex piecewise-linear cost is minimized at an endpoint or a knot.
     # Rational arithmetic is independent of the weighted-median implementation.
     for residuals in itertools.product((-2, -1, 0, 1, 2), repeat=3):
         for weights in ((1, 1, 1), (1, 2, 3), (3, 2, 1)):
-            candidates = {Fraction(-1), Fraction(0), Fraction(1)}
+            candidates = {Fraction(-rho_max), Fraction(0), Fraction(rho_max)}
             for previous, current in zip(residuals, residuals[1:]):
                 if previous and abs(current) <= abs(previous):
-                    candidates.add(Fraction(current, previous))
+                    knot = Fraction(current, previous)
+                    if abs(knot) <= rho_max:
+                        candidates.add(knot)
 
             def cost(rho, weights=weights, residuals=residuals):
                 return weights[0] * abs(residuals[0]) + sum(
@@ -142,8 +145,14 @@ def test_fit_ar1_against_exact_breakpoint_costs():
                 )
 
             expected = min(candidates, key=lambda rho: (cost(rho), abs(rho)))
-            actual = step_detect._fit_ar1(residuals, weights)
+            actual = step_detect._fit_ar1(residuals, weights, rho_max=rho_max)
             assert actual == pytest.approx(float(expected), rel=1e-14, abs=1e-14)
+
+
+@pytest.mark.parametrize('rho_max', [-0.1, 1.1, math.nan, math.inf])
+def test_fit_ar1_invalid_bound(rho_max):
+    with pytest.raises(ValueError, match='rho_max'):
+        step_detect._fit_ar1([1, 2], [1, 1], rho_max=rho_max)
 
 
 @pytest.mark.parametrize('residual_scale', [1e-200, 1, 1e200])
