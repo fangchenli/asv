@@ -5,6 +5,10 @@ The first implementation provides a reproducible harness and an experimental
 penalty search. This sample does not justify replacing the production search.
 The correctness checks also found a single-segment subrange bug, now fixed.
 
+For the next work, the `mathematical analysis <mathematical_analysis.rst>`_
+takes priority over extending these experiments. It identifies an exact
+correlation-fit solution and separates search guarantees from modeling choices.
+
 Scope
 -----
 

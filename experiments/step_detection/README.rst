@@ -10,9 +10,10 @@ way. ASV looks for lasting changes beneath that variation. Its central idea
 is to describe the history with a few constant levels, choosing a new level
 only when the measurements give enough reason to do so.
 
-The first experiments are implemented. See `running the harness <running.rst>`_
-for commands and `the baseline findings <baseline_report.rst>`_ for measured
-results and the next implementation target.
+The `mathematical analysis <mathematical_analysis.rst>`_ derives what we can
+establish before further experiments and identifies an exact solution for
+the correlation fit. The existing `harness instructions <running.rst>`_ and
+`baseline findings <baseline_report.rst>`_ record the initial experiments.
 
 .. contents:: On this page
    :local:

@@ -487,10 +487,16 @@ For a candidate fit, let ``e[i] = y[i] - fitted_level[i]``. The score uses::
 
     score = (4 * log(n) / n) * K + log(sigma_0 + S(rho))
 
-Here K is the segment count and the implementation approximately minimizes
-S over rho in [-1, 1]. Residual correlation continues across fitted segment
-boundaries. Positive correlation lets a sequence of similar residuals count
-as less surprising than independent errors would suggest.
+Here K is the segment count. The correlation search first evaluates rho at
+-1 and 1, but ``expand_bounds=True`` expands its bracket to about
+[-4.236, 4.236]; these initial values are not hard limits. Residual correlation
+continues across fitted segment boundaries. Positive correlation lets a
+sequence of similar residuals count as less surprising than independent
+errors would suggest.
+
+The `mathematical analysis <mathematical_analysis.rst>`_ derives an exact
+weighted-median solution for rho and shows why the current stopping condition
+can return a nonoptimal value even for this convex subproblem.
 
 This correlation model only ranks candidate segmentations. Their medians and
 boundaries are fitted with the independent weighted absolute-error objective;

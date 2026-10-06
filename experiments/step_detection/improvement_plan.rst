@@ -10,15 +10,17 @@ The `conceptual guide <README.rst>`_ explains why those layers exist. The
 `implementation reference <implementation_details.rst>`_ maps them to the
 code at revision ``d33754e129c025beb5c2ca440c3c280433b264f7``.
 
-Start with a reproducible evaluation harness, then compare penalty searches.
-Those experiments will show whether a larger investment in the solver or
-noise model is justified.
+Start the next work with the `mathematical analysis <mathematical_analysis.rst>`_.
+Establish the objective, guarantees, and noise assumptions before extending
+the experiments. In particular, correlation fitting has an exact solution
+that is more focused than replacing the outer penalty search.
 
 The initial harness, bounded search comparison, and scaling sample are now
 implemented. The `baseline report <baseline_report.rst>`_ records the findings;
 `running the experiments <running.rst>`_ explains how to reproduce them.
-The broader corpus, internal cache profiling, and replacement solver experiments
-below remain follow-up work.
+The phases below retain the experimental backlog. Their execution follows
+the mathematical decisions in phase 0; broader runs are deferred until those
+decisions establish what we want to compare.
 
 .. contents:: On this page
    :local:
@@ -49,6 +51,33 @@ Source inspection also suggests investigating penalty search and interval
 costs. The outer score need not have the single minimum shape assumed by
 golden-section search, and the C++ backend repeatedly sorts uncached intervals.
 Their practical impact remains to be measured.
+
+Phase 0 establishes the mathematical design
+-------------------------------------------
+
+The `analysis <mathematical_analysis.rst>`_ provides derivations for fixed-penalty
+dynamic programming, weighted-cost pruning, penalty-path structure, conditional
+correlation fitting, noise-scale profiling, and transformation invariances.
+Use those results to resolve three design questions:
+
+* **Correlation:** replace iterative minimization with a weighted median of
+  residual ratios, after specifying its allowed domain and numerical handling.
+  For residuals [-1, 0, 1], the exact score is ``2 + abs(rho)``; the current
+  equal-value stopping rule can return rho near -1 instead of the optimum 0.
+  Also resolve the expanded search bracket, which permits abs(rho) > 1.
+* **Selection score:** decide whether to retain the current heuristic or use
+  a specified noise model with a floor shared across candidate fits. The
+  independent-error, shared-floor version admits a proof that an exact penalty
+  path contains an optimum; the current score does not meet that proof's
+  assumptions.
+* **Exact fitting:** specify pruning and tie rules under each supported segment
+  constraint, together with a weighted interval-cost data structure. Establish
+  correctness before evaluating computational savings.
+
+The next deliverable is a correlation-fit design with a declared domain,
+stable arithmetic, tie handling, and analytical acceptance cases. Implement
+that focused change after the design, then use the existing harness to assess
+its practical consequences. Wider search experiments follow the score decision.
 
 Reproduce the initial observations
 ----------------------------------
@@ -141,7 +170,8 @@ the tiny-history oracle before using the exact solver to judge replacements.
 Phase 2 compares penalty searches
 ---------------------------------
 
-Keep the candidate fitter, correlation score, and noise floor fixed. Compare
+After resolving phase 0, keep the chosen candidate fitter, correlation score,
+and noise floor fixed within a comparison. Compare
 the existing golden-section search with a logarithmic grid, then refine near
 penalties that produce different partitions. Use the same effective range and
 an explicit solver-call budget; test wider ranges separately.
@@ -250,10 +280,10 @@ Run the relevant step-detection, graph, and publishing tests for implementation
 changes, plus the required repository checks before integration. Preserve
 comparison results and the baseline implementation during the experiments.
 
-First deliverable
------------------
+Existing deliverables
+---------------------
 
-Implement the phase 1 harness and produce its baseline report, then run the
-bounded grid-search comparison from phase 2. Together these should establish
-whether penalty selection, approximation error, or interval evaluation is the
-most useful next target.
+The initial phase 1 harness, baseline report, and bounded phase 2 comparison
+are available. They remain useful for later validation. Phase 0 now governs
+the next implementation; further experimental coverage should answer the
+specific questions left open by that analysis.
