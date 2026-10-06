@@ -195,6 +195,52 @@ with surviving ``null_splits``. Malformed, non-positive-definite, or excessively
 ill-conditioned covariance raises ValueError. Histories are limited to 200
 readings; this is a mathematical reference with no production integration.
 
+Evaluate the covariance oracle
+------------------------------
+
+The `oracle protocol <covariance_protocol.rst>`_ compares the known-covariance
+test with the entire preceding pipeline on fresh paired Gaussian histories.
+Replay the frozen evaluation with the matching Python, NumPy, SciPy, source,
+and native build::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.covariance_study run \
+        --frozen experiments/step_detection/data/covariance_v1_frozen.json \
+        --output experiments/step_detection/runs/covariance_replay --workers 4
+
+The original freeze command was::
+
+    .venv/bin/python -m experiments.step_detection.covariance_study freeze \
+        --inherited experiments/step_detection/data/direct_stress_v1_frozen.json \
+        --output experiments/step_detection/data/covariance_v1_frozen.json
+
+The freeze hashes the 24 covariance matrices without generating observations.
+Existing freeze files and run directories are refused. A changed environment
+requires separately recorded provenance; do not overwrite the recorded freeze.
+Workers evaluate independent histories and write results in input order.
+
+Each input's ``covariance_id`` identifies its matrix in
+``covariance_shapes.json``. Matrices are saved once, without the unknown
+overall scale. The manifest and freeze contain their canonical JSON hashes.
+Records contain the old pipeline plus ``oracle`` statistics, numerical status,
+and ``oracle_generating_split_route``. ``oracle_alone`` uses the new evidence;
+``oracle_gate`` also requires the existing shared-floor report.
+
+``comparisons.json`` counts new detections and false alerts gained/lost versus
+the old direct test on the same histories. ``paired.json`` compares each
+condition to its paired independent constant-variance control, while
+``diagnostics.json`` records numerical abstentions and false-alert rejection
+routes. The runner enforces agreement with the old test in the identity
+control. No covariance is estimated from the observations in this study.
+The `oracle report <covariance_report.rst>`_ links the committed result index
+and numerical archives, including all 24 covariance matrices.
+
+Run the study and analytical checks::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_covariance_study.py \
+        experiments/step_detection/test_reporting_covariance.py -q
+
 Run the original harness
 -------------------------
 

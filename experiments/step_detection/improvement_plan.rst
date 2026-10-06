@@ -92,14 +92,25 @@ for the shape scan. Orthogonal Gaussian projections give the same t/F
 cutoffs and per-history error bound. Deterministic tests recover the old
 test at identity covariance and check independent GLS calculations.
 
-Next, freeze an oracle comparison and evaluate fresh histories with their
-true covariance supplied. Measure sensitivity and false alerts separately
-by variance and correlation condition. Then address covariance estimation:
-plugging in fitted correlation or variance ratios does not preserve the
-known-covariance guarantee. The derivation gives one possible route through
-a covariance confidence set, with its coverage failure charged to the
-error budget. Constructing that set and handling all its members remain
-open. Keep the completed stress evaluation as a diagnostic set.
+The `covariance oracle study <covariance_report.rst>`_ now evaluates 2400
+fresh paired histories with their generating covariance supplied. Gated
+false alerts fall from 85 to eight, while true detections fall from 585 to
+499. Independent falling variance improves both counts; recent detections
+there rise from 23/80 to 46/80. Rising correlated noise loses half its
+detections, from 96/160 to 48/160, while false alerts fall from 35/240 to
+1/240. All 400 identity-control decisions agree, and no numerical abstentions
+occur. Supplying a variance transition tied to the mean boundary is additional
+oracle information, so this is not a practical covariance-estimation result.
+
+Next, address covariance estimation in a restricted model: constant marginal
+variance with unknown AR(1) correlation and an unknown mean step. Derive a
+valid confidence set for correlation and require evidence for every covariance
+in that set, charging coverage failure to the total error budget. Plugging
+in a residual estimate or checking an unverified finite grid does not preserve
+the known-covariance guarantee. Constructing the set and handling all its
+members remain open. Use the completed studies as diagnostics; freeze any
+extension before evaluating fresh histories against both oracle and existing
+reporting.
 Laplace behavior near exactly 5%, especially on short plateaus, remains
 a separate distributional question.
 Preserve observations and usable counts; fitted step tuples alone are

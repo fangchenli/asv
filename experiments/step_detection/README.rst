@@ -58,6 +58,11 @@ reference: generalized least squares corrects both tests when relative
 variances and correlations are known. Analytical checks recover the
 independent-noise test and verify the projection identities behind the
 error bound. Estimating covariance remains a separate problem.
+The `covariance oracle study <covariance_report.rst>`_ measures that reference
+on fresh paired histories: gated false alerts fall from 85 to eight, while
+true detections fall from 585 to 499. Quiet recent plateaus benefit, while
+noisy correlated plateaus lose sensitivity. The next question is uncertainty
+in the covariance itself.
 
 .. contents:: On this page
    :local:
