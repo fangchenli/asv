@@ -1,11 +1,11 @@
 ASV step detection implementation reference
 ===========================================
 
-Start with `the beginner guide <README.rst>`_ for an explanation of benchmarking,
-fitted values, absolute differences, and why changes have a penalty. This
-reference connects those ideas to the mathematics and source code. Its examples
-use the same measurements as the beginner guide, but label positions from zero
-to match Python.
+The `conceptual guide <README.rst>`_ explains why ASV uses fitted levels,
+absolute error, change penalties, and a noise score. This reference connects
+those choices to the source code, with exact formulas and executable examples.
+Its example positions start at zero to match Python; the guide numbers
+versions from one.
 
 Suppose a benchmark takes about 10 milliseconds for several commits, then
 about 12 milliseconds for later commits. Individual measurements fluctuate:
