@@ -241,6 +241,48 @@ Run the study and analytical checks::
         experiments/step_detection/test_covariance_study.py \
         experiments/step_detection/test_reporting_covariance.py -q
 
+Check the unknown-correlation reference
+---------------------------------------
+
+The `unknown-correlation derivation <unknown_correlation.rst>`_ covers a
+stationary Gaussian AR(1) model with constant marginal variance and one
+possible mean change. Run its deterministic mathematical checks::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_ar1.py \
+        experiments/step_detection/test_reporting_covariance.py -q
+
+Inspect a fully certified example without generating simulation data::
+
+    from experiments.step_detection.reporting_ar1 import evidence
+
+    values = [10 + 0.1*(-1)**i + 0.8*(i >= 6) for i in range(12)]
+    result = evidence(values, max_cells=256, max_depth=8)
+    print(result['status'], result['has_alert'])
+    print(result['certificate'])
+
+This returns ``certified_alert True``. Every certificate entry identifies a
+split, exact rational interval endpoints, a rejection route, and an extra
+boundary when the shape test provides the certificate. Intervals together
+cover -1<rho<1 at every possible mean split. A point grid is never used to
+justify rejection of an entire interval.
+
+``confidence_polynomials`` stores the quadratic residual sum for every split
+as exact fraction strings. Compare its value at a candidate rho with
+``confidence.residual_bound`` to determine confidence-set membership.
+Both use values divided by ``confidence.normalization_scale``, chosen from
+the training prefix alone. The fitted predictor in ``confidence`` is used
+to build a proper conditional density; it is not a plug-in covariance
+estimate for the reporting tests.
+
+``surviving_explanation`` saves a pair that prevents an alert. ``unresolved``
+means the declared cell/depth budget was insufficient, and
+``insufficient_variation`` identifies an exactly fitted candidate.
+All three return ``has_alert=False``. Use ``calibration(n)`` to inspect or
+explicitly choose the error allocation; edited cutoff dictionaries are
+rejected. The reference accepts 8 to 200 finite observations. Its runtime
+and sensitivity have not yet been evaluated on a frozen statistical study.
+
 Run the original harness
 -------------------------
 

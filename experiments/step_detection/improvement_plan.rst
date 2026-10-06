@@ -102,15 +102,23 @@ detections, from 96/160 to 48/160, while false alerts fall from 35/240 to
 occur. Supplying a variance transition tied to the mean boundary is additional
 oracle information, so this is not a practical covariance-estimation result.
 
-Next, address covariance estimation in a restricted model: constant marginal
-variance with unknown AR(1) correlation and an unknown mean step. Derive a
-valid confidence set for correlation and require evidence for every covariance
-in that set, charging coverage failure to the total error budget. Plugging
-in a residual estimate or checking an unverified finite grid does not preserve
-the known-covariance guarantee. Constructing the set and handling all its
-members remain open. Use the completed studies as diagnostics; freeze any
-extension before evaluating fresh histories against both oracle and existing
-reporting.
+The `unknown-correlation reference <unknown_correlation.rst>`_ now handles
+constant marginal variance with unknown stationary AR(1) correlation and an
+unknown mean step. A conditional predictive-likelihood construction produces
+a joint confidence set for correlation and location with failure budget 0.01.
+Reporting receives the remaining 0.04. Exact polynomial interval certificates
+cover the continuous range -1<rho<1; work limits produce unresolved non-alerts.
+Analytical checks verify conditional densities, GLS equivalence, and the
+certificate construction. No sensitivity evaluation has been run for this rule.
+
+Next, freeze a fresh constant-variance comparison against the oracle, the old
+independent-noise test, and existing reporting. Include negative and positive
+correlation, changes near 5%, short later plateaus, and a change within the
+training prefix. Report confidence-region width, rejection routes, certified
+alerts, surviving explanations, and unresolved work limits separately.
+Keep calibration and work budgets fixed before evaluation. Unknown variance
+ratios and noise-transition locations remain subsequent mathematical tasks;
+use the completed studies as diagnostics.
 Laplace behavior near exactly 5%, especially on short plateaus, remains
 a separate distributional question.
 Preserve observations and usable counts; fitted step tuples alone are

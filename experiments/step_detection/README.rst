@@ -63,6 +63,11 @@ on fresh paired histories: gated false alerts fall from 85 to eight, while
 true detections fall from 585 to 499. Quiet recent plateaus benefit, while
 noisy correlated plateaus lose sensitivity. The next question is uncertainty
 in the covariance itself.
+The `unknown-correlation reference <unknown_correlation.rst>`_ now constructs
+a joint confidence set for AR(1) correlation and change location. It checks
+the continuous stationary correlation range using exact polynomial interval
+certificates, with unresolved regions producing a non-alert. Its error budget
+includes uncertainty in the confidence set; sensitivity remains to be measured.
 
 .. contents:: On this page
    :local:
