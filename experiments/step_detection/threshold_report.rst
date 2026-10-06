@@ -7,6 +7,10 @@ below the requested threshold. The bounded-persistence model offers the more
 conservative tradeoff of the two experimental models; these results do not
 yet justify a new production default.
 
+The later `component study <ablation_report.rst>`_ separates these changes
+and updates the recommendation: prioritize the shared floor and penalty
+calibration; the cap offers little advantage at comparable false-alert rates.
+
 The baseline here is our branch's current detector, including the exact
 correlation correction. The `previous comparison <version_comparison.rst>`_
 found that correction preserved all decisions on its easier sample. This

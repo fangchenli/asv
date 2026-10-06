@@ -14,8 +14,8 @@ Continue from the `mathematical analysis <mathematical_analysis.rst>`_ and
 `shared noise-floor design <shared_noise_floor.rst>`_. Establish the objective,
 guarantees, and noise assumptions before extending the experiments. Exact
 conditional correlation fitting is implemented. The experimental score now
-requires explicit noise-scale and persistence inputs; their default values
-remain uncalibrated. An `exact independent-noise reference <exact_reference.rst>`_
+requires explicit noise-scale and persistence inputs; production defaults
+have not been chosen. An `exact independent-noise reference <exact_reference.rst>`_
 now establishes the global optimum for a declared floor and beta.
 
 The `before/after comparison <version_comparison.rst>`_ now measures the
@@ -33,12 +33,21 @@ histories rise from 0/240 to 10/240. The common-pool control leaves the current
 detector's decisions unchanged. This is a scoring tradeoff, with no demonstrated
 need for a faster solver on these small histories.
 
-Next, separate the correlation cap, segment penalty, and floor in controlled
-comparisons, and compare sensitivity at matched false-alert rates. Choose an
-acceptable false-alert rate before calibrating a production setting. Keep
-settings frozen for further evaluation with additional seeds, outliers,
-missing observations, and changing noise levels. Production defaults remain
-unchanged while this tradeoff is being established.
+The `component study <ablation_report.rst>`_ now separates those changes on
+1200 development and 2400 fresh histories. Lowering the penalty with the
+current floor creates one segment per observation in 2370 of 2400 histories.
+The shared-floor formulation prevents that failure. With settings calibrated
+to a 5% development false-alert budget, shared-floor/cap-1 has 298 misses
+and 24 below-threshold alerts; shared-floor/cap-0.5 has 306 and 23, respectively,
+each out of 960 eligible histories per error type. The cap provides little
+advantage after calibration. Actual held-out rates remain essential because
+some settings exceed their development budgets.
+
+Next, stress-test the frozen shared-floor family on outliers, missing
+observations, non-Gaussian noise, and changing noise levels. The floor formula
+and the adjacent-difference scale estimator need separate validation. Choose
+an acceptable false-alert rate before calibrating a production setting.
+Production defaults remain unchanged while this tradeoff is being established.
 
 The initial `baseline report <baseline_report.rst>`_ retains its historical
 results; `running the experiments <running.rst>`_ explains reproduction.
@@ -323,4 +332,6 @@ reference are available. The controlled version comparison adds fresh timing,
 real-history replay, and exact diagnoses of remaining boundary errors.
 The near-threshold study adds a frozen development/evaluation split and
 measured alert tradeoffs for independent and bounded-persistence scoring.
-Component comparisons and false-alert calibration now precede a new default.
+The component study adds controlled factor comparisons and frozen calibration
+at three false-alert budgets. Robustness under less regular measurement noise
+now precedes a new default.

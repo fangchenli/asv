@@ -150,6 +150,35 @@ For example, inspect the saved held-out results without rerunning fitting::
     ) as stream:
         rows = [json.loads(line) for line in stream]
 
+Run the component and calibration study
+---------------------------------------
+
+The `component protocol <ablation_protocol.rst>`_ separates the segment
+penalty, correlation cap, and floor formulation. It calibrates each scoring
+family to the same development false-alert budgets, then measures the actual
+rates on fresh histories. Run both phases in the same environment::
+
+    .venv/bin/python -m experiments.step_detection.ablation_study development \
+        --output experiments/step_detection/runs/ablation_development
+
+    .venv/bin/python -m experiments.step_detection.ablation_study heldout \
+        --frozen experiments/step_detection/runs/ablation_development/frozen.json \
+        --output experiments/step_detection/runs/ablation_heldout
+
+Development uses 1200 histories and evaluation uses 2400, with random seeds
+disjoint from the earlier study. The held-out run evaluates the eight fixed
+factorial settings and the frozen calibrated choices. It rejects changed
+protocol, code, extension, or calibration-grid hashes. ``--backend python``
+works when supplied to both phases. Each output directory must be new.
+
+Validate the scoring controls and calibration with::
+
+    .venv/bin/python -m pytest experiments/step_detection/test_ablation_study.py -q
+
+See `the component results <ablation_report.rst>`_ for interpretation. Archived
+inputs and results use ``data/ablation_v1_*.jsonl.gz``, readable in the same
+way as the preceding threshold-study snapshots.
+
 What the methods compare
 ------------------------
 

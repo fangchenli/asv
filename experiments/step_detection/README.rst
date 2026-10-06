@@ -28,6 +28,9 @@ and no consistent speedup on long histories.
 The `near-threshold study <threshold_report.rst>`_ tests statistical changes:
 bounded persistence finds more small slowdowns, with an explicit increase in
 below-threshold alerts. Its settings were frozen before evaluating fresh cases.
+The `component comparison <ablation_report.rst>`_ isolates why: the shared
+floor prevents severe overfitting when the segment penalty is reduced. The
+correlation cap offers little advantage after calibrating false-alert rates.
 
 .. contents:: On this page
    :local:
