@@ -109,16 +109,28 @@ a joint confidence set for correlation and location with failure budget 0.01.
 Reporting receives the remaining 0.04. Exact polynomial interval certificates
 cover the continuous range -1<rho<1; work limits produce unresolved non-alerts.
 Analytical checks verify conditional densities, GLS equivalence, and the
-certificate construction. No sensitivity evaluation has been run for this rule.
+certificate construction.
 
-Next, freeze a fresh constant-variance comparison against the oracle, the old
-independent-noise test, and existing reporting. Include negative and positive
-correlation, changes near 5%, short later plateaus, and a change within the
-training prefix. Report confidence-region width, rejection routes, certified
-alerts, surviving explanations, and unresolved work limits separately.
-Keep calibration and work budgets fixed before evaluation. Unknown variance
-ratios and noise-transition locations remain subsequent mathematical tasks;
-use the completed studies as diagnostics.
+The `unknown-correlation study <ar1_report.rst>`_ now evaluates 360 fresh
+versions of 120 paired histories with settings frozen in commit ``601bed9``.
+The rule detects 16 of 144 true slowdowns versus 103 for the oracle at the
+same reporting budget, with zero false alerts among 216 nulls for both.
+All searches resolve: there are 16 certified alerts and 344 explicit surviving
+explanations. The confidence sets are too broad. A follow-up mathematical
+diagnosis explains 72 of the 87 lost oracle detections through correlations
+arbitrarily close to 1, where uncertainty in the baseline defeats the
+percentage-change test. Increasing the search budget cannot fix these cases.
+
+Next, derive a confidence construction that uses both forward and reversed
+histories. Allocate 0.005 failure probability to each direction and intersect
+their sets at the corresponding locations. Reversibility and a union bound
+preserve the total 0.01 confidence budget without assuming independence.
+This may improve prediction when an early step contaminates the forward
+training prefix; the smaller per-direction budget could also cost sensitivity.
+Verify the mathematics and interval certificates, then freeze a new evaluation
+on fresh histories. Keep the completed study's settings and evidence intact.
+Unknown variance ratios and noise-transition locations remain subsequent
+mathematical tasks; use the completed studies as diagnostics.
 Laplace behavior near exactly 5%, especially on short plateaus, remains
 a separate distributional question.
 Preserve observations and usable counts; fitted step tuples alone are

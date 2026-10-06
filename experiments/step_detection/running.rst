@@ -280,8 +280,53 @@ means the declared cell/depth budget was insufficient, and
 ``insufficient_variation`` identifies an exactly fitted candidate.
 All three return ``has_alert=False``. Use ``calibration(n)`` to inspect or
 explicitly choose the error allocation; edited cutoff dictionaries are
-rejected. The reference accepts 8 to 200 finite observations. Its runtime
-and sensitivity have not yet been evaluated on a frozen statistical study.
+rejected. The reference accepts 8 to 200 finite observations. The
+`frozen study report <ar1_report.rst>`_ records its sensitivity and elapsed time.
+
+Evaluate unknown correlation
+----------------------------
+
+The `AR(1) study protocol <ar1_protocol.rst>`_ fixes the predictor, critical
+values, and certification budget before fresh observations are generated.
+The `report <ar1_report.rst>`_ explains the result; the
+`result index <data/ar1_v1_results.json>`_ lists summaries and archive hashes.
+Replay it with the matching frozen environment::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.ar1_study run \
+        --frozen experiments/step_detection/data/ar1_v1_frozen.json \
+        --output experiments/step_detection/runs/ar1_replay --workers 6
+
+The original freeze command was::
+
+    .venv/bin/python -m experiments.step_detection.ar1_study freeze \
+        --inherited experiments/step_detection/data/covariance_v1_frozen.json \
+        --output experiments/step_detection/data/ar1_v1_frozen.json
+
+Existing freezes and output directories are refused. The runner checks the
+entire inherited source/build/environment chain, the new code and protocol,
+analytical calibration, work budgets, and covariance hashes. Inputs reference
+one of six matrices in ``covariance_shapes.json``; only the oracle uses them.
+
+Records retain the entire inherited pipeline plus ``oracle_reporting`` at
+alpha=0.04 and ``ar1`` with its 0.01 confidence and 0.04 reporting allocation.
+Both are saved standalone and gated. ``ar1_diagnostics`` contains the
+confidence intervals by split, their union, widths, membership of the
+generating pair, and its rejection route. Decimal roots describe confidence
+regions; they do not replace the exact certificate-based reporting decision.
+
+``diagnostics.json`` summarizes statuses, confidence exclusions, near-one
+correlation admissibility, cell counts, and elapsed reference time.
+``comparisons.json`` records paired gains/losses versus the old direct test
+and both oracle budgets. Unresolved searches count as non-alerts and remain
+visible in the status breakdown. Histories sharing a pair identifier across
+correlation conditions are dependent.
+
+Run the evaluator and mathematical checks::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_ar1_study.py \
+        experiments/step_detection/test_reporting_ar1.py -q
 
 Run the original harness
 -------------------------

@@ -67,7 +67,13 @@ The `unknown-correlation reference <unknown_correlation.rst>`_ now constructs
 a joint confidence set for AR(1) correlation and change location. It checks
 the continuous stationary correlation range using exact polynomial interval
 certificates, with unresolved regions producing a non-alert. Its error budget
-includes uncertainty in the confidence set; sensitivity remains to be measured.
+includes uncertainty in the confidence set.
+The `unknown-correlation study <ar1_report.rst>`_ now measures its cost:
+16 of 144 true slowdowns detected, versus 103 for the oracle at the same
+reporting budget, with zero false alerts for both. Every search resolves;
+broad confidence regions cause the loss. A mathematical diagnosis explains
+why retained correlations near 1 undermine percentage-change evidence.
+The next candidate uses confidence checks from both ends of the history.
 
 .. contents:: On this page
    :local:
