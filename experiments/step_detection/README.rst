@@ -83,6 +83,11 @@ proper predictive mixture and certifies confidence exclusion over correlation
 intervals. It removes sufficiently persistent explanations but still retains
 the saved 8% slowdown's witness. Improving the predictive model is the next
 mathematical task; no new sensitivity study has been run.
+The `baseline/jump analysis <baseline_jump_prior.rst>`_ now separates those
+costs and finds an unnecessary location-mixture penalty. A proper density
+for each candidate location avoids that penalty with the same coverage
+argument. Both indexed variants certify the archived missed 8% slowdown;
+changing the jump prior alone does not. A fresh frozen comparison is next.
 
 .. contents:: On this page
    :local:

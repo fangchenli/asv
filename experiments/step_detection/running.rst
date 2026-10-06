@@ -374,6 +374,36 @@ and continuous bounds with::
         experiments/step_detection/test_ar1_information.py \
         experiments/step_detection/test_reporting_ar1.py -q
 
+Check the candidate-specific baseline/jump reference
+----------------------------------------------------
+
+The `baseline/jump derivation <baseline_jump_prior.rst>`_ proves coverage for
+a separate proper predictor at each proposed change location::
+
+    from experiments.step_detection.reporting_ar1_jump import evidence
+
+    result = evidence(values, unit=1)
+    print(result['status'], result['witness'])
+
+``confidence.by_split`` records each visited location's density and confidence
+coefficient. ``original_location_evidence`` retains the original level prior
+as a control. ``global_evidence`` uses the new jump prior but the old global
+location mixture. Reproduce their comparison on the archived history::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.jump_prior_diagnosis
+
+The saved output is ``data/jump_prior_v1_diagnosis.json``. It includes the
+exact prediction-cost accounting, all four reference results, independent
+GLS witness checks, and three deterministic fixtures. This is development
+evidence, not a new statistical study. Run the analytical checks with::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_ar1_jump.py \
+        experiments/step_detection/test_reporting_ar1_full.py \
+        experiments/step_detection/test_ar1_information.py \
+        experiments/step_detection/test_reporting_ar1.py -q
+
 Run the original harness
 -------------------------
 

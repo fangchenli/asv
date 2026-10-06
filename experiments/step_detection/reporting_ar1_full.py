@@ -121,6 +121,19 @@ def excluded_on(numerator, denominator, coefficient, n, left, right):
 
 def evidence(values, *, unit, config=None, max_cells=4096, max_depth=16):
     """Combine full-history confidence exclusion and existing t/F certificates."""
+    return _evidence(
+        values,
+        unit=unit,
+        config=config,
+        max_cells=max_cells,
+        max_depth=max_depth,
+        predictor=predictive_log_density,
+        prior=PRIOR,
+    )
+
+
+def _evidence(values, *, unit, config, max_cells, max_depth, predictor, prior, indexed=False):
+    """Shared engine; indexed predictors must be proper for each fixed split."""
     raw = list(values)
     n = len(raw)
     if not 8 <= n <= 200 or any(not math.isfinite(x) for x in raw):
@@ -143,31 +156,44 @@ def evidence(values, *, unit, config=None, max_cells=4096, max_depth=16):
     for count, minimum in [(max_cells, 1), (max_depth, 0)]:
         if not isinstance(count, int) or isinstance(count, bool) or count < minimum:
             raise ValueError('Invalid certification budget')
-    log_q = predictive_log_density(y)
-    coefficient = confidence_coefficient(log_q, n, config['confidence_alpha'])
+    log_q = None if indexed else predictor(y)
+    global_coefficient = (
+        None if indexed else confidence_coefficient(log_q, n, config['confidence_alpha'])
+    )
+    location_densities = {}
     models = a.Models(y)
     certificates, residuals = [], {}
     visited = 0
 
     def result(status, witness=None):
+        confidence = {'unit': unit, 'prior': prior, 'residual_ratios': residuals}
+        if indexed:
+            confidence['by_split'] = location_densities
+        else:
+            confidence.update(
+                {'log_predictive_density': log_q, 'coefficient': str(global_coefficient)}
+            )
         return {
             'has_alert': status == 'certified_alert',
             'status': status,
             'witness': witness,
             'cells_visited': visited,
             'certificate': certificates,
-            'confidence': {
-                'unit': unit,
-                'prior': PRIOR,
-                'log_predictive_density': log_q,
-                'coefficient': str(coefficient),
-                'residual_ratios': residuals,
-            },
+            'confidence': confidence,
             'calibration': config,
         }
 
     try:
         for split in range(1, n):
+            if indexed:
+                location_log_q = predictor(y, split)
+                coefficient = confidence_coefficient(location_log_q, n, config['confidence_alpha'])
+                location_densities[str(split)] = {
+                    'log_predictive_density': location_log_q,
+                    'coefficient': str(coefficient),
+                }
+            else:
+                coefficient = global_coefficient
             numerator, denominator = residual_ratio(models, split)
             residuals[str(split)] = {
                 'numerator': [str(x) for x in numerator],

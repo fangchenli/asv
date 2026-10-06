@@ -232,6 +232,12 @@ development work; measured gains require a subsequent frozen evaluation on
 fresh observations. The present diagnosis does not justify replacing the
 existing detector.
 
+The follow-up `baseline/jump analysis <baseline_jump_prior.rst>`_ now supplies
+that decomposition and identifies a removable location-mixture cost.
+Candidate-specific proper predictors certify the saved missed slowdown with
+either the original or revised level prior. This is still development evidence;
+a fresh frozen comparison is the next step.
+
 Code and verification
 ---------------------
 

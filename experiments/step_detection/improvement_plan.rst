@@ -140,12 +140,23 @@ location but still retains 4095/4096, which fails both reporting tests.
 A short deterministic 20% step also remains inconclusive; a longer fixture
 supplies a complete alert certificate. These are development diagnostics.
 
-Next, decompose the predictive density's cost and derive a common-baseline
-model with a separate jump prior. Establish its integrated density and
-assumptions before choosing new settings. Crossing the saved witness's
-confidence cutoff needs about a 1.51-fold density gain, but other pairs may
-survive; this is not a promised detection gain. Freeze a fresh evaluation
-only after the mathematical checks justify a candidate.
+The `baseline/jump analysis <baseline_jump_prior.rst>`_ now decomposes that
+cost and derives a midpoint/jump prior. More importantly, it proves that
+each candidate location can use its own proper predictive density without
+paying a mixture penalty over locations. True-pair coverage uses only that
+pair's indexed density. The new prior alone raises the saved example's
+density by 1.56 times but merely moves the surviving witness. Indexed
+prediction produces a complete alert certificate with either level prior.
+The short 20% fixture remains inconclusive, so broad sensitivity is unknown.
+
+Next, freeze the priors, external reference unit, reporting allocation, and
+work limits for a fresh comparison of the conditional, original full-history,
+indexed-original, indexed-jump, and known-correlation references. Retain both
+indexed variants to isolate the location change from the new jump prior.
+Use fresh paired histories, including short and recent plateaus, near-threshold
+changes, and positive and negative correlation. Record certificates, witnesses,
+unresolved searches, detections, and false alerts separately. Stop adjusting
+settings on the archived example before that evaluation.
 Keep the completed study's settings and evidence intact.
 Unknown variance ratios and noise-transition locations remain subsequent
 mathematical tasks; use the completed studies as diagnostics.
