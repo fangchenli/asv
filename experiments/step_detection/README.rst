@@ -22,6 +22,9 @@ The `persistence bound <noise_persistence.rst>`_ gives that decision an
 explicit half-life parameter and proves what a strict bound guarantees.
 The `exact independent reference <exact_reference.rst>`_ now finds the global
 shared-floor optimum and exposes the best fit at every feasible segment count.
+The `before/after comparison <version_comparison.rst>`_ measures the correction:
+identical decisions across 190 histories, faster short-history detection,
+and no consistent speedup on long histories.
 
 .. contents:: On this page
    :local:

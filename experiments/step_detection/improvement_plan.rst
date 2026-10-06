@@ -18,12 +18,21 @@ requires explicit noise-scale and persistence inputs; their default values
 remain uncalibrated. An `exact independent-noise reference <exact_reference.rst>`_
 now establishes the global optimum for a declared floor and beta.
 
-The initial harness, bounded search comparison, and scaling sample are now
-implemented. The `baseline report <baseline_report.rst>`_ records the findings;
-`running the experiments <running.rst>`_ explains how to reproduce them.
-The phases below retain the experimental backlog. Their execution follows
-the mathematical decisions in phase 0; broader runs are deferred until those
-decisions establish what we want to compare.
+The `before/after comparison <version_comparison.rst>`_ now measures the
+correlation correction on 180 synthetic histories, six public NumPy histories,
+and four scaling cases. All fitted steps and alerts stay the same. Native
+length-100 runs take about 11% less time at the median; longer runs show no
+consistent gain and use more memory. Exact checks of seven representative
+boundary-error cases find no fixed-penalty optimization gap.
+
+Next, evaluate changes near the 5 percent reporting threshold under varying
+noise and persistence. Compare the existing and experimental scores with
+settings frozen before held-out evaluation. Profile long-history correlation
+fitting separately. The remaining phases are the backlog; the new evidence
+does not justify changing the statistical defaults yet.
+
+The initial `baseline report <baseline_report.rst>`_ retains its historical
+results; `running the experiments <running.rst>`_ explains reproduction.
 
 .. contents:: On this page
    :local:
@@ -299,7 +308,9 @@ comparison results and the baseline implementation during the experiments.
 Existing deliverables
 ---------------------
 
-The initial phase 1 harness, baseline report, and bounded phase 2 comparison
-are available. They remain useful for later validation. Phase 0 now governs
-the next implementation; further experimental coverage should answer the
-specific questions left open by that analysis.
+The initial harness, baseline, bounded search comparison, mathematical
+analysis, correlation correction, experimental noise model, and exact
+reference are available. The controlled version comparison adds fresh timing,
+real-history replay, and exact diagnoses of remaining boundary errors.
+The next experiment should measure the missed-alert/false-alert tradeoff
+near the reporting threshold before choosing new model defaults.

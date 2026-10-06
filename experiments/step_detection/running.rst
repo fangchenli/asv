@@ -55,6 +55,59 @@ above that size. ``--timeout`` is a per-worker limit in seconds. Failed workers
 or timeouts stop the run; already completed records remain in ``records.jsonl``.
 A final report is written only after all requested measurements succeed.
 
+Compare the original and corrected detector
+-------------------------------------------
+
+The version comparison replays identical inputs through revisions ``d526c2e``
+and ``123405a``. Both use the same locally built extension. Run from the
+repository root with Git history available::
+
+    .venv/bin/python -m experiments.step_detection.compare_versions \
+        --output experiments/step_detection/runs/version_comparison
+
+Defaults are 15 synthetic families with seeds 0 through 11 at length 100,
+six saved public NumPy histories, and flat/step histories at lengths 1000
+and 10000. Each version/backend/case gets three fresh processes. Version
+order alternates; timings include input preparation, step detection, graph
+coordinate mapping, and the 5 percent regression-reporting rule. Imports
+and diagnostic tracing are excluded. Accuracy counts each history once.
+
+``--seeds``, ``--backends``, and ``--repeats`` narrow the run;
+``--no-real`` and ``--no-scaling`` omit those corpora. ``--before`` and
+``--after`` select other Git revisions. A run saves source snapshots,
+input arrays, source and extension hashes, every timing sample, paired
+summaries, and untimed candidate traces for changed fits.
+
+``data/numpy_snapshot.json`` is the frozen real-data input, so ordinary
+runs require no downloads. ``fetch_numpy.py`` records the six named
+operations, environment, source URLs, hashes, and commit/date mappings.
+The published graphs contain no uncertainty weights; these replays use
+unit weights and have no labeled change-point truth. Refreshing the
+snapshot changes the experiment and requires explicitly moving the old
+file before running::
+
+    .venv/bin/python -m experiments.step_detection.fetch_numpy
+
+Validate the comparison with::
+
+    .venv/bin/python -m pytest experiments/step_detection/test_compare_versions.py -q
+
+Inspect the five weak-change boundary errors and representative dip/outlier
+cases against the exact reference, scoring its candidates with the actual
+production closure from each revision::
+
+    .venv/bin/python -m experiments.step_detection.inspect_comparison \
+        experiments/step_detection/runs/version_comparison
+
+``--cases`` selects other saved cases of at most 200 retained observations;
+``--backend`` chooses the interval backend. This is an untimed diagnostic.
+It saves ``inspection-native.json`` by default. Only one independent-error
+minimizer is retained at each segment count, so rescoring that frontier does
+not establish a global optimum for the correlated score.
+
+See `the version comparison <version_comparison.rst>`_ for measured results
+and their interpretation.
+
 What the methods compare
 ------------------------
 
