@@ -73,7 +73,11 @@ The `unknown-correlation study <ar1_report.rst>`_ now measures its cost:
 reporting budget, with zero false alerts for both. Every search resolves;
 broad confidence regions cause the loss. A mathematical diagnosis explains
 why retained correlations near 1 undermine percentage-change evidence.
-The next candidate uses confidence checks from both ends of the history.
+The `information-loss analysis <ar1_information.rst>`_ checks that next
+candidate on a saved missed slowdown. Combining both directions still keeps
+the problematic correlation, even after tightening the candidate likelihood.
+The derivation separates prediction cost from discarded stationary
+information and motivates a full-history confidence construction.
 
 .. contents:: On this page
    :local:

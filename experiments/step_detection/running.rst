@@ -328,6 +328,25 @@ Run the evaluator and mathematical checks::
         experiments/step_detection/test_ar1_study.py \
         experiments/step_detection/test_reporting_ar1.py -q
 
+Reproduce the information-loss diagnosis
+----------------------------------------
+
+The `mathematical follow-up <ar1_information.rst>`_ reuses one archived missed
+slowdown. It generates no new histories and makes no new reporting decisions::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.ar1_information
+
+The command prints JSON with forward and reverse likelihood calculations,
+exact versus relaxed conditional fits, averaged evidence, and the full
+stationary likelihood near correlation one. It checks the input archive hash
+against the frozen result index. The saved output is
+``data/ar1_information_v1.json``. Check the algebra independently with::
+
+    .venv/bin/python -m pytest \
+        experiments/step_detection/test_ar1_information.py \
+        experiments/step_detection/test_reporting_ar1.py -q
+
 Run the original harness
 -------------------------
 

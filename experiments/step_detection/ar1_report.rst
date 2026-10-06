@@ -205,6 +205,11 @@ extra-step statistic is 6.332, well below 16.924.
 The next mathematical step
 --------------------------
 
+The follow-up `information-loss analysis <ar1_information.rst>`_ now works
+through the proposal below. It proves its coverage but finds that it retains
+the saved 8% example's near-1 witness. That analysis redirects the next design
+toward the full-history stationary likelihood.
+
 Improve the confidence construction before optimizing its runtime. A concrete
 candidate is to use both ends of the history:
 

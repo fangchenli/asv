@@ -121,14 +121,22 @@ diagnosis explains 72 of the 87 lost oracle detections through correlations
 arbitrarily close to 1, where uncertainty in the baseline defeats the
 percentage-change test. Increasing the search budget cannot fix these cases.
 
-Next, derive a confidence construction that uses both forward and reversed
-histories. Allocate 0.005 failure probability to each direction and intersect
-their sets at the corresponding locations. Reversibility and a union bound
-preserve the total 0.01 confidence budget without assuming independence.
-This may improve prediction when an early step contaminates the forward
-training prefix; the smaller per-direction budget could also cost sensitivity.
-Verify the mathematics and interval certificates, then freeze a new evaluation
-on fresh histories. Keep the completed study's settings and evidence intact.
+The `information-loss analysis <ar1_information.rst>`_ now derives that
+forward/reverse intersection and a stronger averaged-evidence combination.
+Both retain the archived missed 8% history's near-1 witness, even with exact
+conditional nuisance fits. The reverse predictor improves substantially, but
+its prediction cost still absorbs most of the evidence against persistence.
+The candidate-model relaxation has little effect in this example. Conditioning
+also drops stationary information: the full-history likelihood contains a
+square-root determinant factor that rules out correlations sufficiently close
+to 1 when the limiting residual cost is positive.
+
+Next, specify a proper full-history predictive density and derive practical
+continuous confidence certificates for its ratio to the stationary profile
+likelihood. Account for the cost of predicting the training prefix; restoring
+the likelihood alone does not guarantee useful sensitivity. Check the saved
+witness and deterministic examples before freezing another fresh evaluation.
+Keep the completed study's settings and evidence intact.
 Unknown variance ratios and noise-transition locations remain subsequent
 mathematical tasks; use the completed studies as diagnostics.
 Laplace behavior near exactly 5%, especially on short plateaus, remains

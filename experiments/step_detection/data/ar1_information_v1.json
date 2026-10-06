@@ -1,0 +1,227 @@
+{
+  "description": "Mathematical diagnosis of one archived history; no new evaluation.",
+  "case_id": "independent_constant-ar1-study-n100-d0.08-s0.005-early-seed1400",
+  "source_archive": {
+    "file": "ar1_v1_independent_constant_n100_inputs_3.jsonl.gz",
+    "sha256": "4d9198aaf600a755358094738203ece708ea3dc5052475ae3fb4a966251b9d13"
+  },
+  "forward": {
+    "split": 25,
+    "predictor": {
+      "mean": 0.955697121900742,
+      "rho": 0.95,
+      "variance": 0.000134374310702632,
+      "jump_variance": 0.9133569888093617
+    },
+    "normalization_scale": 10.873259787286548,
+    "log_q_original_units": 45.71895613257679,
+    "residual_bound_original_units": 0.5811888036755646,
+    "exclusion_log_cutoff": 5.298317366548036,
+    "exact_near_one_likelihood_gain_from_rho_zero": 15.129005520763108,
+    "prediction_regret_against_rho_zero_profile": 29.292455734893366,
+    "generating_density_log_q_diagnostic_only": 74.66851056343094,
+    "generating_density_near_one_log_e_diagnostic_only": 14.786104216723892,
+    "rows": [
+      {
+        "rho": 0.0,
+        "relaxed_sse": 0.14568470668839537,
+        "exact_sse": 0.14568470668839442,
+        "relaxed_log_e": -29.29245573489321,
+        "exact_log_e": -29.292455734893366
+      },
+      {
+        "rho": 0.9,
+        "relaxed_sse": 0.24237889473342525,
+        "exact_sse": 0.24237889473342353,
+        "relaxed_log_e": -16.566019755618825,
+        "exact_log_e": -16.566019755619003
+      },
+      {
+        "rho": 0.99,
+        "relaxed_sse": 0.2642599100536349,
+        "exact_sse": 0.26425991005363414,
+        "relaxed_log_e": -14.405246152064201,
+        "exact_log_e": -14.405246152064265
+      },
+      {
+        "rho": 0.999755859375,
+        "relaxed_sse": 0.2667651603745854,
+        "exact_sse": 0.2667651603745842,
+        "relaxed_log_e": -14.1693562621698,
+        "exact_log_e": -14.169356262169906,
+        "nonnegative_levels": [
+          0.0,
+          0.6011989331919122
+        ],
+        "nonnegative_sse": 0.2667651603745843,
+        "nonnegative_log_e": -14.169356262169906
+      },
+      {
+        "rho": 1.0,
+        "relaxed_sse": 0.26682818893338556,
+        "exact_sse": 0.2668281889333842,
+        "relaxed_log_e": -14.163450214130123,
+        "exact_log_e": -14.163450214130258
+      }
+    ]
+  },
+  "reverse": {
+    "split": 75,
+    "predictor": {
+      "mean": 0.9871277566533984,
+      "rho": 0.045390720225231294,
+      "variance": 2.3235452135078865e-05,
+      "jump_variance": 0.9744212079555709
+    },
+    "normalization_scale": 10.938958664492944,
+    "log_q_original_units": 69.32661403949284,
+    "residual_bound_original_units": 0.2260529697157863,
+    "exclusion_log_cutoff": 5.298317366548036,
+    "exact_near_one_likelihood_gain_from_rho_zero": 11.579579437269999,
+    "prediction_regret_against_rho_zero_profile": 10.799202757335891,
+    "generating_density_log_q_diagnostic_only": 78.92573805782862,
+    "generating_density_near_one_log_e_diagnostic_only": 10.379500698269894,
+    "rows": [
+      {
+        "rho": 0.0,
+        "relaxed_sse": 0.118731107484162,
+        "exact_sse": 0.11873196362641648,
+        "relaxed_log_e": -10.799383025840484,
+        "exact_log_e": -10.799202757335891
+      },
+      {
+        "rho": 0.9,
+        "relaxed_sse": 0.1709851500480101,
+        "exact_sse": 0.17105462801028204,
+        "relaxed_log_e": -1.6814986378509076,
+        "exact_log_e": -1.6713422221816785
+      },
+      {
+        "rho": 0.99,
+        "relaxed_sse": 0.18633114472664292,
+        "exact_sse": 0.18679504206105618,
+        "relaxed_log_e": 0.46721955859261755,
+        "exact_log_e": 0.5293831898063246
+      },
+      {
+        "rho": 0.999755859375,
+        "relaxed_sse": 0.18810516978669145,
+        "exact_sse": 0.1886335304967195,
+        "relaxed_log_e": 0.7041140938543862,
+        "exact_log_e": 0.7742371069720235,
+        "nonnegative_levels": [
+          10.057729396137045,
+          9.279866784462136
+        ],
+        "nonnegative_sse": 0.18863353049671952,
+        "nonnegative_log_e": 0.774237106972052
+      },
+      {
+        "rho": 1.0,
+        "relaxed_sse": 0.1881498421199169,
+        "exact_sse": 0.18867986135846376,
+        "relaxed_log_e": 0.7100505374925632,
+        "exact_log_e": 0.7803766799341076
+      }
+    ]
+  },
+  "averaged_evidence": [
+    {
+      "rho": 0.0,
+      "relaxed_log_e_average": -11.492530197098768,
+      "exact_log_e_average": -11.492349928595852
+    },
+    {
+      "rho": 0.9,
+      "relaxed_log_e_average": -2.37464547506284,
+      "exact_log_e_average": -2.3644890628631465
+    },
+    {
+      "rho": 0.99,
+      "relaxed_log_e_average": -0.2259272744550651,
+      "exact_log_e_average": -0.16376366418622967
+    },
+    {
+      "rho": 0.999755859375,
+      "relaxed_log_e_average": 0.010967260457752315,
+      "exact_log_e_average": 0.0810902500651921
+    },
+    {
+      "rho": 1.0,
+      "relaxed_log_e_average": 0.016903704085377225,
+      "exact_log_e_average": 0.087229822951704
+    }
+  ],
+  "average_exclusion_log_cutoff": 4.605170185988092,
+  "shared_nuisance_witness": {
+    "rho": 0.999755859375,
+    "levels_original_order": [
+      10.0,
+      10.8
+    ],
+    "innovation_variance": 0.0045619231759824455,
+    "marginal_variance": 9.343959284441887,
+    "forward_log_e": -13.812181603144452,
+    "reverse_log_e": 1.2510553332790124,
+    "average_log_e": 0.5579084398759674
+  },
+  "full_history": {
+    "limiting_sse_at_one": 0.4553464189848171,
+    "profiles": [
+      {
+        "rho": 0,
+        "sse": 0.26441690690348163,
+        "levels": [
+          9.984817298057038,
+          10.798189441310324
+        ],
+        "log_u": 154.876067410606
+      },
+      {
+        "rho": 0.9,
+        "sse": 0.41359081621596794,
+        "levels": [
+          10.007853587437909,
+          10.786886907229645
+        ],
+        "log_u": 131.67819840259094
+      },
+      {
+        "rho": 0.99,
+        "sse": 0.45091731558790754,
+        "levels": [
+          9.99964734524465,
+          10.77711533146351
+        ],
+        "log_u": 126.22970280594983
+      },
+      {
+        "rho": 0.9999,
+        "sse": 0.4553018344346006,
+        "levels": [
+          9.993337199197343,
+          10.771384956051207
+        ],
+        "log_u": 123.44576976168652
+      },
+      {
+        "rho": 0.999999,
+        "sse": 0.4553459731090135,
+        "levels": [
+          9.993244825813694,
+          10.771299383640999
+        ],
+        "log_u": 121.13836246597826
+      },
+      {
+        "rho": 0.9999999999,
+        "sse": 0.45534641894022904,
+        "levels": [
+          9.993243888467823,
+          10.77129851509956
+        ],
+        "log_u": 116.53314361612833
+      }
+    ]
+  }
+}
