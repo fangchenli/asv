@@ -1,19 +1,121 @@
 Step detection improvement plan
 ===============================
 
-Improve ASV step detection by measuring three things separately: whether the
-optimizer minimizes its stated objective, whether the selected segmentation
-captures real changes, and whether the reporting policy produces useful
-regression alerts. A faster optimizer can still select a poor noise model;
-a lower fitting objective does not by itself establish better alerts.
+ASV tries to tell lasting slowdowns apart from ordinary variation in timing
+measurements. We want to find out whether it can do that more reliably and
+whether the calculations can run faster.
 
-The `implementation walkthrough <README.rst>`_ describes the baseline at
-``d33754e129c025beb5c2ca440c3c280433b264f7``. This plan proposes experiments;
-it does not change the production detector or its defaults.
+Start with `the beginner guide <README.rst>`_ if benchmarks, fitted values,
+or penalties are unfamiliar. The first section below explains the improvement
+plan in everyday terms. The later sections are working notes for implementing
+the experiments and contain more technical detail.
+
+These are proposed experiments. The existing ASV detection behavior has not
+been changed. The `implementation reference <implementation_details.rst>`_
+describes the source code being studied at revision
+``d33754e129c025beb5c2ca440c3c280433b264f7``.
 
 .. contents:: On this page
    :local:
    :depth: 1
+
+The plan in everyday terms
+--------------------------
+
+First we need examples where we know the answer. Imagine making up a history
+of measurements ourselves. We decide that the usual timing is 10 milliseconds
+for the first 50 versions and 12 milliseconds for the next 50. Then we add
+small variations, such as 0.1 above or below the usual time, to make the
+readings resemble real measurements.
+
+Now we can run ASV on those readings and ask whether it finds the change we
+put there. We should also make a history with a usual timing of 10 throughout,
+again with small variations. On that second history, there is no lasting
+change to find. A useful detector needs to handle both kinds of example.
+
+We will measure three basic outcomes:
+
+* Did it miss a slowdown that we deliberately put in the history?
+* Did it invent a lasting change where we only added ordinary variation?
+* When it found a change, how close was its location to the one we put there?
+
+We will also measure how long the analysis takes and how much computer
+memory it uses. Finding the same answers faster can still be valuable when
+there are many benchmarks and many program versions.
+
+Experiment 1 checks the current behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Run the current ASV code on many examples and save the results. Use easy
+examples, hard examples, histories with no change, and histories with several
+changes. Repeat them with different small variations so one lucky set of
+readings does not decide the result.
+
+This gives us something to compare changes against. Without it, we could
+make the detector better on one example while making many other cases worse
+without noticing.
+
+Experiment 2 tries different change penalties
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The beginner guide shows that the penalty for adding a step changes the
+chosen explanation. ASV already tries several penalties automatically.
+We want to check whether it sometimes overlooks a useful choice.
+
+Keep the fitting calculation the same and try penalties more systematically.
+Then check whether the resulting descriptions find more of our known changes
+without inventing more false ones. Also count the extra calculation time:
+trying a thousand penalties instead of ten may be too expensive for the
+benefit it provides. Those numbers illustrate the tradeoff, not ASV's actual
+number of trials.
+
+Experiment 3 checks the shortcut used to find segments
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For a particular penalty, ASV normally uses a shortcut to find a good division
+into segments. The shortcut can miss a division with a better score. We have
+already found a small example where that happens.
+
+On short histories, compare the shortcut with a slower calculation that
+finds the smallest possible score. This tells us how often the shortcut
+makes a difference. Next, try ways to make the more thorough calculation
+faster, such as reusing partial calculations instead of repeating them.
+
+Remember that the smallest score only means best under the chosen rule.
+We must still check whether its chosen steps match the changes we put into
+our examples.
+
+Experiment 4 checks how ordinary variation is treated
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some measurements vary independently. Others may all be a little slow during
+a period when the computer is busy. ASV tries to account for that distinction.
+We want to test whether its rules sometimes explain away a real slowdown,
+or mistake background variation for a software change.
+
+There is also an existing example where adding the same large number to
+every timing changes the detected steps. This keeps the absolute increase
+the same but makes the percentage increase smaller. We need to decide what
+behavior is useful for benchmark reporting and test the rule against that
+decision.
+
+Experiment 5 checks the report users see
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Finally, run the promising changes through the whole reporting process.
+Check a lasting slowdown, a slowdown that fully recovers, and a slowdown
+that only partly recovers. Also check histories with missing measurements,
+where ASV can identify a range of possible versions rather than one exact
+version responsible for the change.
+
+A new method is worth adopting if the evidence shows a useful improvement,
+such as fewer missed slowdowns at a similar false-alarm rate, or the same
+answers with less computation. We should decide which tradeoff matters
+before selecting a winner.
+
+The rest of this document turns those five experiments into a technical
+work plan. The beginner guide and this overview provide the main ideas;
+the implementation reference supplies the mathematical and programming details.
 
 What we are trying to improve
 -----------------------------
