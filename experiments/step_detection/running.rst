@@ -703,6 +703,30 @@ Both outputs must be new. Archived reference results are linked from the
 derivation. Only rigorous bounds determine reporting decisions; numerical
 quadrature remains a development diagnostic.
 
+Sturm-count mathematical checkpoint
+------------------------------------
+
+The `split-aware derivation <sturm_refinement.rst>`_ tightens only the
+eigenvalue input to the existing probability formula. Reproduce its saved
+witness calculations without running a fresh study or a complete search::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.sturm_diagnosis \
+        --output experiments/step_detection/runs/sturm_diagnosis_replay.json
+
+The output must be new. The command checks the previous replay archive and
+source hashes and records exact point/interval certificates together with
+numerical comparisons that separate approximation losses. The reference is
+`the saved Sturm diagnosis <data/sturm_v1_diagnosis.json>`_.
+
+Run the exact-count and interval checks::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest \
+        experiments/step_detection/test_directional_sturm.py -q
+
 Run the original harness
 -------------------------
 

@@ -222,8 +222,10 @@ ASV's production detector and the frozen studies remain unchanged. As before,
 the model assumes stationary Gaussian noise of common variance; the inherited
 t/F reporting cutoffs are numerical.
 
-The next question is how much looseness remains in the spectral lower bounds
-versus the tilted-density inequality itself. Use the new 51/64 witness to
-separate those costs before changing the method again. A bound below 0.01
-at one explanation still needs a complete replay to establish an additional
-detection. The middle-change loss remains a separate calibration question.
+The subsequent `Sturm-count analysis <sturm_refinement.rst>`_ separates the
+spectral and density losses at 51/64. A long-plateau eigenvalue comparison
+now gives a rigorous bound below 0.009631 throughout its neighborhood,
+close to the numerical density bound using the projected eigenvalues.
+The larger remaining gap is in the density inequality. A complete replay
+is still needed to establish any additional detection. The middle-change
+loss remains a separate calibration question.

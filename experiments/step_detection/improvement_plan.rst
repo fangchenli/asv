@@ -228,8 +228,17 @@ is excluded with an interval bound below 0.007357. The complete seven-case
 replay again has no gained or lost alerts; the early case now retains 51/64,
 with bound 0.010687 and numerical probability estimate 0.0043470.
 
-Next, separate the looseness of the eigenvalue lower bounds from that of
-the tilted-density inequality at this new witness before further changes.
+The `split-aware eigenvalue derivation <sturm_refinement.rst>`_ now separates
+those losses. At 51/64, the same density formula using numerical projected
+eigenvalues gives about 0.009546. Exact Sturm counts and a one-plateau
+subspace comparison provide a rigorous point bound of 0.009568 and an
+interval bound of 0.009631, with the tilts and density formula unchanged.
+Most of the remaining approximation at this witness is in the density
+inequality, rather than the eigenvalue lower bound.
+
+Next, integrate this bound into the complete search and verify the replay.
+Use any remaining witnesses to assess the density inequality before
+spending more effort on eigenvalue bounds.
 The verifier reconstructs residual states
 separately but shares the determinant arithmetic kernel; independent dense
 algebra tests cover that kernel. Removing a witness alone does not establish

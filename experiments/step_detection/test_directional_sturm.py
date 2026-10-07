@@ -1,0 +1,137 @@
+"""Exact Sturm edge cases and independent checks of split-aware bounds."""
+
+import gzip
+import json
+from fractions import Fraction as F
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from experiments.step_detection import directional_spectral as previous
+from experiments.step_detection import directional_sturm as sturm
+from experiments.step_detection import residual_direction as direction
+
+
+def precision(n, rho):
+    matrix = np.diag([1] + [1 + rho**2] * (n - 2) + [1])
+    return matrix + np.diag([-rho] * (n - 1), 1) + np.diag([-rho] * (n - 1), -1)
+
+
+def test_exact_roots_and_interior_zeros_in_sturm_sequence():
+    # For n=2 the eigenvalues are exactly 1-rho and 1+rho.
+    for threshold, count in [(F(1, 4), 0), (F(1, 2), 0), (F(1), 1), (F(3, 2), 1), (F(2), 2)]:
+        assert sturm.precision_count_below(2, F(1, 2), threshold) == count
+    # n=3 has an eigenvalue exactly 1. The first and final minors vanish there.
+    assert sturm.precision_count_below(3, F(1, 2), 1) == 1
+    # A zero first minor at threshold 1 must not invalidate the next sign change.
+    assert sturm.precision_count_below(4, F(1, 2), 1) == 2
+    assert sturm.precision_count_below(9, 0, 1) == 0
+    assert sturm.precision_count_below(9, 0, F(1001, 1000)) == 9
+
+
+@pytest.mark.parametrize('n,rho', [(3, F(1, 4)), (8, F(3, 4)), (25, F(99, 100))])
+def test_counts_and_eigenvalue_upper_bounds_match_dense_precision(n, rho):
+    eigenvalues = np.linalg.eigvalsh(precision(n, float(rho)))
+    for threshold in (F(1, 1000), F(2, 7), F(7, 6), F(8, 3), F(4)):
+        assert sturm.precision_count_below(n, rho, threshold) == int(
+            np.count_nonzero(eigenvalues < float(threshold))
+        )
+    for index in (1, (n + 1) // 2, n):
+        upper = sturm.precision_eigenvalue_upper(n, index, rho)
+        actual = eigenvalues[index - 1]
+        assert float(upper) >= actual - 1e-14
+        assert float(upper) - actual <= float((1 + rho) ** 2 / 2**sturm.EIGEN_BITS) + 1e-14
+        assert sturm.precision_count_below(n, rho, upper) >= index
+
+
+@pytest.mark.parametrize(
+    'left,right', [(F(-7, 8), F(-13, 16)), (F(-1, 8), F(1, 8)), (F(13, 16), F(7, 8))]
+)
+def test_precision_perturbation_and_covariance_interval_enclosure(left, right):
+    n, index = 20, 6
+    low = F(0) if left <= 0 <= right else min(abs(left), abs(right))
+    high = max(abs(left), abs(right))
+    mid = (low + high) / 2
+    perturbation = high**2 - mid**2 + 2 * (high - mid)
+    bound = sturm.covariance_eigenvalue_lower(n, index, left, right)
+    distance = np.abs(np.arange(n)[:, None] - np.arange(n)[None, :])
+    for rho in (left, (left + right) / 2, right):
+        difference = precision(n, float(abs(rho))) - precision(n, float(mid))
+        assert np.linalg.eigvalsh(difference)[-1] <= float(perturbation) + 1e-14
+        actual = np.linalg.eigvalsh(float(rho) ** distance)[-index]
+        assert float(bound) <= actual + 1e-13
+    assert bound == sturm.covariance_eigenvalue_lower(n, index, -right, -left)
+
+
+@pytest.mark.parametrize('n,split,count', [(8, 1, 4), (16, 8, 12), (24, 23, 16), (100, 1, 12)])
+@pytest.mark.parametrize('rho', [F(-51, 64), F(0), F(51, 64)])
+def test_each_subspace_bound_is_below_projected_eigenvalue(n, split, count, rho):
+    width = F(1, 65536)
+    bounds = sturm.residual_eigenvalue_bounds(n, split, count, rho - width, rho + width)
+    assert bounds == sturm.residual_eigenvalue_bounds(
+        n, n - split, count, rho - width, rho + width
+    )
+    basis = direction.residual_basis(n, split)
+    distance = np.abs(np.arange(n)[:, None] - np.arange(n)[None, :])
+    for candidate in (rho - width, rho, rho + width):
+        covariance = basis.T @ (float(candidate) ** distance) @ basis
+        actual = np.linalg.eigvalsh(covariance)[-count]
+        assert all(float(value) <= actual + 1e-12 for value in bounds.values())
+
+
+def saved_model():
+    path = Path(__file__).parent / 'data/spectral_reporting_v1_diagnosis.json.gz'
+    row = json.loads(gzip.decompress(path.read_bytes()))['rows'][0]
+    return direction.state(row['case']['values'], 1)
+
+
+def test_saved_witness_and_neighboring_interval_cross_cutoff():
+    model, rho, width = saved_model(), F(51, 64), F(1, 65536)
+    point = sturm.certify_interval(model, rho, rho)
+    interval = sturm.certify_interval(model, rho - width, rho + width)
+    assert previous.certify_interval(model, rho, rho)['status'] == 'not_certified'
+    assert point['status'] == interval['status'] == 'certified_excluded'
+    assert F(point['p_upper']) < F(957, 100000)
+    assert F(interval['p_upper']) < F(964, 100000)
+    assert interval['selected_tilt'] == '1/8' and interval['selected_count'] == 12
+    best = next(item for item in interval['attempts'] if item['tilt'] == '1/8')
+    selected = next(item for item in best['directions'] if item['count'] == 12)
+    assert selected['selected_eigenvalue_bound'] == 'plateau_sturm'
+    for candidate in (rho - width, rho, rho + width):
+        assert F(sturm.certify_interval(model, candidate, candidate)['p_upper_squared']) <= F(
+            interval['p_upper_squared']
+        )
+
+
+def test_refinement_preserves_old_bound_and_invariances():
+    values = [F(10 + (i >= 5) + (-1) ** i) for i in range(16)]
+    changed = [7 * value + (5 if i < 5 else -3) for i, value in enumerate(values)]
+    proofs = [
+        sturm.certify_interval(direction.state(y, 5), F(3, 4), F(3, 4)) for y in (values, changed)
+    ]
+    assert proofs[0] == proofs[1]
+    old = previous.certify_interval(direction.state(values, 5), F(3, 4), F(3, 4))
+    assert F(proofs[0]['p_upper_squared']) <= F(old['p_upper_squared'])
+
+
+def test_uninformative_and_wide_intervals_fail_conservatively():
+    model = direction.state([1, 4, 2, 5, 3, 8], 2)
+    assert sturm.certify_interval(model, 0, 0)['p_upper_squared'] == '1'
+    assert sturm.certify_interval(model, F(-99, 100), F(99, 100))['status'] == 'not_certified'
+    assert sturm.precision_eigenvalue_upper(10, 5, 0) == 1
+
+
+@pytest.mark.parametrize(
+    'args', [(1, 1, F(1, 2)), (4, 0, F(1, 2)), (4, 5, F(1, 2)), (4, 1, 1), (True, 1, 0)]
+)
+def test_invalid_eigenvalue_requests(args):
+    with pytest.raises(ValueError):
+        sturm.precision_eigenvalue_upper(*args)
+
+
+def test_cache_does_not_bypass_argument_validation():
+    sturm.precision_eigenvalue_upper(4, 1, F(1, 2))
+    for args in ((4, True, F(1, 2)), (4.0, 1, F(1, 2))):
+        with pytest.raises(ValueError):
+            sturm.precision_eigenvalue_upper(*args)

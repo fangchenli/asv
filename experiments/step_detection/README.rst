@@ -119,7 +119,10 @@ removing the first lost case's old witness reveals another at correlation
 bound from 0.032029 to 0.006590 using eight residual directions and a second
 tilt. A verified seven-case replay retains the same decisions and finds
 another surviving correlation at 0.796875. The remaining approximation gap
-is the next mathematical question.
+is the next mathematical question. The `split-aware eigenvalue derivation
+<sturm_refinement.rst>`_ now separates that gap and uses exact precision
+eigenvalue counts within the long plateau. It certifies the 0.796875
+explanation's neighborhood below 0.009631; a complete replay is next.
 
 .. contents:: On this page
    :local:
