@@ -92,8 +92,12 @@ The `fresh indexed comparison <indexed_report.rst>`_ now measures the gain:
 25 for global full-history prediction, and 27 for indexed-original. All four
 have zero false alerts among 216 null histories; the matching oracle detects
 114. Of indexed-jump's 116 misses, 115 retain an explicit noise explanation.
-The next mathematical question is how much confidence information we can
-retain after removing unknown plateau levels and overall noise scale.
+The `residual-direction derivation <residual_direction.rst>`_ now removes
+plateau levels and overall scale before constructing correlation confidence.
+It establishes coverage, a connection to the existing GLS polynomials, and
+both endpoint limits. A fixed directional mixture still retains the saved
+positively correlated witness. The next question is direct calibration of
+the directional statistic, whose nuisance-free distribution is now known.
 
 .. contents:: On this page
    :local:

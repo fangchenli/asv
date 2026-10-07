@@ -159,16 +159,29 @@ Positive correlation remains difficult: all four unknown-correlation methods
 detect only one of 48 true changes. All archived inputs, certificates,
 witnesses, and summaries were verified.
 
-Next, keep this evaluation fixed and mathematically diagnose its surviving
-witnesses. Only one of indexed-jump's 116 positive misses exhausts the search
-budget; 115 have explicit retained explanations. Decompose the remaining
-prediction cost at those witnesses. As a concrete candidate, derive a
-correlation confidence construction from the direction of residuals after
-projecting out the two plateau levels at each fixed location. Normalization
-can remove overall scale, potentially avoiding those nuisance priors. Prove
-the residual-direction distribution and coverage argument, including endpoint
-limits, before implementation. Any new method needs a new freeze and fresh
-evaluation; retain both indexed variants as controls.
+The `residual-direction analysis <residual_direction.rst>`_ now derives that
+next construction. Projecting out both plateau levels and normalizing the
+residual vector removes their nuisance parameters exactly. The angular
+Gaussian density supplies a valid confidence rule and reduces to the existing
+GLS cost times a cubic factor. Both correlation endpoints are analyzed,
+including the exceptional alternating residual direction near -1. At +1,
+the density has a finite positive limit, so endpoint exclusion is no longer
+automatic. Rational square-root bounds permit exact confidence arithmetic.
+
+On the saved positively correlated miss, a fixed five-component directional
+mixture increases log evidence at the old witness from -45.458 to 1.603,
+still below the 4.605 exclusion cutoff. Its limit at +1 also remains below
+the cutoff. This establishes a remaining limitation without generating new
+histories or running a new detection study.
+
+Next, derive reliable tail bounds for the directional statistic itself.
+The analysis expresses its null distribution through weighted chi-square
+sums with no unknown levels or scale. Exact tail calibration would contain
+the uniform directional predictor's Markov rejection region, though it need
+not dominate the mixture. Determine how to bound these probabilities over
+continuous correlation intervals before integrating a detector. Keep the
+fixed mixture and existing indexed methods as controls; any new evaluation
+requires a new freeze and fresh histories.
 
 Unknown variance ratios and noise-transition locations remain subsequent
 mathematical tasks; use the completed studies as diagnostics.

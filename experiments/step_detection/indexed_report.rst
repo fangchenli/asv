@@ -334,6 +334,11 @@ choosing priors from the evaluation data. Keep both existing indexed variants
 as controls. Another parameter sweep or a larger search budget would not
 answer this question.
 
+The follow-up `residual-direction derivation <residual_direction.rst>`_ now
+establishes that nuisance-free distribution and its endpoint limits. It also
+checks the saved correlated witness and derives a route to direct tail
+calibration without changing this evaluation.
+
 Evidence and reproduction
 -------------------------
 

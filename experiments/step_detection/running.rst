@@ -455,6 +455,26 @@ archives to a new destination::
 The archiver refuses to overwrite archive files. Its index contains the
 summaries, paired comparisons, diagnostic counts, and SHA-256 hashes.
 
+Check the residual-direction derivation
+-----------------------------------------
+
+The `mathematical analysis <residual_direction.rst>`_ removes the two plateau
+levels and common noise scale before constructing correlation confidence.
+Its helper checks exact density identities and two existing archived
+histories; it does not run a new detector or generate evaluation data::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.residual_direction \
+        --output experiments/step_detection/runs/residual_direction_replay.json
+
+The output path must not already exist. The checked-in `diagnosis
+<data/residual_direction_v1_diagnosis.json>`_ preserves archive/source hashes,
+the fixed five-component predictor, density bounds, and endpoint checks.
+Run the analytical tests with::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest experiments/step_detection/test_residual_direction.py -q
+
 Run the original harness
 -------------------------
 
