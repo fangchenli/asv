@@ -147,17 +147,29 @@ paying a mixture penalty over locations. True-pair coverage uses only that
 pair's indexed density. The new prior alone raises the saved example's
 density by 1.56 times but merely moves the surviving witness. Indexed
 prediction produces a complete alert certificate with either level prior.
-The short 20% fixture remains inconclusive, so broad sensitivity is unknown.
+The short 20% fixture remains inconclusive.
 
-Next, freeze the priors, external reference unit, reporting allocation, and
-work limits for a fresh comparison of the conditional, original full-history,
-indexed-original, indexed-jump, and known-correlation references. Retain both
-indexed variants to isolate the location change from the new jump prior.
-Use fresh paired histories, including short and recent plateaus, near-threshold
-changes, and positive and negative correlation. Record certificates, witnesses,
-unresolved searches, detections, and false alerts separately. Stop adjusting
-settings on the archived example before that evaluation.
-Keep the completed study's settings and evidence intact.
+The `fresh indexed study <indexed_report.rst>`_ now holds those settings fixed
+on 360 histories. Indexed-jump detects 28 of 144 true slowdowns, compared with
+20 for conditional, 25 for global full-history, 27 for indexed-original, and
+114 for the matching oracle. All five have zero false alerts among 216 nulls.
+Indexed-jump gains ten detections and loses two versus conditional. The new
+jump prior adds only one detection beyond indexing with the original prior.
+Positive correlation remains difficult: all four unknown-correlation methods
+detect only one of 48 true changes. All archived inputs, certificates,
+witnesses, and summaries were verified.
+
+Next, keep this evaluation fixed and mathematically diagnose its surviving
+witnesses. Only one of indexed-jump's 116 positive misses exhausts the search
+budget; 115 have explicit retained explanations. Decompose the remaining
+prediction cost at those witnesses. As a concrete candidate, derive a
+correlation confidence construction from the direction of residuals after
+projecting out the two plateau levels at each fixed location. Normalization
+can remove overall scale, potentially avoiding those nuisance priors. Prove
+the residual-direction distribution and coverage argument, including endpoint
+limits, before implementation. Any new method needs a new freeze and fresh
+evaluation; retain both indexed variants as controls.
+
 Unknown variance ratios and noise-transition locations remain subsequent
 mathematical tasks; use the completed studies as diagnostics.
 Laplace behavior near exactly 5%, especially on short plateaus, remains

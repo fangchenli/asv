@@ -81,13 +81,19 @@ information and motivates a full-history confidence construction.
 The `full-history reference <full_history_confidence.rst>`_ now integrates a
 proper predictive mixture and certifies confidence exclusion over correlation
 intervals. It removes sufficiently persistent explanations but still retains
-the saved 8% slowdown's witness. Improving the predictive model is the next
-mathematical task; no new sensitivity study has been run.
+the saved 8% slowdown's witness, motivating a closer look at predictive cost.
 The `baseline/jump analysis <baseline_jump_prior.rst>`_ now separates those
 costs and finds an unnecessary location-mixture penalty. A proper density
 for each candidate location avoids that penalty with the same coverage
 argument. Both indexed variants certify the archived missed 8% slowdown;
-changing the jump prior alone does not. A fresh frozen comparison is next.
+changing the jump prior alone does not.
+The `fresh indexed comparison <indexed_report.rst>`_ now measures the gain:
+28 of 144 true slowdowns detected, versus 20 for the conditional reference,
+25 for global full-history prediction, and 27 for indexed-original. All four
+have zero false alerts among 216 null histories; the matching oracle detects
+114. Of indexed-jump's 116 misses, 115 retain an explicit noise explanation.
+The next mathematical question is how much confidence information we can
+retain after removing unknown plateau levels and overall noise scale.
 
 .. contents:: On this page
    :local:

@@ -404,6 +404,57 @@ evidence, not a new statistical study. Run the analytical checks with::
         experiments/step_detection/test_ar1_information.py \
         experiments/step_detection/test_reporting_ar1.py -q
 
+Evaluate candidate-specific prediction
+--------------------------------------
+
+The `indexed-study protocol <indexed_protocol.rst>`_ fixes a fresh 360-history
+comparison of the conditional reference, the global full-history reference,
+both indexed variants, and the matching oracle. The `results
+<indexed_report.rst>`_ and `archive index <data/indexed_v1_results.json>`_
+preserve the completed comparison. Replay the frozen study::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.indexed_study run \
+        --frozen experiments/step_detection/data/indexed_v1_frozen.json \
+        --output experiments/step_detection/runs/indexed_replay --workers 6
+
+The original freeze command was::
+
+    .venv/bin/python -m experiments.step_detection.indexed_study freeze \
+        --inherited experiments/step_detection/data/ar1_v1_frozen.json \
+        --output experiments/step_detection/data/indexed_v1_frozen.json
+
+The runner rejects changed source, settings, environment, or covariance
+hashes, and refuses to overwrite an existing freeze or run directory.
+The manifest records worker and numerical-library thread settings. Inputs
+share six covariance matrices, supplied only to the oracle.
+
+Records retain the inherited pipeline and add ``full_history``,
+``indexed_original``, and ``indexed_jump`` with standalone and gated decisions.
+The new ``*_diagnostics`` fields check the true pair even when an indexed
+search stops before its generating location. ``diagnostics.json`` separates
+certificates, surviving witnesses, unresolved searches, insufficient variation,
+true-pair exclusions, and confidence fallbacks. ``comparisons.json`` records
+paired gains and losses. Unresolved positive histories remain misses.
+
+Run the evaluator checks without generating evaluation-seed observations::
+
+    .venv/bin/python -m pytest experiments/step_detection/test_indexed_study.py -q
+
+After a complete run, reconstruct its certificates and witnesses, regenerate
+its observations, reproduce its summaries, and write hashed compressed
+archives to a new destination::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.indexed_artifacts \
+        --run experiments/step_detection/runs/indexed_replay \
+        --frozen experiments/step_detection/data/indexed_v1_frozen.json \
+        --destination experiments/step_detection/runs/indexed_replay_archives \
+        --workers 6
+
+The archiver refuses to overwrite archive files. Its index contains the
+summaries, paired comparisons, diagnostic counts, and SHA-256 hashes.
+
 Run the original harness
 -------------------------
 
