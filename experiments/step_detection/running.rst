@@ -763,6 +763,19 @@ Run the integration and proof-integrity checks::
         .venv/bin/python -m pytest \
         experiments/step_detection/test_reporting_sturm.py -q
 
+Check the Lean pilot
+---------------------
+
+The `Lean pilot guide <lean/README.rst>`_ explains the proof boundary and
+dependency setup. After fetching its pinned Mathlib cache, run from the
+repository root::
+
+    .venv/bin/python experiments/step_detection/lean/verify.py
+
+Pass ``--lake "$HOME/.elan/bin/lake"`` if Lake is not on PATH. This checks
+the proof build, archived scalar inputs, permitted axioms, and rejection of
+a corrupted bound. It runs no new statistical experiments.
+
 Run the original harness
 -------------------------
 

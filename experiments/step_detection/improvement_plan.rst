@@ -243,7 +243,14 @@ projected eigenvalues still gives about 0.012076, whereas the numerical
 directional probability estimate is 0.0055051. Both current tilts and all
 four direction counts are included in that diagnosis.
 
-Next, derive a sharper tilted-density or quadratic-tail interval bound.
+The isolated `Lean pilot <lean/README.rst>`_ proves interval enclosure and
+outward rounding rules, then checks one archived certificate's final scalar
+arithmetic. Its probability and matrix claims remain explicit hypotheses.
+The next formalization step is to check an exported determinant arithmetic
+trace against those rules.
+
+For the statistical research, derive a sharper tilted-density or quadratic-tail
+interval bound.
 Use the new witness to assess its benefit before another complete replay;
 further eigenvalue tightening alone appears insufficient with the current
 tilts and density formula.

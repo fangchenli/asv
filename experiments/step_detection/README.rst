@@ -128,6 +128,11 @@ decisions and finds another survivor at 0.7890625. Numerical projected
 eigenvalues still leave its density bound above 0.01, directing the next
 work toward a sharper probability inequality.
 
+The isolated `Lean pilot <lean/README.rst>`_ now proves the scalar interval
+rules and checks the final exact arithmetic of one saved certificate. It
+makes the remaining determinant, spectral, and probability assumptions
+explicit; detection results are unchanged.
+
 .. contents:: On this page
    :local:
    :depth: 1
