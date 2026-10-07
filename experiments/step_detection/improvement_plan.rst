@@ -236,9 +236,17 @@ interval bound of 0.009631, with the tilts and density formula unchanged.
 Most of the remaining approximation at this witness is in the density
 inequality, rather than the eigenvalue lower bound.
 
-Next, integrate this bound into the complete search and verify the replay.
-Use any remaining witnesses to assess the density inequality before
-spending more effort on eigenvalue bounds.
+The `complete Sturm replay <sturm_reporting.rst>`_ now verifies seven cases
+with no gained or lost alerts. The early case retains a new explanation at
+101/128, with rigorous bound 0.012103. The same density formula using numerical
+projected eigenvalues still gives about 0.012076, whereas the numerical
+directional probability estimate is 0.0055051. Both current tilts and all
+four direction counts are included in that diagnosis.
+
+Next, derive a sharper tilted-density or quadratic-tail interval bound.
+Use the new witness to assess its benefit before another complete replay;
+further eigenvalue tightening alone appears insufficient with the current
+tilts and density formula.
 The verifier reconstructs residual states
 separately but shares the determinant arithmetic kernel; independent dense
 algebra tests cover that kernel. Removing a witness alone does not establish

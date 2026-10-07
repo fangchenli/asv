@@ -122,7 +122,11 @@ another surviving correlation at 0.796875. The remaining approximation gap
 is the next mathematical question. The `split-aware eigenvalue derivation
 <sturm_refinement.rst>`_ now separates that gap and uses exact precision
 eigenvalue counts within the long plateau. It certifies the 0.796875
-explanation's neighborhood below 0.009631; a complete replay is next.
+explanation's neighborhood below 0.009631. The `complete Sturm replay
+<sturm_reporting.rst>`_ verifies all seven saved outcomes with no changed
+decisions and finds another survivor at 0.7890625. Numerical projected
+eigenvalues still leave its density bound above 0.01, directing the next
+work toward a sharper probability inequality.
 
 .. contents:: On this page
    :local:

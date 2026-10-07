@@ -727,6 +727,42 @@ Run the exact-count and interval checks::
         .venv/bin/python -m pytest \
         experiments/step_detection/test_directional_sturm.py -q
 
+Complete Sturm reporting replay
+--------------------------------
+
+The `Sturm integration report <sturm_reporting.rst>`_ records the complete
+search on seven saved cases. Reproduce it using a new output directory::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.sturm_replay \
+        --output experiments/step_detection/runs/sturm_replay --workers 2
+
+Each verified case is saved as it finishes. ``diagnosis.json`` combines the
+results in input order; the previous spectral replay supplies the comparison.
+
+Re-verify and archive the saved results, including a numerical decomposition
+at a changed surviving explanation::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.sturm_replay_artifacts \
+        --run experiments/step_detection/runs/sturm_replay \
+        --output experiments/step_detection/runs/sturm_replay.json.gz \
+        --summary experiments/step_detection/runs/sturm_replay_summary.json
+
+Both output files must be new. The builder checks source hashes and the
+original inputs/results, reconstructs every reporting and saved-witness
+certificate, and verifies the compressed bytes by a round trip. Numerical
+decompositions never determine reporting decisions.
+
+Run the integration and proof-integrity checks::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_sturm.py -q
+
 Run the original harness
 -------------------------
 

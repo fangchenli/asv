@@ -1,0 +1,205 @@
+{
+  "purpose": "Verified development replay; not a fresh sensitivity evaluation",
+  "work": {
+    "max_cells": 4096,
+    "max_depth": 16
+  },
+  "verified_cases": 7,
+  "gained_alerts": 0,
+  "lost_alerts": 0,
+  "numerical_qualification": "New-witness tail is a floating quadrature estimate, not a certificate",
+  "rows": [
+    {
+      "id": "negative-directional-ar1-study-n100-d0.08-s0.02-early-seed1601",
+      "previous_status": "surviving_explanation",
+      "new_status": "surviving_explanation",
+      "previous_cells": 11,
+      "new_cells": 12,
+      "verification": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 4
+        }
+      },
+      "witness": {
+        "split": 1,
+        "rho": "101/128"
+      },
+      "previous_witness": {
+        "split": 1,
+        "rho": "51/64"
+      },
+      "new_sturm_p_upper": 0.012102739639136217,
+      "numerical_tail": {
+        "probability": 0.005505107924754948,
+        "quadrature_error_estimate": 1.3792803994572216e-09
+      },
+      "numerical_decomposition": {
+        "radius_estimate": 0.4896312464301197,
+        "per_tilt": [
+          {
+            "tilt": "1/16",
+            "chernoff_estimate": 0.0546339270815262,
+            "stages": {
+              "toeplitz": {
+                "p_upper_estimate": 0.03398697109351234,
+                "count": 8
+              },
+              "full_sturm": {
+                "p_upper_estimate": 0.032466038271510685,
+                "count": 8
+              },
+              "plateau_sturm": {
+                "p_upper_estimate": 0.03013355874961286,
+                "count": 8
+              },
+              "projected_eigenvalues": {
+                "p_upper_estimate": 0.030028142776628262,
+                "count": 8
+              }
+            }
+          },
+          {
+            "tilt": "1/8",
+            "chernoff_estimate": 0.03101763063911541,
+            "stages": {
+              "toeplitz": {
+                "p_upper_estimate": 0.013525012181170488,
+                "count": 8
+              },
+              "full_sturm": {
+                "p_upper_estimate": 0.012940901911111457,
+                "count": 12
+              },
+              "plateau_sturm": {
+                "p_upper_estimate": 0.01210273963913485,
+                "count": 12
+              },
+              "projected_eigenvalues": {
+                "p_upper_estimate": 0.012075583720687412,
+                "count": 12
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "negative-directional-ar1-study-n100-d0.08-s0.02-middle-seed1601",
+      "previous_status": "surviving_explanation",
+      "new_status": "surviving_explanation",
+      "previous_cells": 7,
+      "new_cells": 7,
+      "verification": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 3
+        }
+      },
+      "witness": {
+        "split": 1,
+        "rho": "7/8"
+      },
+      "previous_witness": {
+        "split": 1,
+        "rho": "7/8"
+      },
+      "new_sturm_p_upper": 0.04602800272732921
+    },
+    {
+      "id": "independent_constant-ar1-study-n100-d0.08-s0.005-early-seed1400",
+      "previous_status": "certified_alert",
+      "new_status": "certified_alert",
+      "previous_cells": 115,
+      "new_cells": 115,
+      "verification": {
+        "verified": true,
+        "complete_coverage": true,
+        "certificate_routes": {
+          "shape": 98,
+          "size": 7,
+          "direction_uniform": 2
+        }
+      }
+    },
+    {
+      "id": "positive-indexed-ar1-study-n100-d0.08-s0.005-early-seed1500",
+      "previous_status": "certified_alert",
+      "new_status": "certified_alert",
+      "previous_cells": 125,
+      "new_cells": 125,
+      "verification": {
+        "verified": true,
+        "complete_coverage": true,
+        "certificate_routes": {
+          "shape": 98,
+          "size": 12,
+          "direction_tail": 2
+        }
+      }
+    },
+    {
+      "id": "deterministic-n24-change0.2",
+      "previous_status": "certified_alert",
+      "new_status": "certified_alert",
+      "previous_cells": 39,
+      "new_cells": 39,
+      "verification": {
+        "verified": true,
+        "complete_coverage": true,
+        "certificate_routes": {
+          "shape": 22,
+          "size": 7,
+          "direction_uniform": 2
+        }
+      }
+    },
+    {
+      "id": "deterministic-n100-change0.2",
+      "previous_status": "certified_alert",
+      "new_status": "certified_alert",
+      "previous_cells": 113,
+      "new_cells": 113,
+      "verification": {
+        "verified": true,
+        "complete_coverage": true,
+        "certificate_routes": {
+          "shape": 98,
+          "size": 5,
+          "direction_uniform": 3
+        }
+      }
+    },
+    {
+      "id": "deterministic-n24-change0.04",
+      "previous_status": "surviving_explanation",
+      "new_status": "surviving_explanation",
+      "previous_cells": 12,
+      "new_cells": 12,
+      "verification": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 11
+        }
+      },
+      "witness": {
+        "split": 12,
+        "rho": "0"
+      },
+      "previous_witness": {
+        "split": 12,
+        "rho": "0"
+      },
+      "new_sturm_p_upper": 1.0
+    }
+  ],
+  "artifact_builder_sha256": "a10ca38707ec6d42f33f1156d45b5d142ced8e1aaea50b8807066120dfd95823",
+  "diagnostic_source_sha256": "4a63d2938f672d49c5a8c49216ebbd29ccad1b7554871be19033bcce4465d621",
+  "archive": {
+    "file": "sturm_reporting_v1_diagnosis.json.gz",
+    "sha256": "62ecb3d070f56d7da597000b4bab5a684a89237dfb1d6e1df83f412b9a71301f"
+  }
+}

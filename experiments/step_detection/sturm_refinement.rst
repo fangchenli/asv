@@ -196,8 +196,8 @@ recomputes the previous witness certificate before constructing the new
 proofs. The `running guide <running.rst>`_ gives reproduction commands.
 Frozen references and ASV's production detector are unchanged.
 
-Next, integrate the new bound into the complete search and verify any
-remaining explanations. If another witness survives, compare its projected
-eigenvalue and probability bounds before refining the eigenvalue calculation
-further. At the present witness, the density inequality has become the more
-substantial approximation.
+The subsequent `complete Sturm replay <sturm_reporting.rst>`_ now integrates
+this bound and verifies all seven saved cases with no gained or lost alerts.
+The early case retains 101/128. Numerical projected eigenvalues still leave
+the current density bound above 0.01 there, so the next mathematical task
+is a sharper probability inequality rather than further eigenvalue accuracy.
