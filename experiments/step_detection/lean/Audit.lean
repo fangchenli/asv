@@ -15,3 +15,7 @@ import StepDetection
 #print axioms StepDetection.Saved.scalar_checks
 #print axioms StepDetection.Saved.saved_cutoff
 #print axioms StepDetection.Saved.saved_model_cutoff
+#print axioms StepDetection.Interval.enlarge_sound
+#print axioms StepDetection.DeterminantTrace.saved_enclosure
+#print axioms StepDetection.DeterminantTrace.saved_lower
+#print axioms StepDetection.DeterminantTrace.cutoff_with_trace

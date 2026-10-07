@@ -1,9 +1,11 @@
 Lean pilot: checking the certificate arithmetic
 ===============================================
 
-This project gives Lean a small part of our step-detection argument to check:
-the interval arithmetic rules and the final arithmetic in one saved
-certificate. It does not change ASV or improve the detection rate.
+This project uses Lean to check interval arithmetic, the complete arithmetic
+trace of one saved determinant calculation, and the certificate's final
+comparison with its probability cutoff. It does not change ASV or improve
+the detection rate. The `determinant trace walkthrough <determinant_trace.rst>`_
+explains the new connection between the generic rules and the saved result.
 
 Why this helps
 --------------
@@ -43,7 +45,14 @@ results compose: apply an operation's enclosure theorem, then apply
 These definitions describe the mathematical rules used in the Python
 reference. The Python implementation and the equivalence between its integer
 floor-division code and these real-number definitions have not been formally
-verified.
+verified. For the saved trace, Lean instead checks directly that each recorded
+pair of endpoints encloses the exact operation's result. This also checks
+that the concrete rounding was safe, without trusting Python's rounding code.
+
+``StepDetection/Trace.lean`` proves that enlarging an interval preserves its
+enclosure. The generated ``StepDetection/DeterminantTrace/`` modules apply
+this fact and the operation rules to 1,723 nodes, covering the saved
+determinant calculation for every correlation in its input interval.
 
 ``StepDetection/Certificate.lean`` proves two connecting facts:
 
@@ -88,11 +97,12 @@ holds, then ``p < 1/100``. Those three conditions are explicit theorem
 hypotheses. Lean has checked the implication, not established those conditions
 for the benchmark history.
 
-In particular, the interval endpoints stored in this file identify the saved
-certificate; the theorem does not independently prove the determinant and
-correction bounds uniformly over that correlation interval. The generic
-interval theorems are a foundation for that next step, rather than a replay
-of the matrix calculation.
+The new ``DeterminantTrace.saved_enclosure`` theorem proves the archived
+enclosure for the full recorded arithmetic expression throughout the
+correlation interval. ``cutoff_with_trace`` connects it to the 1% comparison,
+leaving the correction bound and the probability inequality as hypotheses.
+Identifying the recorded expression with the intended matrix determinant
+remains a separate mathematical proof.
 
 How the pieces connect
 -----------------------
@@ -102,8 +112,9 @@ The research pipeline currently has these proof boundaries:
 1. The saved benchmark history defines residuals and covariance matrices.
    This construction remains in Python and the mathematical writeups.
 2. Determinant calculations and Sturm eigenvalue counts produce the lower
-   bounds. Their generic scalar interval rules are proved here; the full
-   matrix and spectral arguments remain outside Lean.
+   bounds. Lean checks the complete determinant arithmetic trace, including
+   every reciprocal's nonzero-denominator condition. The matrix identity and
+   the spectral argument for the correction remain outside Lean.
 3. The Gaussian argument relates those quantities to a probability bound.
    It remains outside Lean.
 4. The final scalar arithmetic converts the bound into a comparison with
@@ -125,23 +136,26 @@ cache once::
 
     lake exe cache get
 
-Then run::
+Use the repository's Python environment, which provides NumPy and SciPy
+for importing the frozen calculation. From this directory run::
 
-    python3 verify.py
+    ../../../.venv/bin/python verify.py
 
 If Elan is installed but absent from your PATH::
 
-    python3 verify.py --lake "$HOME/.elan/bin/lake"
+    ../../../.venv/bin/python verify.py --lake "$HOME/.elan/bin/lake"
 
-The verifier checks the generated source against the archive, runs
-``lake build``, audits the axioms used by every public theorem, and confirms
-that changing the saved probability upper bound to zero makes Lean reject
-the proof. Dependencies and build output stay under the ignored ``.lake/``
-directory. No statistical experiments are run.
+The verifier checks both generated exports against the archive, runs
+``lake build``, and audits the foundational and final theorems' transitive
+axiom dependencies. It also checks two deliberately broken proofs: a zero
+probability upper bound and a zero enclosure for an intermediate determinant
+pivot. Lean must reject both. Dependencies and build output stay under the
+ignored ``.lake/`` directory. No statistical experiments are run.
 
 To see the individual checks::
 
-    python3 export_certificate.py --check
+    ../../../.venv/bin/python export_certificate.py --check
+    ../../../.venv/bin/python export_trace.py --check
     lake build
     lake env lean Audit.lean
 
@@ -162,12 +176,11 @@ boundary of kernel-checked proofs.
 What to formalize next
 -----------------------
 
-The next useful extension is a finite arithmetic trace for one determinant
-enclosure. Export the rational inputs and each interval operation, then have
-Lean check the chain using these enclosure theorems. This would connect the
-generic rules to an actual saved calculation and reduce our reliance on the
-Python arithmetic implementation. Matrix identities and the probability
-theorem would remain separate proof obligations.
+The next connection is the matrix identity: show that the recorded recurrence
+computes the intended determinant. That requires proving the tridiagonal
+factorization, the two linear solves, and the identity relating their result
+to the covariance restricted to residual directions. The scalar trace now
+supplies the enclosure once that connection is established.
 
 For the statistical research, the next task is still a sharper tail bound
 for the surviving ``101/128`` explanation. Lean can check the new algebra as

@@ -129,9 +129,11 @@ eigenvalues still leave its density bound above 0.01, directing the next
 work toward a sharper probability inequality.
 
 The isolated `Lean pilot <lean/README.rst>`_ now proves the scalar interval
-rules and checks the final exact arithmetic of one saved certificate. It
-makes the remaining determinant, spectral, and probability assumptions
-explicit; detection results are unchanged.
+rules and checks the final exact arithmetic of one saved certificate. Its
+`determinant trace <lean/determinant_trace.rst>`_ connects those rules to all
+1,723 nodes of the saved determinant calculation, throughout the correlation
+interval. The matrix identity, spectral bound, and probability argument
+remain separate proof obligations; detection results are unchanged.
 
 .. contents:: On this page
    :local:

@@ -245,9 +245,11 @@ four direction counts are included in that diagnosis.
 
 The isolated `Lean pilot <lean/README.rst>`_ proves interval enclosure and
 outward rounding rules, then checks one archived certificate's final scalar
-arithmetic. Its probability and matrix claims remain explicit hypotheses.
-The next formalization step is to check an exported determinant arithmetic
-trace against those rules.
+arithmetic. Its `determinant trace <lean/determinant_trace.rst>`_ now verifies
+all 1,723 nodes of the saved determinant expression and its enclosure across
+the correlation interval. The next formalization step is the matrix identity
+connecting that recurrence to the intended determinant. The probability and
+spectral claims remain separate obligations.
 
 For the statistical research, derive a sharper tilted-density or quadratic-tail
 interval bound.
