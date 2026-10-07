@@ -340,6 +340,11 @@ existing continuous reporting guarantee. Keep the fixed mixture as a
 control; do not adjust its components to this correlated example. A new
 detector and a fresh frozen evaluation should follow that analysis.
 
+The follow-up `directional tail certificate <directional_tail.rst>`_ now
+provides a rational upper bound below 0.008194 across the saved correlated
+witness's interval up to 1. It combines exponential tilting, a density bound,
+and matrix enclosures; a complete reporting search remains the next step.
+
 Files and verification
 ----------------------
 

@@ -174,14 +174,24 @@ still below the 4.605 exclusion cutoff. Its limit at +1 also remains below
 the cutoff. This establishes a remaining limitation without generating new
 histories or running a new detection study.
 
-Next, derive reliable tail bounds for the directional statistic itself.
-The analysis expresses its null distribution through weighted chi-square
-sums with no unknown levels or scale. Exact tail calibration would contain
-the uniform directional predictor's Markov rejection region, though it need
-not dominate the mixture. Determine how to bound these probabilities over
-continuous correlation intervals before integrating a detector. Keep the
-fixed mixture and existing indexed methods as controls; any new evaluation
-requires a new freeze and fresh histories.
+The `directional tail analysis <directional_tail.rst>`_ now derives an exact
+interval certificate. Exponential tilting bounds the weighted chi-square
+tail; a density bound using four covariance directions tightens it enough
+to reject the saved correlated witness. Matrix bounds and tridiagonal
+determinant recurrences prove a probability below 0.008194 throughout
+[16383/16384,1) at location 25. All 60 directional and tail tests pass.
+This removes the endpoint obstruction at that location, not every remaining
+explanation of the history.
+
+Next, integrate the uniform directional confidence certificate and the new
+tail certificate into a separate complete reference. Both bound the same
+directional p-value and can share delta=0.01; keep reporting alpha=0.04 and
+the existing work limits. Reconstruct full certificates on archived and
+deterministic examples, checking every location and the whole correlation
+range. Unsupported or unresolved regions must not become alerts. Keep the
+mixture and indexed methods as separate controls: accepting any of their
+rejections at full budget would need another coverage argument. Any new
+detection-rate comparison requires a new freeze and fresh histories.
 
 Unknown variance ratios and noise-transition locations remain subsequent
 mathematical tasks; use the completed studies as diagnostics.

@@ -475,6 +475,26 @@ Run the analytical tests with::
     VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
         .venv/bin/python -m pytest experiments/step_detection/test_residual_direction.py -q
 
+Check the directional tail certificate
+----------------------------------------
+
+The `tail derivation <directional_tail.rst>`_ proves an upper probability
+bound across a correlation interval. The helper uses rational arithmetic for
+the certificate and separately records floating tail estimates for comparison::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.directional_tail \
+        --output experiments/step_detection/runs/directional_tail_replay.json
+
+The output path must be new. The `saved diagnosis
+<data/directional_tail_v1_diagnosis.json>`_ includes both archived inputs'
+hashes, exact certificate quantities, and the numerical estimates. No full
+reporting search or new detection study is performed. Run the checks with::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest experiments/step_detection/test_directional_tail.py \
+        experiments/step_detection/test_residual_direction.py -q
+
 Run the original harness
 -------------------------
 

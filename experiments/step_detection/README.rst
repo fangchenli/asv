@@ -96,8 +96,12 @@ The `residual-direction derivation <residual_direction.rst>`_ now removes
 plateau levels and overall scale before constructing correlation confidence.
 It establishes coverage, a connection to the existing GLS polynomials, and
 both endpoint limits. A fixed directional mixture still retains the saved
-positively correlated witness. The next question is direct calibration of
-the directional statistic, whose nuisance-free distribution is now known.
+positively correlated witness.
+The `directional tail bound <directional_tail.rst>`_ now supplies that
+calibration near correlation 1. Exact rational inequalities put the saved
+witness's tail probability below 0.82% throughout its interval up to 1,
+crossing the 1% confidence cutoff. The next step is to combine this route
+with uniform directional confidence in a complete reporting reference.
 
 .. contents:: On this page
    :local:
