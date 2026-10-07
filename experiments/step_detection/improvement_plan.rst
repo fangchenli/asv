@@ -221,9 +221,16 @@ is 0.032029, whereas numerical integration estimates a probability of
 0.0026718. The remaining gap is in the Chernoff inequality at the fixed tilt.
 The second lost case retains its original witness.
 
-Next, derive a sharper interval probability bound using the full determinant,
-tilt selection, and the tilted-density refinement. Check the new witness
-before another complete replay. The verifier reconstructs residual states
+The `spectral refinement <spectral_refinement.rst>`_ now derives rational
+residual eigenvalue lower bounds and a density correction using 4, 8, 12,
+or 16 directions. Two fixed tilts bound the same p-value. The 13/16 witness
+is excluded with an interval bound below 0.007357. The complete seven-case
+replay again has no gained or lost alerts; the early case now retains 51/64,
+with bound 0.010687 and numerical probability estimate 0.0043470.
+
+Next, separate the looseness of the eigenvalue lower bounds from that of
+the tilted-density inequality at this new witness before further changes.
+The verifier reconstructs residual states
 separately but shares the determinant arithmetic kernel; independent dense
 algebra tests cover that kernel. Removing a witness alone does not establish
 an additional detection.

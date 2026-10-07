@@ -134,19 +134,16 @@ and numerical diagnosis. Every result was verified again before archiving,
 and the compressed bytes passed a round-trip check. Reproduction commands
 are in the `running guide <running.rst>`_.
 
-The next mathematical step
---------------------------
+The subsequent mathematical step
+---------------------------------
 
-Use the new 13/16 witness to examine a sharper probability inequality.
-Two available ingredients are choosing a more effective exponential tilt
-and restoring the tilted-density refinement while retaining the full
-covariance information. Valid bounds at different tilts can be minimized
-because they bound the same p-value; they do not introduce separate tests.
-Any proposed refinement still needs a uniform interval proof.
+The `spectral refinement <spectral_refinement.rst>`_ uses the 13/16 witness
+to derive a sharper probability inequality. It combines a second exponential
+tilt with a density bound using more residual directions, and certifies the
+witness's neighborhood below 0.007357. The complete replay retains the same
+seven decisions and finds another survivor at 51/64.
 
-First determine whether those ingredients can certify this new witness.
-Then replay the complete search again to discover whether other explanations
-remain. Freeze a revised method and evaluate fresh histories only after
-that development checkpoint. The middle-change loss remains a separate
-calibration question, since its estimated ideal directional probability
-already exceeds the existing confidence cutoff.
+The next question is which part of the refined inequality is still loose
+there. The middle-change loss remains a separate calibration question,
+since its estimated ideal directional probability already exceeds the
+existing confidence cutoff.

@@ -115,7 +115,11 @@ combination of size and directional evidence retains the second saved witness.
 The `complete determinant search <determinant_reporting.rst>`_ now replays
 seven saved cases with every result verified. Decisions are unchanged:
 removing the first lost case's old witness reveals another at correlation
-0.8125. Sharpening the probability inequality is the next mathematical step.
+0.8125. The `spectral refinement <spectral_refinement.rst>`_ now tightens that
+bound from 0.032029 to 0.006590 using eight residual directions and a second
+tilt. A verified seven-case replay retains the same decisions and finds
+another surviving correlation at 0.796875. The remaining approximation gap
+is the next mathematical question.
 
 .. contents:: On this page
    :local:

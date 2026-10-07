@@ -666,6 +666,43 @@ Run the integration and certificate-tampering tests::
         .venv/bin/python -m pytest \
         experiments/step_detection/test_reporting_determinant.py -q
 
+Spectral refinement and complete replay
+----------------------------------------
+
+The `spectral derivation and results <spectral_refinement.rst>`_ extend the
+density bound to several direction counts and two fixed tilts. Mathematical
+and integration checks are separate from any fresh simulation study::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest \
+        experiments/step_detection/test_directional_spectral.py \
+        experiments/step_detection/test_reporting_spectral.py -q
+
+Replay the seven saved cases with the determinant replay as the comparison::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.spectral_replay \
+        --output experiments/step_detection/runs/spectral_replay --workers 2
+
+The output directory must be new. Each verified result is saved immediately.
+The output also records point and interval certificates at previous surviving
+explanations and numerical tail estimates at current survivors.
+
+Verify again and archive the complete replay::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.spectral_replay_artifacts \
+        --run experiments/step_detection/runs/spectral_replay \
+        --output experiments/step_detection/runs/spectral_replay.json.gz \
+        --summary experiments/step_detection/runs/spectral_replay_summary.json
+
+Both outputs must be new. Archived reference results are linked from the
+derivation. Only rigorous bounds determine reporting decisions; numerical
+quadrature remains a development diagnostic.
+
 Run the original harness
 -------------------------
 
