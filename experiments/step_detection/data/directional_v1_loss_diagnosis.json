@@ -1,0 +1,95 @@
+{
+  "purpose": "Post-evaluation development diagnosis; frozen decisions unchanged",
+  "numerical_qualification": "Imhof inversion estimates with heuristic quadrature errors, not rigorous certificates",
+  "result_index_sha256": "e0a4436b7b84623195c2116521220c895668d435be4d3fb2db05d415203cb8cf",
+  "environment": {
+    "python": "3.14.5",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "source_hashes": {
+    "directional_losses.py": "183125d9d200c72d9542168d990df6fb79e727549dc4502918ee5bb74e22a4f9",
+    "directional_tail.py": "ae51093a0475f371e74ba5a6a4bd8cfff02c1b391c7a7a8d3edb97d95f567588",
+    "residual_direction.py": "11e2e6a7cc68bdbe6fe61da4341d445199015319a0c6bc9510efe9316c63c7db"
+  },
+  "lost_histories": [
+    {
+      "case": {
+        "change": 0.08,
+        "condition": "negative",
+        "correlation": -0.5,
+        "covariance_id": "negative-n100",
+        "id": "negative-directional-ar1-study-n100-d0.08-s0.02-early-seed1601",
+        "location": "early",
+        "n": 100,
+        "noise": 0.02,
+        "pair_id": "directional-ar1-study-n100-d0.08-s0.02-early-seed1601",
+        "position": 25,
+        "positive": true,
+        "seed": 1601,
+        "variance_profile": "constant"
+      },
+      "archives": {
+        "inputs": {
+          "file": "directional_v1_negative_n100_inputs_6.jsonl.gz",
+          "sha256": "4f9b92af42a32fafd2a23c105c9c5064de7d253683d9cebcc37952f571eccc0a"
+        },
+        "records": {
+          "file": "directional_v1_negative_n100_records_9.jsonl.gz",
+          "sha256": "de47ada6980b1f4c8b4d4fbae47492cbe79968e8107c3322f36e02ec51062244"
+        }
+      },
+      "status": "surviving_explanation",
+      "witness": {
+        "split": 1,
+        "rho": "7/8"
+      },
+      "confidence_cutoff": 0.01,
+      "saved_upper_bound_squared": "1",
+      "numerical_tail": {
+        "probability": 0.000321181333720888,
+        "quadrature_error_estimate": 3.3172942647002497e-09
+      },
+      "estimated_below_cutoff": true
+    },
+    {
+      "case": {
+        "change": 0.08,
+        "condition": "negative",
+        "correlation": -0.5,
+        "covariance_id": "negative-n100",
+        "id": "negative-directional-ar1-study-n100-d0.08-s0.02-middle-seed1601",
+        "location": "middle",
+        "n": 100,
+        "noise": 0.02,
+        "pair_id": "directional-ar1-study-n100-d0.08-s0.02-middle-seed1601",
+        "position": 50,
+        "positive": true,
+        "seed": 1601,
+        "variance_profile": "constant"
+      },
+      "archives": {
+        "inputs": {
+          "file": "directional_v1_negative_n100_inputs_6.jsonl.gz",
+          "sha256": "4f9b92af42a32fafd2a23c105c9c5064de7d253683d9cebcc37952f571eccc0a"
+        },
+        "records": {
+          "file": "directional_v1_negative_n100_records_9.jsonl.gz",
+          "sha256": "de47ada6980b1f4c8b4d4fbae47492cbe79968e8107c3322f36e02ec51062244"
+        }
+      },
+      "status": "surviving_explanation",
+      "witness": {
+        "split": 1,
+        "rho": "7/8"
+      },
+      "confidence_cutoff": 0.01,
+      "saved_upper_bound_squared": "1",
+      "numerical_tail": {
+        "probability": 0.016820336551463144,
+        "quadrature_error_estimate": 1.980393662421557e-10
+      },
+      "estimated_below_cutoff": false
+    }
+  ]
+}

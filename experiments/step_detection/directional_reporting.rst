@@ -7,8 +7,10 @@ the previous indexed reference missed. Turning off the new tail bound
 retains the old explanation near correlation 1 and produces no alert.
 
 This completes the implementation checkpoint. These are development
-examples we already studied; the next step is a frozen comparison on fresh
-histories to measure how often the improvement helps.
+examples we already studied. The subsequent `fresh comparison
+<directional_report.rst>`_ now measures the gain: 58/144 detections versus
+27/144 for indexed-jump, with zero false alerts among 216 null histories
+for both.
 
 What the search must establish
 ------------------------------

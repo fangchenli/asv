@@ -103,8 +103,13 @@ witness's tail probability below 0.82% throughout its interval up to 1,
 crossing the 1% confidence cutoff. The `complete directional reference
 <directional_reporting.rst>`_ now combines both bounds in the full search.
 It certifies the saved correlated 8% slowdown, with every interval checked;
-the uniform-only control retains the old witness. A frozen fresh comparison
-is next to measure detection rates.
+the uniform-only control retains the old witness. The `fresh directional
+comparison <directional_report.rst>`_ now detects 58/144 true slowdowns,
+versus 27/144 for indexed-jump on the same inputs, with zero false alerts
+among 216 null histories for both. The tail bound adds 11 detections beyond
+uniform directional confidence. Most remaining misses retain an explicit
+explanation; moderate-correlation bounds and joint evidence calibration
+are the next mathematical questions.
 
 .. contents:: On this page
    :local:

@@ -527,7 +527,9 @@ Evaluate directional confidence on fresh histories
 
 The `directional protocol <directional_protocol.rst>`_ freezes the two
 directional variants and all inherited comparisons before evaluation.
-Reproduce its 360 histories with::
+The `result report <directional_report.rst>`_ describes its 58/144 detections
+and zero false alerts among 216 null histories. Reproduce the 360 histories
+with::
 
     PYTHONINTMAXSTRDIGITS=0 \
         VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
@@ -588,6 +590,19 @@ sources, original manifest, worker count, and numerical-library thread
 settings before resuming. ``recovery.json`` records the preserved prefix
 hashes and wrapper hash; the original manifest is retained. A fresh replay
 can use the regular runner with the conversion limit set as shown above.
+
+Reproduce the numerical diagnosis of detections lost to indexed-jump from
+the saved, hash-checked archives::
+
+    PYTHONINTMAXSTRDIGITS=0 \
+        VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.directional_losses \
+        --index experiments/step_detection/data/directional_v1_results.json \
+        --output experiments/step_detection/runs/directional_losses_replay.json
+
+This is post-evaluation development analysis. Its floating tail estimates
+do not change any frozen decision and are not interval certificates. The
+saved output is `the loss diagnosis <data/directional_v1_loss_diagnosis.json>`_.
 
 Run the original harness
 -------------------------
