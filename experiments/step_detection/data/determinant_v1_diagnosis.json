@@ -1,0 +1,146 @@
+{
+  "purpose": "Mathematical development on two saved witnesses; no new detection counts",
+  "numerical_qualification": "Size and product p-values use floating arithmetic and the saved Imhof estimate; only determinant certificates are rigorous upper bounds",
+  "interval_half_width": "1/4096",
+  "loss_diagnosis_sha256": "6584f3b9bf838db1a34a53146206fe26a86992b0efc43971966b4cf36aacc96e",
+  "source_hashes": {
+    "determinant_diagnosis.py": "882f172c9489487b2fc4165592b99ed1678ad17ada3ab6cf6e904679d84b3712",
+    "directional_determinant.py": "74a5e39d45c48e1f234259d407a856d50f51b7e1f3c91da8ce34fe654b6b80e3",
+    "directional_tail.py": "ae51093a0475f371e74ba5a6a4bd8cfff02c1b391c7a7a8d3edb97d95f567588",
+    "residual_direction.py": "11e2e6a7cc68bdbe6fe61da4341d445199015319a0c6bc9510efe9316c63c7db",
+    "rational_polynomial.py": "bb63e487a13a96e1f20c9de6b5ce28be39efcf2feceff6c2322a062a97b7b723",
+    "reporting_ar1.py": "2a9d7bc2114af59e22cff7033336db81011703ca6a3fda4a0abdf33c5357b52e",
+    "reporting_ar1_full.py": "713d29e55ce7a139a8e81756f467729c9ff3fd225a71d8feb89910fc9928940e"
+  },
+  "environment": {
+    "python": "3.14.5",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "cases": [
+    {
+      "id": "negative-directional-ar1-study-n100-d0.08-s0.02-early-seed1601",
+      "archives": {
+        "inputs": {
+          "file": "directional_v1_negative_n100_inputs_6.jsonl.gz",
+          "sha256": "4f9b92af42a32fafd2a23c105c9c5064de7d253683d9cebcc37952f571eccc0a"
+        },
+        "records": {
+          "file": "directional_v1_negative_n100_records_9.jsonl.gz",
+          "sha256": "de47ada6980b1f4c8b4d4fbae47492cbe79968e8107c3322f36e02ec51062244"
+        }
+      },
+      "witness": {
+        "split": 1,
+        "rho": "7/8"
+      },
+      "previous_bound_squared": "1",
+      "point_certificate": {
+        "left": "7/8",
+        "right": "7/8",
+        "tilt": "1/16",
+        "delta": "1/100",
+        "bits": 192,
+        "status": "certified_excluded",
+        "p_upper_squared": "6277101735386680763835789423207666416102355444464034512896/170260800491171750101552207351071053098553967053369616721212681",
+        "p_upper": "1709078615357/281474976710656",
+        "radius_upper": "449371960334181412891727832441724003333462481075617945575/1569275433846670190958947355801916604025588861116008628224",
+        "determinant_enclosure": [
+          "170260800491171750101552207351071053098553967053369616721212681/6277101735386680763835789423207666416102355444464034512896",
+          "42565200122792937525388051837767763274638491763342404186816067/1569275433846670190958947355801916604025588861116008628224"
+        ]
+      },
+      "interval_certificate": {
+        "left": "3583/4096",
+        "right": "3585/4096",
+        "tilt": "1/16",
+        "delta": "1/100",
+        "bits": 192,
+        "status": "certified_excluded",
+        "p_upper_squared": "1569275433846670190958947355801916604025588861116008628224/31697812116276771190730801806761154172286445724824050838677207",
+        "p_upper": "1980499497347/281474976710656",
+        "radius_upper": "1806468259238192552936569836674058553734918387924139038141/6277101735386680763835789423207666416102355444464034512896",
+        "determinant_enclosure": [
+          "31697812116276771190730801806761154172286445724824050838677207/1569275433846670190958947355801916604025588861116008628224",
+          "193651208167615383845012398111446930798595597361845163370105467/6277101735386680763835789423207666416102355444464034512896"
+        ]
+      },
+      "saved_numerical_tail": {
+        "probability": 0.000321181333720888,
+        "quadrature_error_estimate": 3.3172942647002497e-09
+      },
+      "size_diagnostic": {
+        "estimated_earlier": 10.706877661006164,
+        "estimated_later": 10.56975696448093,
+        "estimated_excess_over_five_percent": -0.6724645795755428,
+        "standard_error": 0.40915537900159543,
+        "t_statistic": -1.6435432945216655,
+        "size_p": 0.9482624041871822,
+        "product_combination_p": 0.002770507297167694,
+        "joint_budget": 0.042
+      }
+    },
+    {
+      "id": "negative-directional-ar1-study-n100-d0.08-s0.02-middle-seed1601",
+      "archives": {
+        "inputs": {
+          "file": "directional_v1_negative_n100_inputs_6.jsonl.gz",
+          "sha256": "4f9b92af42a32fafd2a23c105c9c5064de7d253683d9cebcc37952f571eccc0a"
+        },
+        "records": {
+          "file": "directional_v1_negative_n100_records_9.jsonl.gz",
+          "sha256": "de47ada6980b1f4c8b4d4fbae47492cbe79968e8107c3322f36e02ec51062244"
+        }
+      },
+      "witness": {
+        "split": 1,
+        "rho": "7/8"
+      },
+      "previous_bound_squared": "1",
+      "point_certificate": {
+        "left": "7/8",
+        "right": "7/8",
+        "tilt": "1/16",
+        "delta": "1/100",
+        "bits": 192,
+        "status": "not_certified",
+        "p_upper_squared": "3138550867693340381917894711603833208051177722232017256448/459564467409941104927647387573195102611761537409720786725243",
+        "p_upper": "11630574321075/140737488355328",
+        "radius_upper": "1289055709119405459631474433678722012039875754777003149447/3138550867693340381917894711603833208051177722232017256448",
+        "determinant_enclosure": [
+          "459564467409941104927647387573195102611761537409720786725243/3138550867693340381917894711603833208051177722232017256448",
+          "919128934819882209855294775146390205223523074819441573598083/6277101735386680763835789423207666416102355444464034512896"
+        ]
+      },
+      "interval_certificate": {
+        "left": "3583/4096",
+        "right": "3585/4096",
+        "tilt": "1/16",
+        "delta": "1/100",
+        "bits": 192,
+        "status": "not_certified",
+        "p_upper_squared": "1569275433846670190958947355801916604025588861116008628224/172505187662583646958553793123301412033204058030103673318835",
+        "p_upper": "13423269335669/140737488355328",
+        "radius_upper": "323886086251268489924863735747139817917322137550321292983/784637716923335095479473677900958302012794430558004314112",
+        "determinant_enclosure": [
+          "172505187662583646958553793123301412033204058030103673318835/1569275433846670190958947355801916604025588861116008628224",
+          "1068429514706407165918921596817093903509223228868875013402191/6277101735386680763835789423207666416102355444464034512896"
+        ]
+      },
+      "saved_numerical_tail": {
+        "probability": 0.016820336551463144,
+        "quadrature_error_estimate": 1.980393662421557e-10
+      },
+      "size_diagnostic": {
+        "estimated_earlier": 10.640726210001578,
+        "estimated_later": 10.38606632198189,
+        "estimated_excess_over_five_percent": -0.7866961985197669,
+        "standard_error": 0.3424885208017532,
+        "t_statistic": -2.2970001934025106,
+        "size_p": 0.988126661020944,
+        "product_combination_p": 0.08471716038301956,
+        "joint_budget": 0.042
+      }
+    }
+  ]
+}

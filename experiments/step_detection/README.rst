@@ -108,8 +108,11 @@ comparison <directional_report.rst>`_ now detects 58/144 true slowdowns,
 versus 27/144 for indexed-jump on the same inputs, with zero false alerts
 among 216 null histories for both. The tail bound adds 11 detections beyond
 uniform directional confidence. Most remaining misses retain an explicit
-explanation; moderate-correlation bounds and joint evidence calibration
-are the next mathematical questions.
+explanation. The `full-determinant derivation <directional_determinant.rst>`_
+now certifies a correlation interval around one of the two lost detections'
+witnesses: its probability bound falls from 1 to below 0.007037. A product-based
+combination of size and directional evidence retains the second saved witness.
+Integrating the new bound into the complete search is next.
 
 .. contents:: On this page
    :local:

@@ -604,6 +604,29 @@ This is post-evaluation development analysis. Its floating tail estimates
 do not change any frozen decision and are not interval certificates. The
 saved output is `the loss diagnosis <data/directional_v1_loss_diagnosis.json>`_.
 
+Full-determinant mathematical checkpoint
+-----------------------------------------
+
+The `full-determinant derivation <directional_determinant.rst>`_ adds a
+standalone interval certificate and investigates the two saved lost
+detections. It uses existing archived inputs and does not run a fresh study::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.determinant_diagnosis \
+        --output experiments/step_detection/runs/determinant_replay.json
+
+The command checks input and record hashes and refuses to overwrite output.
+The reference output is `the determinant diagnosis
+<data/determinant_v1_diagnosis.json>`_. Certificates use exact outward
+rational arithmetic. The accompanying GLS/product p-values are numerical
+diagnostics and use the previous saved quadrature estimates.
+
+Run the algebra, interval, and archived-witness checks::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest \
+        experiments/step_detection/test_directional_determinant.py -q
+
 Run the original harness
 -------------------------
 

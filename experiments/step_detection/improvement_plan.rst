@@ -205,11 +205,20 @@ tail estimates at those witnesses are 0.0003212 and 0.01682, on opposite
 sides of the 0.01 confidence cutoff. These estimates are diagnostic and
 do not replace rigorous certificates.
 
-Next, derive interval bounds useful at moderate correlations, then examine
-joint calibration of size and noise-pattern evidence. The first loss
-suggests bound tightening can remove a witness; the second suggests that
-the same tail test would still retain its witness after exact evaluation.
-Use these saved cases for development and retain all frozen comparisons.
+The `full-determinant derivation <directional_determinant.rst>`_ now retains
+the entire residual covariance in the Chernoff bound. A tridiagonal identity
+and outward rational interval arithmetic certify the first lost witness's
+neighborhood with probability below 0.007037. The second remains unresolved
+by this improvement. Directional and size p-values are independent at the
+true Gaussian model, but their product-based calibrated combination is
+about 0.08472 at the second witness, above a proposed 0.042 joint budget.
+
+Next, integrate the determinant certificate and an independent verifier in
+a separate complete reporting reference. Retain the existing endpoint
+routes and take the minimum of bounds on the same p-value. Replay saved
+histories to check complete coverage and identify remaining explanations.
+Removing a saved witness alone does not establish an additional detection.
+Use the saved cases for development and retain all frozen comparisons.
 Any revised statistical rule requires a new freeze and fresh histories.
 Keep predictive mixtures as separate controls unless a new coverage
 argument explicitly combines them with directional evidence.
