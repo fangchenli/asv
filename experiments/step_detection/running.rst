@@ -522,6 +522,73 @@ Run the mathematical helpers and complete-search checks::
         experiments/step_detection/test_directional_tail.py \
         experiments/step_detection/test_residual_direction.py -q
 
+Evaluate directional confidence on fresh histories
+--------------------------------------------------
+
+The `directional protocol <directional_protocol.rst>`_ freezes the two
+directional variants and all inherited comparisons before evaluation.
+Reproduce its 360 histories with::
+
+    PYTHONINTMAXSTRDIGITS=0 \
+        VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.directional_study run \
+        --frozen experiments/step_detection/data/directional_v1_frozen.json \
+        --output experiments/step_detection/runs/directional_replay --workers 6
+
+The original freeze command was::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.directional_study freeze \
+        --inherited experiments/step_detection/data/indexed_v1_frozen.json \
+        --output experiments/step_detection/data/directional_v1_frozen.json
+
+The freeze is already saved. Both commands refuse to overwrite their output.
+The runner rejects changed sources, settings, environment, or covariance
+hashes. Records retain every inherited result and add ``directional_uniform``
+and ``directional_tail``, including standalone and gated decisions, complete
+certificates, witnesses, and generating-pair diagnostics. Test the evaluator
+using its separate test stream with::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest experiments/step_detection/test_directional_study.py -q
+
+After completion, verify and archive the complete run to a new destination::
+
+    PYTHONINTMAXSTRDIGITS=0 \
+        VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.directional_artifacts \
+        --run experiments/step_detection/runs/directional_replay \
+        --frozen experiments/step_detection/data/directional_v1_frozen.json \
+        --destination experiments/step_detection/runs/directional_replay_archives \
+        --workers 6 \
+        --cache experiments/step_detection/runs/directional_replay/verification_cache.json
+
+Adding ``--verify-available`` verifies only complete saved records while a
+run is in progress; it does not create archives. The optional cache is reused
+only when source hashes and the complete input/result pair match. Final
+archiving also regenerates all inputs and summary tables and checks every
+compressed file against its uncompressed content.
+
+``PYTHONINTMAXSTRDIGITS=0`` permits serialization and parsing of the large
+exact fractions produced by these trusted generated inputs. It does not
+change numerical values or detector decisions. The initial run reached
+Python's default 4300-digit conversion limit after saving 91 histories.
+The recovery wrapper preserved those results and resumed the same frozen
+evaluation, saving each subsequent completed history immediately::
+
+    PYTHONINTMAXSTRDIGITS=0 \
+        VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.directional_recovery \
+        --run experiments/step_detection/runs/directional_v1 \
+        --frozen experiments/step_detection/data/directional_v1_frozen.json \
+        --workers 6
+
+Use this only for an interrupted run. It verifies the saved prefix, frozen
+sources, original manifest, worker count, and numerical-library thread
+settings before resuming. ``recovery.json`` records the preserved prefix
+hashes and wrapper hash; the original manifest is retained. A fresh replay
+can use the regular runner with the conversion limit set as shown above.
+
 Run the original harness
 -------------------------
 

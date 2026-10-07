@@ -1,0 +1,12 @@
+{
+  "reason": "Python 4300-digit integer-to-text limit interrupted exact bound serialization",
+  "python_int_max_str_digits": 0,
+  "preserved_histories": 91,
+  "preserved_inputs_sha256": "345a1dbd539ef337e4d4328964ecbf77130a210b12fbef4e65127dec5def2f78",
+  "preserved_records_sha256": "4320f6414f45ee5d826de6bdd3f432f28d6e7069a2c28bbde42790d08a8bf3d2",
+  "original_manifest_sha256": "86120eaaa35512276089938211ac993ddfafa52bb9ddb7e44de7f53663f25a33",
+  "frozen_sha256": "306d575d73ac8d1944a48411b08bddeaf36f67e8abcce182248528e52ee6dc7d",
+  "recovery_source_sha256": "c0e09ef4262f35a02e71403f1b1359acecfd2e4789bb236d5a0fd4d2e1d3711f",
+  "frozen_sources_unchanged": true,
+  "workers": 6
+}
