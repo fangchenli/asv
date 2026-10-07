@@ -260,10 +260,10 @@ the saved witnesses, level/scale/reversal invariance, uninformative residual
 directions, and conservative failure on wide intervals or low precision.
 The `running guide <running.rst>`_ gives reproduction commands.
 
-Next, add this certificate as another bound on the same directional p-value
-in a separate reporting reference and its verifier. Taking the minimum of
-valid upper bounds requires no extra confidence budget. Keep the existing
-endpoint routes and work-limit behavior. Replay saved histories to establish
-complete coverage and find any remaining witnesses before freezing a new
-fresh-data comparison. The second lost case remains a modeling/calibration
-question; the determinant improvement alone does not promise to recover it.
+The subsequent `complete reporting replay <determinant_reporting.rst>`_ now
+adds this certificate as another bound on the same directional p-value.
+Taking the minimum of valid upper bounds requires no extra confidence
+budget. Seven saved cases verify with no gained or lost alerts: the first
+lost case finds another witness at correlation 13/16. The next step is a
+sharper probability inequality, followed by complete-search verification.
+The second lost case remains a modeling/calibration question.

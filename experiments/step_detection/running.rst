@@ -627,6 +627,45 @@ Run the algebra, interval, and archived-witness checks::
         .venv/bin/python -m pytest \
         experiments/step_detection/test_directional_determinant.py -q
 
+Complete determinant reporting replay
+---------------------------------------
+
+The `integration report <determinant_reporting.rst>`_ records a replay of
+seven saved cases. This runs the complete new search and verifies every
+result, using the previous saved results as the comparison::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.determinant_replay \
+        --output experiments/step_detection/runs/determinant_reporting_replay \
+        --workers 2
+
+The output directory must be new. Each completed, verified result is saved
+immediately; ``diagnosis.json`` assembles them in input order. Sources and
+input archives are hashed. The integer-string setting permits serialization
+of long exact rational values from these trusted calculations.
+
+Validate again and create a compressed archive plus a readable JSON summary::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.determinant_replay_artifacts \
+        --run experiments/step_detection/runs/determinant_reporting_replay \
+        --output experiments/step_detection/runs/determinant_replay.json.gz \
+        --summary experiments/step_detection/runs/determinant_replay_summary.json
+
+Both output files must be new. The builder verifies the complete certificates
+and checks the source hashes before archiving. It also estimates the new
+surviving explanation's directional probability by numerical integration;
+that estimate does not determine any reporting decision.
+
+Run the integration and certificate-tampering tests::
+
+    PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
+        OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_determinant.py -q
+
 Run the original harness
 -------------------------
 

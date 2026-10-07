@@ -213,11 +213,20 @@ by this improvement. Directional and size p-values are independent at the
 true Gaussian model, but their product-based calibrated combination is
 about 0.08472 at the second witness, above a proposed 0.042 joint budget.
 
-Next, integrate the determinant certificate and an independent verifier in
-a separate complete reporting reference. Retain the existing endpoint
-routes and take the minimum of bounds on the same p-value. Replay saved
-histories to check complete coverage and identify remaining explanations.
-Removing a saved witness alone does not establish an additional detection.
+The `complete determinant search <determinant_reporting.rst>`_ now integrates
+that bound while retaining the old endpoint routes. Seven saved cases pass
+verification, with no gained or lost alerts. The first lost case moves from
+its old witness at correlation 7/8 to another at 13/16. Its determinant bound
+is 0.032029, whereas numerical integration estimates a probability of
+0.0026718. The remaining gap is in the Chernoff inequality at the fixed tilt.
+The second lost case retains its original witness.
+
+Next, derive a sharper interval probability bound using the full determinant,
+tilt selection, and the tilted-density refinement. Check the new witness
+before another complete replay. The verifier reconstructs residual states
+separately but shares the determinant arithmetic kernel; independent dense
+algebra tests cover that kernel. Removing a witness alone does not establish
+an additional detection.
 Use the saved cases for development and retain all frozen comparisons.
 Any revised statistical rule requires a new freeze and fresh histories.
 Keep predictive mixtures as separate controls unless a new coverage

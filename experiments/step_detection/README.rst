@@ -112,7 +112,10 @@ explanation. The `full-determinant derivation <directional_determinant.rst>`_
 now certifies a correlation interval around one of the two lost detections'
 witnesses: its probability bound falls from 1 to below 0.007037. A product-based
 combination of size and directional evidence retains the second saved witness.
-Integrating the new bound into the complete search is next.
+The `complete determinant search <determinant_reporting.rst>`_ now replays
+seven saved cases with every result verified. Decisions are unchanged:
+removing the first lost case's old witness reveals another at correlation
+0.8125. Sharpening the probability inequality is the next mathematical step.
 
 .. contents:: On this page
    :local:
