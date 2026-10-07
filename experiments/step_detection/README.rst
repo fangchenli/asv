@@ -100,8 +100,11 @@ positively correlated witness.
 The `directional tail bound <directional_tail.rst>`_ now supplies that
 calibration near correlation 1. Exact rational inequalities put the saved
 witness's tail probability below 0.82% throughout its interval up to 1,
-crossing the 1% confidence cutoff. The next step is to combine this route
-with uniform directional confidence in a complete reporting reference.
+crossing the 1% confidence cutoff. The `complete directional reference
+<directional_reporting.rst>`_ now combines both bounds in the full search.
+It certifies the saved correlated 8% slowdown, with every interval checked;
+the uniform-only control retains the old witness. A frozen fresh comparison
+is next to measure detection rates.
 
 .. contents:: On this page
    :local:

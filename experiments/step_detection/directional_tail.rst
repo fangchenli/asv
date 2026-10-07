@@ -9,7 +9,9 @@ and every more persistent explanation at that location are excluded.
 
 This is an interval certificate on an archived example. Other locations and
 correlations still need checking before the history can produce an alert.
-No fresh histories or detection-rate comparison were run.
+No fresh histories or detection-rate comparison were run. The subsequent
+`complete reporting reference <directional_reporting.rst>`_ now integrates
+this bound and certifies the entire saved history.
 
 Why calibrating the pattern helps
 ---------------------------------

@@ -183,15 +183,22 @@ determinant recurrences prove a probability below 0.008194 throughout
 This removes the endpoint obstruction at that location, not every remaining
 explanation of the history.
 
-Next, integrate the uniform directional confidence certificate and the new
-tail certificate into a separate complete reference. Both bound the same
-directional p-value and can share delta=0.01; keep reporting alpha=0.04 and
-the existing work limits. Reconstruct full certificates on archived and
-deterministic examples, checking every location and the whole correlation
-range. Unsupported or unresolved regions must not become alerts. Keep the
-mixture and indexed methods as separate controls: accepting any of their
-rejections at full budget would need another coverage argument. Any new
-detection-rate comparison requires a new freeze and fresh histories.
+The `complete directional reference <directional_reporting.rst>`_ now
+integrates both confidence certificates with reporting alpha=0.04 and the
+existing work limits. All ten archived and deterministic runs pass full
+certificate verification. The new tail route turns the saved correlated
+8% miss into a certified alert; the uniform-only control retains the old
+witness. The 4% fixture remains a non-alert.
+
+Next, freeze the new reference and evaluation design before generating
+fresh histories. Compare uniform-only, combined directional, indexed-jump,
+conditional, and known-covariance decisions on identical inputs. Retain the
+previous study's factors with new seeds, and count exactly 5% as null.
+Report paired gains and losses, false alerts, surviving explanations, and
+unresolved searches. Keep the mixture and indexed methods as separate
+controls: accepting any of their rejections at full budget would need
+another coverage argument. The saved examples establish implementation
+correctness, not a fresh sensitivity estimate.
 
 Unknown variance ratios and noise-transition locations remain subsequent
 mathematical tasks; use the completed studies as diagnostics.

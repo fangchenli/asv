@@ -495,6 +495,33 @@ reporting search or new detection study is performed. Run the checks with::
         .venv/bin/python -m pytest experiments/step_detection/test_directional_tail.py \
         experiments/step_detection/test_residual_direction.py -q
 
+Check the complete directional reporting search
+------------------------------------------------
+
+The `complete reference <directional_reporting.rst>`_ combines uniform
+directional and tilted tail confidence bounds with size and shape checks.
+Reproduce the ten verified development runs on two saved histories and
+three deterministic fixtures::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.directional_diagnosis \
+        --output experiments/step_detection/runs/directional_reporting_replay.json \
+        --workers 3
+
+The output path must be new. Every result is verified before saving. The
+`compressed diagnosis <data/directional_reporting_v1_diagnosis.json.gz>`_
+contains the full certificates and source hashes; open it with Python's
+``gzip.open`` and ``json.load``. These runs use development examples and
+do not estimate fresh detection or false-alert rates.
+
+Run the mathematical helpers and complete-search checks::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest \
+        experiments/step_detection/test_reporting_directional.py \
+        experiments/step_detection/test_directional_tail.py \
+        experiments/step_detection/test_residual_direction.py -q
+
 Run the original harness
 -------------------------
 
