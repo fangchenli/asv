@@ -1,15 +1,12 @@
 The complete search with split-aware eigenvalue bounds
 ======================================================
 
-The Sturm bound is integrated and all seven saved cases verify. There are
-**no gained or lost alerts**: four previous alerts remain alerts, both lost
-detections remain non-alerts, and the below-threshold example remains a
-non-alert. No search reaches a work limit.
-
-The first lost detection moves to another explanation, at correlation
-**0.7890625**. The new diagnosis indicates that tighter eigenvalue estimates
-alone will not remove this explanation with the current probability formula.
-The next mathematical change should address that formula.
+The grouped Fourier bound was replayed on all seven saved cases and all seven
+results independently verify. Four previous alerts remain alerts; no
+previously non-alert case becomes an alert. The early negative-correlation
+case is unresolved at the default depth limit. Increasing only that case's
+search depth from 16 to 20 finds a new surviving explanation, so its final
+decision remains a non-alert.
 
 What is now implemented
 ------------------------
@@ -39,52 +36,19 @@ This history has a generated 8% slowdown after reading 25. The detector
 must also consider explanations placing the change elsewhere. Its previous
 survivor proposed a change after reading 1 and correlation 51/64.
 
-The Sturm bound rejects that explanation, both at the point and throughout
-its saved neighborhood. The complete search then finds another survivor
-at split 1 and rho=101/128, or 0.7890625. It passes the size and shape checks
-and has a probability upper bound of 0.012103, above the 0.01 cutoff.
-The search visits 12 cells, versus 11 in the preceding spectral replay.
+The earlier 51/64 explanation is rejected over its saved neighborhood. The
+next point, 101/128, is also excluded by the heterogeneous Fourier bound: its
+point certificate is about **0.0087203**, and the bound stays below
+**0.0087751** on [51711/65536, 51713/65536]. Both use the 1/8 tilt and all
+sixteen directions.
 
-This explains why several successful local improvements have not yet
-changed the history's final decision. Each improved bound removes a
-particular explanation. An alert requires removing every explanation,
-including the next one found after subdivision.
-
-Where the new survivor loses accuracy
--------------------------------------
-
-At this new witness, keep the tilt tau=1/8 and the existing density formula.
-The diagnosis compares the following eigenvalue inputs:
-
-.. list-table:: New witness at rho=101/128
-   :header-rows: 1
-
-   * - Calculation
-     - Bound or numerical estimate
-   * - Current rigorous Sturm certificate
-     - 0.012103
-   * - Same density formula using numerical projected eigenvalues
-     - 0.012076
-   * - Numerical directional tail probability
-     - 0.0055051
-
-The first row is rounded upward from a rational certificate. The last two
-rows are numerical diagnostics. The tail estimate has a quadrature error
-estimate of about 1.4e-9, which is not a rigorous error certificate.
-
-The full numerical decomposition checks both current tilts and all four
-direction counts. Its smallest bound using the projected eigenvalues is
-still about 0.012076. Replacing the eigenvalue lower bounds with more
-accurate ones therefore appears insufficient with those fixed choices.
-The much larger gap is between the density formula and the directional
-probability itself.
-
-This gives us a reason to stop concentrating on eigenvalue accuracy at
-this witness. The current formula controls the tilted density by replacing
-a selected group of coefficients with their weakest lower bound and then
-using a global density maximum. A sharper probability bound should retain
-more of the coefficient information or bound the negative tail more directly.
-Any such change still needs a uniform interval proof.
+At the default depth limit, the full search cannot certify the narrow
+interval [16185/16384, 32371/32768] near rho=0.988. Its determinant enclosure
+is inconclusive there, so the case returns unresolved after 934 cells. With
+depth 20, the search proceeds farther and finds a different surviving
+explanation at split 2 and rho=99/128. Its probability upper bound is
+0.012290, above the 0.01 cutoff. This is a valid reason the history still
+does not alert: excluding one explanation exposes another.
 
 The other six cases
 --------------------
@@ -114,30 +78,25 @@ and delegates inherited routes to the previous verifier. Every alert must
 cover every split's full correlation domain without gaps or overlaps.
 Surviving explanations are independently checked with dense GLS.
 
-The new 24 integration tests cover complete coverage, survivors, unit
+The 24 integration tests cover complete coverage, survivors, unit
 conversion, calibration, degenerate data, work limits, and damaged proofs
-or metadata, including changed eigenvalue precision. Disabling the Sturm
-route recovers the original directional search exactly after removing the
-additional metadata. The preceding mathematical checkpoint provides 28
-tests of the Sturm arithmetic and eigenvalue bounds. The detector and
-verifier share the bound arithmetic; those mathematical tests provide
-separate matrix and exact-root checks.
+or metadata, including changed eigenvalue precision. The 36 mathematical
+tests cover exact Sturm roots, the integer recurrence against its rational
+reference, eigenvalue bounds, heterogeneous Fourier integrals, and the
+saved point and interval certificates. Disabling the Sturm route recovers
+the original directional search exactly after removing the additional
+metadata.
 
-The `summary <data/sturm_reporting_v1_summary.json>`_ contains all seven
-decisions and the new-witness decomposition. The compressed
-`full archive <data/sturm_reporting_v1_diagnosis.json.gz>`_ retains inputs,
-previous and current results, certificates, source hashes, and numerical
-diagnoses. The archive builder checks the inputs and previous results
-against the preceding archive, re-verifies every result and saved witness
-interval, and checks compression round trips. Commands are in the
+The `latest summary <data/sturm_reporting_v2_heterogeneous_summary.json>`_
+contains all seven decisions. The compressed `full archive
+<data/sturm_reporting_v2_heterogeneous_diagnosis.json.gz>`_ retains the
+inputs, previous and current results, certificates, source hashes, and
+numerical diagnoses. The archive builder checks each result and saved
+witness interval against the preceding archive. Commands are in the
 `running guide <running.rst>`_.
 
-The replay finished before a server interruption. Its saved result files
-and source hashes were checked on resumption; the search was not repeated.
-This is development evidence on saved cases. The fresh-study detection count
-remains 58/144, and ASV's production detector is unchanged.
-
-Next, derive a tighter tilted-density or quadratic-tail bound using the
-101/128 witness to distinguish the benefit from additional eigenvalue work.
-Check its interval certificate before another complete replay. The second
-lost history remains a separate calibration question.
+This remains development evidence on saved cases. The fresh-study detection
+count remains 58/144, and ASV's production detector is unchanged. The next
+math target is the new 99/128 survivor; the next search target is to tighten
+the determinant interval near rho=0.988 so the default depth-16 run does not
+stop unresolved.

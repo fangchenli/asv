@@ -18,6 +18,23 @@ def precision(n, rho):
     return matrix + np.diag([-rho] * (n - 1), 1) + np.diag([-rho] * (n - 1), -1)
 
 
+def fraction_precision_count_reference(n, correlation, threshold):
+    previous, current = F(1), F(1) - threshold
+    last_sign, count = 1, 0
+    for i in range(1, n + 1):
+        if current:
+            sign = 1 if current > 0 else -1
+            count += sign != last_sign
+            last_sign = sign
+        if i < n:
+            diagonal = 1 if i == n - 1 else 1 + correlation**2
+            previous, current = (
+                current,
+                (diagonal - threshold) * current - correlation**2 * previous,
+            )
+    return count
+
+
 def test_exact_roots_and_interior_zeros_in_sturm_sequence():
     # For n=2 the eigenvalues are exactly 1-rho and 1+rho.
     for threshold, count in [(F(1, 4), 0), (F(1, 2), 0), (F(1), 1), (F(3, 2), 1), (F(2), 2)]:
@@ -28,6 +45,22 @@ def test_exact_roots_and_interior_zeros_in_sturm_sequence():
     assert sturm.precision_count_below(4, F(1, 2), 1) == 2
     assert sturm.precision_count_below(9, 0, 1) == 0
     assert sturm.precision_count_below(9, 0, F(1001, 1000)) == 9
+
+
+@pytest.mark.parametrize(
+    'n,rho,threshold',
+    [
+        (2, F(1, 2), F(1, 2)),
+        (4, F(1, 2), F(1)),
+        (7, F(7, 9), F(5, 4)),
+        (20, F(99, 100), F(3, 2)),
+        (100, F(101, 128), F(1, 10)),
+    ],
+)
+def test_integer_sturm_signs_match_fraction_recurrence(n, rho, threshold):
+    assert sturm.precision_count_below(n, rho, threshold) == fraction_precision_count_reference(
+        n, rho, threshold
+    )
 
 
 @pytest.mark.parametrize('n,rho', [(3, F(1, 4)), (8, F(3, 4)), (25, F(99, 100))])

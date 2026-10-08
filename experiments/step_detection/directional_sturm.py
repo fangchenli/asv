@@ -26,7 +26,14 @@ def precision_count_below(n, correlation, threshold):
         raise ValueError('Require n>=2 and a stationary nonnegative correlation')
     if correlation == 0:
         return n if threshold > 1 else 0
-    previous, current = F(1), 1 - threshold
+    # Scale each rational Sturm minor by a positive common denominator. The
+    # signs are unchanged, while integer arithmetic avoids repeated Fraction
+    # gcd reductions in the O(n)-step recurrence.
+    rho_num, rho_den = correlation.numerator, correlation.denominator
+    threshold_num, threshold_den = threshold.numerator, threshold.denominator
+    rho_num_squared = rho_num**2
+    rho_den_squared = rho_den**2
+    previous, current = 1, threshold_den - threshold_num
     last_sign, count = 1, 0
     for i in range(1, n + 1):
         if current:
@@ -34,11 +41,16 @@ def precision_count_below(n, correlation, threshold):
             count += sign != last_sign
             last_sign = sign
         if i < n:
-            diagonal = 1 if i == n - 1 else 1 + correlation**2
-            previous, current = (
-                current,
-                (diagonal - threshold) * current - correlation**2 * previous,
-            )
+            next_index = i + 1
+            diagonal_num = rho_den_squared if next_index == n else rho_den_squared + rho_num_squared
+            coefficient = diagonal_num * threshold_den - threshold_num * rho_den_squared
+            if next_index == 2:
+                next_minor = coefficient * current - rho_num_squared * threshold_den**2 * previous
+            else:
+                next_minor = coefficient * current - (
+                    rho_num_squared * threshold_den**2 * rho_den_squared * previous
+                )
+            previous, current = current, next_minor
     return count
 
 

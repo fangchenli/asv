@@ -118,6 +118,11 @@ eigenvalues below h. This is the Sturm count. With nonzero minors, each
 sign change corresponds to a negative pivot in an LDL decomposition;
 congruence preserves the number of negative eigenvalues.
 
+The implementation scales each rational minor by a positive common
+denominator and updates its integer numerator. This preserves every sign
+while avoiding repeated fraction simplification inside the recurrence. A
+test compares the integer signs with the original rational recurrence.
+
 Zero minors need care. When an interior minor is zero and v is nonzero,
 its two neighboring minors have opposite signs by the recurrence. Skipping
 the zero therefore counts one sign change. A zero final minor is also
@@ -197,9 +202,10 @@ proofs. The `running guide <running.rst>`_ gives reproduction commands.
 Frozen references and ASV's production detector are unchanged.
 
 The subsequent `complete Sturm replay <sturm_reporting.rst>`_ integrates this
-eigenvalue bound and verifies all seven saved cases. Its early case retains
-101/128. A later experiment below sharpens the Fourier density estimate at
-that witness; the full reporting replay has not yet been rerun with it.
+eigenvalue bound and verifies all seven saved cases. Its early negative
+correlation case is unresolved at the default depth limit. Later experiments
+below sharpen the Fourier density estimate at its 101/128 witness; further
+subdivision then finds a different survivor at 99/128.
 
 Keeping stronger directions in the density bound
 -------------------------------------------------
@@ -224,11 +230,10 @@ bound conservative with exact rational arithmetic.
 
 At split 1 and rho=101/128, this changes the saved point bound from about
 0.012103 to about 0.009224. On [51711/65536, 51713/65536], the bound is about
-0.009284. Both are below the 0.01 cutoff. These are point and interval
-certificates for this explanation only; the complete reporting search and
-all-seven-case replay have not yet been rerun with grouped density bounds.
-The second lost history at 7/8 also remains to be checked. The probability
-inequality is unchanged; only its Fourier density estimate is sharper.
+0.009284. Both are below the 0.01 cutoff. The complete replay with this
+grouped bound is recorded in `the reporting results <sturm_reporting.rst>`_.
+It moves the unresolved region toward |rho|=1 rather than changing the
+overall alert count.
 
 Integrating the unlike groups directly
 --------------------------------------
@@ -256,5 +261,7 @@ keeping the exact partial-fraction calculation small.
 At rho=101/128, the point bound falls from the grouped-Hölder value about
 0.009224 to **0.0087203**. On [51711/65536, 51713/65536], it is **0.0087751**.
 Both use tau=1/8 and sixteen directions. These are exact rational
-certificates rounded here for readability. The seven-case replay remains
-unfinished, so this local improvement is not yet a changed detector outcome.
+certificates rounded here for readability. The full replay excludes this
+local explanation but the search finds a different survivor at split 2 and
+rho=99/128 when its depth limit is raised to 20. The overall saved-case alert
+count therefore remains unchanged.

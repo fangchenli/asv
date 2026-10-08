@@ -756,6 +756,12 @@ original inputs/results, reconstructs every reporting and saved-witness
 certificate, and verifies the compressed bytes by a round trip. Numerical
 decompositions never determine reporting decisions.
 
+The latest grouped-Fourier result is saved as
+`the v2 summary <data/sturm_reporting_v2_heterogeneous_summary.json>`_ and
+`the v2 archive <data/sturm_reporting_v2_heterogeneous_diagnosis.json.gz>`_.
+To reproduce those names, use a fresh run directory and pass them to the
+artifact builder, for example ``runs/sturm_replay_v2`` for the run directory.
+
 Run the integration and proof-integrity checks::
 
     PYTHONINTMAXSTRDIGITS=0 VECLIB_MAXIMUM_THREADS=1 \
