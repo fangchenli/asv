@@ -132,8 +132,11 @@ The isolated `Lean pilot <lean/README.rst>`_ now proves the scalar interval
 rules and checks the final exact arithmetic of one saved certificate. Its
 `determinant trace <lean/determinant_trace.rst>`_ connects those rules to all
 1,723 nodes of the saved determinant calculation, throughout the correlation
-interval. The matrix identity, spectral bound, and probability argument
-remain separate proof obligations; detection results are unchanged.
+interval. The `matrix connection <lean/matrix_connection.rst>`_ now identifies
+that expression with the actual residual covariance determinant, including
+the factorization and both solves. The radius bound, spectral correction,
+and probability argument remain separate proof obligations; detection
+results are unchanged.
 
 .. contents:: On this page
    :local:

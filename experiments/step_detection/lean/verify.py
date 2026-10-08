@@ -24,6 +24,7 @@ def main():
     args = parser.parse_args()
     print(run([sys.executable, 'export_certificate.py', '--check']).stdout, end='')
     print(run([sys.executable, 'export_trace.py', '--check']).stdout, end='')
+    print(run([sys.executable, 'export_matrix.py', '--check']).stdout, end='')
     subprocess.run([args.lake, 'build'], cwd=ROOT, check=True)
     audit = run([args.lake, 'env', 'lean', 'Audit.lean'])
     print(audit.stdout, end='')
@@ -79,6 +80,23 @@ def main():
                 f'Expected an unprovable intermediate enclosure: {rejected.stdout}{rejected.stderr}'
             )
     print('Corrupted trace (first pivot enclosure changed to zero): rejected by Lean.')
+
+    source = (ROOT / 'StepDetection' / 'AR1.lean').read_text()
+    target = 'fun i j => rho ^ Nat.dist i.val j.val'
+    if source.count(target) != 1:
+        raise RuntimeError('Could not locate the covariance entries to corrupt')
+    changed = source.replace(target, 'fun i j => 2 * rho ^ Nat.dist i.val j.val')
+    with tempfile.TemporaryDirectory(prefix='negative-matrix-', dir=ROOT / '.lake') as directory:
+        path = Path(directory) / 'RejectedMatrix.lean'
+        path.write_text(changed)
+        rejected = subprocess.run(
+            [args.lake, 'env', 'lean', str(path)], cwd=ROOT, text=True, capture_output=True
+        )
+        if rejected.returncode == 0 or 'Type mismatch' not in rejected.stdout:
+            raise RuntimeError(
+                f'Expected a false covariance identity: {rejected.stdout}{rejected.stderr}'
+            )
+    print('Corrupted matrix (covariance entries doubled): rejected by Lean.')
     print('Lean pilot verification passed.')
 
 

@@ -75,14 +75,14 @@ What still connects this to statistics
 ---------------------------------------
 
 Lean proves that the recorded arithmetic expression stays inside the saved
-interval. To call that expression the intended matrix determinant, we still
-need a matrix proof of the recurrence and the projection identity. The
-existing derivation explains these identities; they are not yet Lean theorems.
+interval. The subsequent `matrix connection <matrix_connection.rst>`_ now
+proves that the recurrence and projection identity give the intended matrix
+determinant. It also checks the saved pivots, solves, and plateau sums.
 
 The saved radius bound, the spectral density-correction bound, and the
-Gaussian probability inequality also retain their existing proof boundaries.
-This work checks the determinant arithmetic, not the entire statistical
-argument or the complete search over possible explanations.
+Gaussian probability inequality retain their existing proof boundaries.
+The determinant proofs do not establish the entire statistical argument
+or the complete search over possible explanations.
 
 The exporter and its connection to the Python routine are ordinary Python.
 It checks frozen source hashes, checks the history archive hash, and compares

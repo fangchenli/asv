@@ -82,7 +82,7 @@ def fraction(q):
     return f'({q.numerator} / {q.denominator} : ℝ)'
 
 
-def collect():
+def collect(*, capture=None):
     archive = STUDY / 'data' / 'sturm_v1_diagnosis.json'
     raw = archive.read_bytes()
     diagnosis = json.loads(raw)
@@ -107,7 +107,28 @@ def collect():
     # Run the unchanged routine once normally and once with a recording arithmetic object.
     original = determinant.determinant_interval(n, split, left, right, a, b, bits=cert['bits'])
     with patch.object(determinant, 'Arithmetic', return_value=recorder):
-        result = determinant.determinant_interval(n, split, left, right, a, b, bits=cert['bits'])
+        if capture is None:
+            result = determinant.determinant_interval(
+                n, split, left, right, a, b, bits=cert['bits']
+            )
+        else:
+            previous_profile = sys.getprofile()
+
+            def profile(frame, event, _arg):
+                if event != 'return' or frame.f_code.co_filename != determinant.__file__:
+                    return
+                if frame.f_code.co_name == 'determinant_interval':
+                    capture.update(frame.f_locals)
+                elif frame.f_code.co_name == 'solve':
+                    capture.setdefault('solves', []).append(dict(frame.f_locals))
+
+            try:
+                sys.setprofile(profile)
+                result = determinant.determinant_interval(
+                    n, split, left, right, a, b, bits=cert['bits']
+                )
+            finally:
+                sys.setprofile(previous_profile)
     if tuple(result) != expected or original != expected:
         raise ValueError('Recomputed determinant differs from the saved enclosure')
     inputs = [node for node in recorder.nodes if node['op'] == 'input']

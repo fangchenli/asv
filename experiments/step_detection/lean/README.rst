@@ -2,10 +2,11 @@ Lean pilot: checking the certificate arithmetic
 ===============================================
 
 This project uses Lean to check interval arithmetic, the complete arithmetic
-trace of one saved determinant calculation, and the certificate's final
-comparison with its probability cutoff. It does not change ASV or improve
-the detection rate. The `determinant trace walkthrough <determinant_trace.rst>`_
-explains the new connection between the generic rules and the saved result.
+trace of one saved determinant calculation, its connection to the actual
+residual covariance matrix, and the certificate's final probability cutoff.
+It does not change ASV or improve the detection rate. Read the
+`trace walkthrough <determinant_trace.rst>`_ for the arithmetic and the
+`matrix connection <matrix_connection.rst>`_ for the determinant identity.
 
 Why this helps
 --------------
@@ -54,6 +55,11 @@ enclosure. The generated ``StepDetection/DeterminantTrace/`` modules apply
 this fact and the operation rules to 1,723 nodes, covering the saved
 determinant calculation for every correlation in its input interval.
 
+The `matrix connection <matrix_connection.rst>`_ then proves that the recorded
+pivots, solves, and final expression compute the intended residual determinant.
+It includes the AR(1) covariance identity and the positivity needed for
+matrix inverses. ``SavedResidual.lean`` combines this with the enclosure.
+
 ``StepDetection/Certificate.lean`` proves two connecting facts:
 
 * Positive lower bounds on the determinant and density correction give an
@@ -101,8 +107,10 @@ The new ``DeterminantTrace.saved_enclosure`` theorem proves the archived
 enclosure for the full recorded arithmetic expression throughout the
 correlation interval. ``cutoff_with_trace`` connects it to the 1% comparison,
 leaving the correction bound and the probability inequality as hypotheses.
-Identifying the recorded expression with the intended matrix determinant
-remains a separate mathematical proof.
+``residual_determinant_eq_trace`` now identifies the expression with the
+intended matrix determinant for any orthonormal basis perpendicular to the
+two plateau indicators. ``cutoff_with_residual_matrix`` uses that identity
+in the final probability comparison.
 
 How the pieces connect
 -----------------------
@@ -113,8 +121,9 @@ The research pipeline currently has these proof boundaries:
    This construction remains in Python and the mathematical writeups.
 2. Determinant calculations and Sturm eigenvalue counts produce the lower
    bounds. Lean checks the complete determinant arithmetic trace, including
-   every reciprocal's nonzero-denominator condition. The matrix identity and
-   the spectral argument for the correction remain outside Lean.
+   every reciprocal's nonzero-denominator condition, and proves its matrix
+   identity. The residual radius bound and the spectral correction remain
+   outside Lean.
 3. The Gaussian argument relates those quantities to a probability bound.
    It remains outside Lean.
 4. The final scalar arithmetic converts the bound into a comparison with
@@ -145,17 +154,19 @@ If Elan is installed but absent from your PATH::
 
     ../../../.venv/bin/python verify.py --lake "$HOME/.elan/bin/lake"
 
-The verifier checks both generated exports against the archive, runs
+The verifier checks all three generated exports against the archive, runs
 ``lake build``, and audits the foundational and final theorems' transitive
 axiom dependencies. It also checks two deliberately broken proofs: a zero
 probability upper bound and a zero enclosure for an intermediate determinant
-pivot. Lean must reject both. Dependencies and build output stay under the
-ignored ``.lake/`` directory. No statistical experiments are run.
+pivot. A third check doubles the AR(1) covariance entries and requires Lean
+to reject the resulting matrix identity. Dependencies and build output stay
+under the ignored ``.lake/`` directory. No statistical experiments are run.
 
 To see the individual checks::
 
     ../../../.venv/bin/python export_certificate.py --check
     ../../../.venv/bin/python export_trace.py --check
+    ../../../.venv/bin/python export_matrix.py --check
     lake build
     lake env lean Audit.lean
 
@@ -176,11 +187,10 @@ boundary of kernel-checked proofs.
 What to formalize next
 -----------------------
 
-The next connection is the matrix identity: show that the recorded recurrence
-computes the intended determinant. That requires proving the tridiagonal
-factorization, the two linear solves, and the identity relating their result
-to the covariance restricted to residual directions. The scalar trace now
-supplies the enclosure once that connection is established.
+The next connection is the radius certificate: verify that the archived
+radius upper bound follows from the benchmark residuals, and prove that
+using it in the determinant is conservative. The spectral correction and
+Gaussian probability inequality are further proof obligations.
 
 For the statistical research, the next task is still a sharper tail bound
 for the surviving ``101/128`` explanation. Lean can check the new algebra as

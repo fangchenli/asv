@@ -773,8 +773,9 @@ repository root::
     .venv/bin/python experiments/step_detection/lean/verify.py
 
 Pass ``--lake "$HOME/.elan/bin/lake"`` if Lake is not on PATH. This checks
-the proof build, archived scalar inputs and full determinant trace, permitted
-axioms, and rejection of corrupted probability and intermediate pivot bounds.
+the proof build, archived inputs, full determinant trace and matrix identity,
+permitted axioms, and rejection of corrupted probability bounds, intermediate
+pivot bounds, and covariance entries.
 Use the repository Python environment because the trace exporter imports
 the frozen calculation's NumPy/SciPy dependencies. It runs no new statistical
 experiments.
