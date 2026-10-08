@@ -229,3 +229,32 @@ certificates for this explanation only; the complete reporting search and
 all-seven-case replay have not yet been rerun with grouped density bounds.
 The second lost history at 7/8 also remains to be checked. The probability
 inequality is unchanged; only its Fourier density estimate is sharper.
+
+Integrating the unlike groups directly
+--------------------------------------
+
+Hölder is still a relaxation: it bounds the integral of a product using the
+separate integrals of each group. We can instead integrate the product
+itself. Write a_j=2*b_j for the lower bound of group j. The characteristic
+function is bounded by::
+
+    product_j (1 + a_j**2*u**2)**-1.
+
+When the rates a_j are distinct, partial fractions give the exact Fourier
+integral and hence this density upper bound::
+
+    density <= (1/2) * sum_i a_i**(2*m-3)
+                         / product_(j != i)(a_i**2 - a_j**2).
+
+The terms can have different signs, but their exact rational sum is
+positive. For equal or nearly equal group bounds, the implementation rounds
+each b_j downward to a dyadic rational and separates collisions by one
+dyadic unit. The resulting rates are distinct and no larger than the
+original rates, so this remains conservative. Only four groups are used,
+keeping the exact partial-fraction calculation small.
+
+At rho=101/128, the point bound falls from the grouped-Hölder value about
+0.009224 to **0.0087203**. On [51711/65536, 51713/65536], it is **0.0087751**.
+Both use tau=1/8 and sixteen directions. These are exact rational
+certificates rounded here for readability. The seven-case replay remains
+unfinished, so this local improvement is not yet a changed detector outcome.

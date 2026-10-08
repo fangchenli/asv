@@ -148,6 +148,53 @@ def grouped_density_bounds(tilted_weight_lowers, *, bits=64):
     return results
 
 
+def heterogeneous_density_bounds(tilted_weight_lowers, *, bits=64):
+    """Integrate the product of heterogeneous four-direction group bounds.
+
+    The exact integral is a rational partial-fraction sum when the group
+    weights are distinct. We round weights down and separate collisions by
+    one dyadic unit, preserving a conservative bound while avoiding repeated
+    poles. Each returned density is therefore an exact rational upper bound.
+    """
+    weights = [F(value) for value in tilted_weight_lowers]
+    if not isinstance(bits, int) or isinstance(bits, bool) or bits < 1:
+        raise ValueError('Require positive integer weight precision')
+    if any(value <= 0 for value in weights):
+        raise ValueError('Require positive tilted-weight lower bounds')
+    scale = 1 << bits
+    rounded, used = [], set()
+    for weight in weights:
+        units = weight.numerator * scale // weight.denominator
+        while units in used:
+            units -= 1
+        if units <= 0:
+            break
+        used.add(units)
+        rounded.append(F(units, scale))
+
+    results = []
+    for groups in range(1, len(rounded) + 1):
+        rates = [2 * weight for weight in rounded[:groups]]
+        density_upper = F(0)
+        for i, rate in enumerate(rates):
+            denominator = rate
+            for j, other in enumerate(rates):
+                if i != j:
+                    denominator *= rate**2 - other**2
+            density_upper += rate ** (2 * groups - 2) / denominator
+        density_upper /= 2
+        if density_upper <= 0:
+            raise ArithmeticError('Fourier partial fractions did not give a positive density bound')
+        results.append(
+            {
+                'count': 4 * groups,
+                'group_weight_lowers': [str(value) for value in rounded[:groups]],
+                'density_upper': str(density_upper),
+            }
+        )
+    return results
+
+
 def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant.BITS):
     """Same determinant and density correction, with stronger eigenvalue inputs."""
     tilt, delta = F(tilt), F(delta)
@@ -192,6 +239,12 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
     grouped = grouped_density_bounds(tilted_weight_lowers)
     result['grouped_density_bounds'] = grouped
     for item in grouped:
+        candidate = max(F(1), tilt / F(item['density_upper']))
+        if candidate > correction:
+            correction, result['selected_count'] = candidate, item['count']
+    heterogeneous = heterogeneous_density_bounds(tilted_weight_lowers)
+    result['heterogeneous_density_bounds'] = heterogeneous
+    for item in heterogeneous:
         candidate = max(F(1), tilt / F(item['density_upper']))
         if candidate > correction:
             correction, result['selected_count'] = candidate, item['count']
