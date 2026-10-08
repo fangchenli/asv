@@ -31,26 +31,15 @@ def qreal(value):
     return f'({value.numerator} : ℝ) / {value.denominator}'
 
 
-def iexpr(coefficients):
+def polynomial_expression(coefficients):
     terms = []
     for degree, coefficient in enumerate(coefficients):
-        coefficient = F(coefficient)
-        if coefficient.denominator != 1:
-            raise ValueError('Scaled sufficient-statistic coefficient is not integral')
-        coefficient = coefficient.numerator
-        if not coefficient:
-            continue
-        term = f'{abs(coefficient)}'
+        coefficient = int(F(coefficient))
+        term = f'C ({coefficient} : ℤ)'
         if degree:
-            term += f' * rho ^ {degree}'
-        terms.append(('-' if coefficient < 0 else '+', term))
-    if not terms:
-        return '0'
-    sign, first = terms[0]
-    expression = ('-' if sign == '-' else '') + first
-    for sign, term in terms[1:]:
-        expression += f' {sign} {term}'
-    return expression
+            term += f' * X ^ {degree}'
+        terms.append(term)
+    return ' + '.join(terms) or '0'
 
 
 def scalar_expression(coefficients, variable='rho'):
@@ -108,9 +97,9 @@ def render():
         ('linear0', linear[0]),
         ('linear1', linear[1]),
     ]
-    rational_defs = '\n'.join(
-        f'def saved{name.title()}Scaled (rho : ℤ) : ℤ := '
-        f'{iexpr([F(coefficient) * scale**2 for coefficient in coefficients])}'
+    polynomial_defs = '\n'.join(
+        f'noncomputable def saved{name.title()}Poly : Polynomial ℤ := '
+        f'{polynomial_expression([F(coefficient) * scale**2 for coefficient in coefficients])}'
         for name, coefficients in rational_stats
     )
 
@@ -149,45 +138,95 @@ def savedObservationsI : Fin 100 → ℤ := ![{saved_values_lean}]
 def savedEntryI (i : ℕ) : ℤ := if h : i < 100 then savedObservationsI ⟨i, h⟩ else 0
 def savedPlateau0I (i : ℕ) : ℤ := if i = 0 then observationScale else 0
 def savedPlateau1I (i : ℕ) : ℤ := if i = 0 then 0 else observationScale
-def precisionProductI (rho : ℤ) (a b : ℕ → ℤ) : ℤ :=
+noncomputable def precisionProductPoly (a b : ℕ → ℤ) : Polynomial ℤ :=
+  C (∑ i ∈ Finset.range 100, a i * b i) -
+    X * C (∑ i ∈ Finset.range 99, (a i * b (i + 1) + a (i + 1) * b i)) +
+    X ^ 2 * C (∑ i ∈ Finset.range 98, a (i + 1) * b (i + 1))
+
+noncomputable def precisionProductReal (rho : ℝ) (a b : ℕ → ℝ) : ℝ :=
   (∑ i ∈ Finset.range 100, a i * b i) -
     rho * (∑ i ∈ Finset.range 99, (a i * b (i + 1) + a (i + 1) * b i)) +
     rho ^ 2 * (∑ i ∈ Finset.range 98, a (i + 1) * b (i + 1))
 
-{rational_defs}
+noncomputable def scaledReal (a : ℕ → ℤ) : ℕ → ℝ := fun i => (a i : ℝ) / observationScale
 
-theorem saved_total_from_observations (rho : ℤ) :
-    precisionProductI rho savedEntryI savedEntryI = savedTotalScaled rho := by
-  norm_num [precisionProductI, savedTotalScaled, savedEntryI, savedObservationsI,
+{polynomial_defs}
+
+{chr(10).join(definitions)}
+
+theorem saved_total_from_observations :
+    precisionProductPoly savedEntryI savedEntryI = savedTotalPoly := by
+  norm_num [precisionProductPoly, savedTotalPoly, savedEntryI, savedObservationsI,
     Finset.sum_range_succ] <;> ring
 
-theorem saved_gram00_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau0I savedPlateau0I = savedGram00Scaled rho := by
-  norm_num [precisionProductI, savedGram00Scaled, savedPlateau0I, observationScale,
+theorem saved_gram00_from_observations :
+    precisionProductPoly savedPlateau0I savedPlateau0I = savedGram00Poly := by
+  norm_num [precisionProductPoly, savedGram00Poly, savedPlateau0I, observationScale,
     Finset.sum_range_succ] <;> ring
 
-theorem saved_gram01_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau0I savedPlateau1I = savedGram01Scaled rho := by
-  norm_num [precisionProductI, savedGram01Scaled, savedPlateau0I, savedPlateau1I,
+theorem saved_gram01_from_observations :
+    precisionProductPoly savedPlateau0I savedPlateau1I = savedGram01Poly := by
+  norm_num [precisionProductPoly, savedGram01Poly, savedPlateau0I, savedPlateau1I,
     observationScale,
     Finset.sum_range_succ] <;> ring
 
-theorem saved_gram11_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau1I savedPlateau1I = savedGram11Scaled rho := by
-  norm_num [precisionProductI, savedGram11Scaled, savedPlateau1I, observationScale,
+theorem saved_gram11_from_observations :
+    precisionProductPoly savedPlateau1I savedPlateau1I = savedGram11Poly := by
+  norm_num [precisionProductPoly, savedGram11Poly, savedPlateau1I, observationScale,
     Finset.sum_range_succ] <;> ring
 
-theorem saved_linear0_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau0I savedEntryI = savedLinear0Scaled rho := by
-  norm_num [precisionProductI, savedLinear0Scaled, savedPlateau0I, savedEntryI,
+theorem saved_linear0_from_observations :
+    precisionProductPoly savedPlateau0I savedEntryI = savedLinear0Poly := by
+  norm_num [precisionProductPoly, savedLinear0Poly, savedPlateau0I, savedEntryI,
     savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
 
-theorem saved_linear1_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau1I savedEntryI = savedLinear1Scaled rho := by
-  norm_num [precisionProductI, savedLinear1Scaled, savedPlateau1I, savedEntryI,
+theorem saved_linear1_from_observations :
+    precisionProductPoly savedPlateau1I savedEntryI = savedLinear1Poly := by
+  norm_num [precisionProductPoly, savedLinear1Poly, savedPlateau1I, savedEntryI,
     savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
 
-{chr(10).join(definitions)}
+noncomputable def savedEntryR : ℕ → ℝ := scaledReal savedEntryI
+noncomputable def savedPlateau0R : ℕ → ℝ := scaledReal savedPlateau0I
+noncomputable def savedPlateau1R : ℕ → ℝ := scaledReal savedPlateau1I
+
+theorem saved_total_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedEntryR savedEntryR = fitTotal rho := by
+  norm_num [precisionProductReal, savedEntryR, scaledReal, savedEntryI,
+    savedObservationsI, observationScale, fitTotal, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_gram00_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau0R savedPlateau0R = fitGram00 rho := by
+  norm_num [precisionProductReal, savedPlateau0R, scaledReal, savedPlateau0I,
+    observationScale, fitGram00, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_gram01_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau0R savedPlateau1R = fitGram01 rho := by
+  norm_num [precisionProductReal, savedPlateau0R, savedPlateau1R, scaledReal,
+    savedPlateau0I, savedPlateau1I, observationScale, fitGram01,
+    Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_gram11_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau1R savedPlateau1R = fitGram11 rho := by
+  norm_num [precisionProductReal, savedPlateau1R, scaledReal, savedPlateau1I,
+    observationScale, fitGram11, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_linear0_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau0R savedEntryR = fitLinear0 rho := by
+  norm_num [precisionProductReal, savedPlateau0R, savedEntryR, scaledReal,
+    savedPlateau0I, savedEntryI, savedObservationsI, observationScale,
+    fitLinear0, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_linear1_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau1R savedEntryR = fitLinear1 rho := by
+  norm_num [precisionProductReal, savedPlateau1R, savedEntryR, scaledReal,
+    savedPlateau1I, savedEntryI, savedObservationsI, observationScale,
+    fitLinear1, Finset.sum_range_succ]
+  <;> ring
 
 theorem fit_gram_determinant_identity (rho : ℝ) :
     fitGramDet rho = (1 - rho) * SavedRadius.denominator rho := by

@@ -57,3 +57,9 @@ import StepDetection
 #print axioms StepDetection.DeterminantTrace.saved_gram11_from_observations
 #print axioms StepDetection.DeterminantTrace.saved_linear0_from_observations
 #print axioms StepDetection.DeterminantTrace.saved_linear1_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_total_real_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_gram00_real_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_gram01_real_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_gram11_real_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_linear0_real_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_linear1_real_from_observations

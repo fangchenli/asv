@@ -152,12 +152,16 @@ the archive and source hashes, and writes the 100 observations into Lean as
 integers times ``2⁻⁴⁹``. Lean independently applies the tridiagonal AR(1)
 precision formula to that vector and proves the total, three plateau Gram
 entries, and two linear terms equal the generated sufficient-statistic
-polynomials (after multiplying by the common scale squared). The finite sums
-are evaluated exactly, so changing even one encoded observation breaks these
-proofs. The remaining extraction step is the JSON-to-Lean generation, guarded
-by the archived hash checks. The spectral correction and Gaussian
-probability argument are further proof obligations; the probability
-inequality and density-correction lower bound remain explicit hypotheses.
+polynomials (after multiplying by the common scale squared). It also proves
+that the corresponding real-valued finite precision sums equal the fitted
+real polynomials for every real ``rho``. Thus the polynomial ratio used by the
+radius certificate is now connected to the actual precision-weighted fit for
+this saved history. The finite sums are evaluated exactly, so changing even
+one encoded observation breaks these proofs. The remaining extraction step
+is the JSON-to-Lean generation, guarded by the archived hash checks. The
+spectral correction and Gaussian probability argument are further proof
+obligations; the probability inequality and density-correction lower bound
+remain explicit hypotheses.
 
 This extension covers one archived certificate throughout its correlation
 interval. It does not prove the full Python detector correct or improve

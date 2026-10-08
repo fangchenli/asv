@@ -19,48 +19,24 @@ def savedObservationsI : Fin 100 → ℤ := ![5719750796368758, 5598603637477873
 def savedEntryI (i : ℕ) : ℤ := if h : i < 100 then savedObservationsI ⟨i, h⟩ else 0
 def savedPlateau0I (i : ℕ) : ℤ := if i = 0 then observationScale else 0
 def savedPlateau1I (i : ℕ) : ℤ := if i = 0 then 0 else observationScale
-def precisionProductI (rho : ℤ) (a b : ℕ → ℤ) : ℤ :=
+noncomputable def precisionProductPoly (a b : ℕ → ℤ) : Polynomial ℤ :=
+  C (∑ i ∈ Finset.range 100, a i * b i) -
+    X * C (∑ i ∈ Finset.range 99, (a i * b (i + 1) + a (i + 1) * b i)) +
+    X ^ 2 * C (∑ i ∈ Finset.range 98, a (i + 1) * b (i + 1))
+
+noncomputable def precisionProductReal (rho : ℝ) (a b : ℕ → ℝ) : ℝ :=
   (∑ i ∈ Finset.range 100, a i * b i) -
     rho * (∑ i ∈ Finset.range 99, (a i * b (i + 1) + a (i + 1) * b i)) +
     rho ^ 2 * (∑ i ∈ Finset.range 98, a (i + 1) * b (i + 1))
 
-def savedTotalScaled (rho : ℤ) : ℤ := 3551544753539750706545168409113648 - 7026593747140125873202724907396102 * rho ^ 1 + 3480308755734570123269195230508428 * rho ^ 2
-def savedGram00Scaled (rho : ℤ) : ℤ := 316912650057057350374175801344
-def savedGram01Scaled (rho : ℤ) : ℤ := -316912650057057350374175801344 * rho ^ 1
-def savedGram11Scaled (rho : ℤ) : ℤ := 31374352355648677687043404333056 - 62114879411183240673338457063424 * rho ^ 1 + 31057439705591620336669228531712 * rho ^ 2
-def savedLinear0Scaled (rho : ℤ) : ℤ := 3219933444397304534288088170496 - 3151733656942556539603046629376 * rho ^ 1
-def savedLinear1Scaled (rho : ℤ) : ℤ := 331995218644392988129098735812608 - 660564696971208840594621353426944 * rho ^ 1 + 328501278539361104470837576073216 * rho ^ 2
+noncomputable def scaledReal (a : ℕ → ℤ) : ℕ → ℝ := fun i => (a i : ℝ) / observationScale
 
-theorem saved_total_from_observations (rho : ℤ) :
-    precisionProductI rho savedEntryI savedEntryI = savedTotalScaled rho := by
-  norm_num [precisionProductI, savedTotalScaled, savedEntryI, savedObservationsI,
-    Finset.sum_range_succ] <;> ring
-
-theorem saved_gram00_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau0I savedPlateau0I = savedGram00Scaled rho := by
-  norm_num [precisionProductI, savedGram00Scaled, savedPlateau0I, observationScale,
-    Finset.sum_range_succ] <;> ring
-
-theorem saved_gram01_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau0I savedPlateau1I = savedGram01Scaled rho := by
-  norm_num [precisionProductI, savedGram01Scaled, savedPlateau0I, savedPlateau1I,
-    observationScale,
-    Finset.sum_range_succ] <;> ring
-
-theorem saved_gram11_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau1I savedPlateau1I = savedGram11Scaled rho := by
-  norm_num [precisionProductI, savedGram11Scaled, savedPlateau1I, observationScale,
-    Finset.sum_range_succ] <;> ring
-
-theorem saved_linear0_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau0I savedEntryI = savedLinear0Scaled rho := by
-  norm_num [precisionProductI, savedLinear0Scaled, savedPlateau0I, savedEntryI,
-    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
-
-theorem saved_linear1_from_observations (rho : ℤ) :
-    precisionProductI rho savedPlateau1I savedEntryI = savedLinear1Scaled rho := by
-  norm_num [precisionProductI, savedLinear1Scaled, savedPlateau1I, savedEntryI,
-    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
+noncomputable def savedTotalPoly : Polynomial ℤ := C (3551544753539750706545168409113648 : ℤ) + C (-7026593747140125873202724907396102 : ℤ) * X ^ 1 + C (3480308755734570123269195230508428 : ℤ) * X ^ 2
+noncomputable def savedGram00Poly : Polynomial ℤ := C (316912650057057350374175801344 : ℤ)
+noncomputable def savedGram01Poly : Polynomial ℤ := C (0 : ℤ) + C (-316912650057057350374175801344 : ℤ) * X ^ 1
+noncomputable def savedGram11Poly : Polynomial ℤ := C (31374352355648677687043404333056 : ℤ) + C (-62114879411183240673338457063424 : ℤ) * X ^ 1 + C (31057439705591620336669228531712 : ℤ) * X ^ 2
+noncomputable def savedLinear0Poly : Polynomial ℤ := C (3219933444397304534288088170496 : ℤ) + C (-3151733656942556539603046629376 : ℤ) * X ^ 1
+noncomputable def savedLinear1Poly : Polynomial ℤ := C (331995218644392988129098735812608 : ℤ) + C (-660564696971208840594621353426944 : ℤ) * X ^ 1 + C (328501278539361104470837576073216 : ℤ) * X ^ 2
 
 noncomputable def fitTotal (rho : ℝ) : ℝ := (221971547096234419159073025569603 : ℝ) / 19807040628566084398385987584 - (3513296873570062936601362453698051 : ℝ) / 158456325028528675187087900672 * rho ^ 1 + (870077188933642530817298807627107 : ℝ) / 79228162514264337593543950336 * rho ^ 2
 noncomputable def fitGram00 (_rho : ℝ) : ℝ := (1 : ℝ)
@@ -74,6 +50,80 @@ noncomputable def fitGramDet (rho : ℝ) : ℝ := fitGram00 rho * fitGram11 rho 
 noncomputable def fitProfiledNumerator (rho : ℝ) : ℝ := fitTotal rho * fitGramDet rho -
   (fitGram11 rho * fitLinear0 rho ^ 2 - 2 * fitGram01 rho *
     fitLinear0 rho * fitLinear1 rho + fitGram00 rho * fitLinear1 rho ^ 2)
+
+theorem saved_total_from_observations :
+    precisionProductPoly savedEntryI savedEntryI = savedTotalPoly := by
+  norm_num [precisionProductPoly, savedTotalPoly, savedEntryI, savedObservationsI,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram00_from_observations :
+    precisionProductPoly savedPlateau0I savedPlateau0I = savedGram00Poly := by
+  norm_num [precisionProductPoly, savedGram00Poly, savedPlateau0I, observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram01_from_observations :
+    precisionProductPoly savedPlateau0I savedPlateau1I = savedGram01Poly := by
+  norm_num [precisionProductPoly, savedGram01Poly, savedPlateau0I, savedPlateau1I,
+    observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram11_from_observations :
+    precisionProductPoly savedPlateau1I savedPlateau1I = savedGram11Poly := by
+  norm_num [precisionProductPoly, savedGram11Poly, savedPlateau1I, observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_linear0_from_observations :
+    precisionProductPoly savedPlateau0I savedEntryI = savedLinear0Poly := by
+  norm_num [precisionProductPoly, savedLinear0Poly, savedPlateau0I, savedEntryI,
+    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
+
+theorem saved_linear1_from_observations :
+    precisionProductPoly savedPlateau1I savedEntryI = savedLinear1Poly := by
+  norm_num [precisionProductPoly, savedLinear1Poly, savedPlateau1I, savedEntryI,
+    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
+
+noncomputable def savedEntryR : ℕ → ℝ := scaledReal savedEntryI
+noncomputable def savedPlateau0R : ℕ → ℝ := scaledReal savedPlateau0I
+noncomputable def savedPlateau1R : ℕ → ℝ := scaledReal savedPlateau1I
+
+theorem saved_total_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedEntryR savedEntryR = fitTotal rho := by
+  norm_num [precisionProductReal, savedEntryR, scaledReal, savedEntryI,
+    savedObservationsI, observationScale, fitTotal, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_gram00_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau0R savedPlateau0R = fitGram00 rho := by
+  norm_num [precisionProductReal, savedPlateau0R, scaledReal, savedPlateau0I,
+    observationScale, fitGram00, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_gram01_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau0R savedPlateau1R = fitGram01 rho := by
+  norm_num [precisionProductReal, savedPlateau0R, savedPlateau1R, scaledReal,
+    savedPlateau0I, savedPlateau1I, observationScale, fitGram01,
+    Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_gram11_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau1R savedPlateau1R = fitGram11 rho := by
+  norm_num [precisionProductReal, savedPlateau1R, scaledReal, savedPlateau1I,
+    observationScale, fitGram11, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_linear0_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau0R savedEntryR = fitLinear0 rho := by
+  norm_num [precisionProductReal, savedPlateau0R, savedEntryR, scaledReal,
+    savedPlateau0I, savedEntryI, savedObservationsI, observationScale,
+    fitLinear0, Finset.sum_range_succ]
+  <;> ring
+
+theorem saved_linear1_real_from_observations (rho : ℝ) :
+    precisionProductReal rho savedPlateau1R savedEntryR = fitLinear1 rho := by
+  norm_num [precisionProductReal, savedPlateau1R, savedEntryR, scaledReal,
+    savedPlateau1I, savedEntryI, savedObservationsI, observationScale,
+    fitLinear1, Finset.sum_range_succ]
+  <;> ring
 
 theorem fit_gram_determinant_identity (rho : ℝ) :
     fitGramDet rho = (1 - rho) * SavedRadius.denominator rho := by
