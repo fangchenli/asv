@@ -85,6 +85,21 @@ fractions are the same ones checked by the previous pilot.
 What this establishes for the probability bound
 -----------------------------------------------
 
+The radius used to scale the covariance has the form
+``(1-rho²) * ss * denominator / numerator``. Here ``ss`` is the squared
+length of the observed residual direction before normalization, and
+``numerator / denominator`` is its residual quadratic form under the AR(1)
+precision numerator. For a nonnegative correlation interval, Lean proves
+that lower-bounding ``numerator`` and upper-bounding ``denominator`` gives
+the radius bound used by the certificate. It uses ``1-rho² ≤ 1+right`` on
+``0 ≤ rho ≤ right ≤ 1``. This is the inequality in
+``residualRadius_le_of_ratio_bounds``.
+
+The proof currently checks this implication once the polynomial enclosures
+are supplied. Establishing those enclosures from the saved residual
+coefficients is still open; they are currently computed by exact rational
+Bernstein bounds in Python.
+
 ``cutoff_with_residual_matrix`` now takes a probability inequality expressed
 using the actual residual matrix determinant. It derives the determinant
 lower bound and combines it with the saved scalar arithmetic to conclude

@@ -39,3 +39,4 @@ import StepDetection
 #print axioms StepDetection.DeterminantTrace.residual_determinant_eq_trace
 #print axioms StepDetection.DeterminantTrace.saved_residual_enclosure
 #print axioms StepDetection.DeterminantTrace.cutoff_with_residual_matrix
+#print axioms StepDetection.residualRadius_le_of_ratio_bounds

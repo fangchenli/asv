@@ -122,8 +122,9 @@ The research pipeline currently has these proof boundaries:
 2. Determinant calculations and Sturm eigenvalue counts produce the lower
    bounds. Lean checks the complete determinant arithmetic trace, including
    every reciprocal's nonzero-denominator condition, and proves its matrix
-   identity. The residual radius bound and the spectral correction remain
-   outside Lean.
+   identity. The residual-radius inequality is proved generically in Lean;
+   the archived polynomial bounds that instantiate it and the spectral
+   correction remain outside Lean.
 3. The Gaussian argument relates those quantities to a probability bound.
    It remains outside Lean.
 4. The final scalar arithmetic converts the bound into a comparison with
