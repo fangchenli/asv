@@ -112,14 +112,25 @@ using the actual residual matrix determinant. It derives the determinant
 lower bound and combines it with the saved scalar arithmetic to conclude
 ``p < 1/100``.
 
-The probability inequality and the density-correction lower bound remain
-explicit hypotheses. The generic theorem ``inverse_bottomRight_eq_schur``
-now supplies the block-inverse step: the inverse of a covariance block is the
-Schur complement of the matching precision block. To finish the radius
-connection, apply it in plateau/residual coordinates, account for the
-normalization of the plateau columns, and identify the resulting quadratic
-form with the saved residual ratio. The spectral correction and Gaussian
-probability argument are further proof obligations.
+The generic theorem ``inverse_bottomRight_eq_schur`` says that the inverse
+of a covariance block is the Schur complement of the matching precision
+block. ``compressed_covariance_inverse_eq_profiled_precision`` now applies
+that fact in plateau/residual coordinates. It allows the plateau columns to
+have Gram matrix ``G`` rather than assuming they are unit length. In the
+coordinate change, the precision block is surrounded by ``G⁻¹`` factors;
+when that block is inverted inside the Schur complement, the factors cancel.
+This proves that the inverse covariance on the residual directions is the
+plateau-profiled precision block, with the original plateau normalization
+accounted for.
+
+This closes the linear-algebra bridge needed to express the projected
+covariance quadratic form through the precision matrix. The remaining
+radius work is to instantiate the theorem for ASV's concrete plateau and
+residual coordinates and show that the resulting quadratic form is exactly
+the saved residual ratio, including its scale factors. The spectral
+correction and Gaussian probability argument are further proof obligations;
+the probability inequality and density-correction lower bound remain
+explicit hypotheses.
 
 This extension covers one archived certificate throughout its correlation
 interval. It does not prove the full Python detector correct or improve

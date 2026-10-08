@@ -43,3 +43,4 @@ import StepDetection
 #print axioms StepDetection.bernsteinExpansion_bounds
 #print axioms StepDetection.SavedRadius.saved_radius_bound
 #print axioms StepDetection.inverse_bottomRight_eq_schur
+#print axioms StepDetection.compressed_covariance_inverse_eq_profiled_precision
