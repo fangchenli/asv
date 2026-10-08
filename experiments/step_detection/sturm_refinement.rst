@@ -196,8 +196,36 @@ recomputes the previous witness certificate before constructing the new
 proofs. The `running guide <running.rst>`_ gives reproduction commands.
 Frozen references and ASV's production detector are unchanged.
 
-The subsequent `complete Sturm replay <sturm_reporting.rst>`_ now integrates
-this bound and verifies all seven saved cases with no gained or lost alerts.
-The early case retains 101/128. Numerical projected eigenvalues still leave
-the current density bound above 0.01 there, so the next mathematical task
-is a sharper probability inequality rather than further eigenvalue accuracy.
+The subsequent `complete Sturm replay <sturm_reporting.rst>`_ integrates this
+eigenvalue bound and verifies all seven saved cases. Its early case retains
+101/128. A later experiment below sharpens the Fourier density estimate at
+that witness; the full reporting replay has not yet been rerun with it.
+
+Keeping stronger directions in the density bound
+-------------------------------------------------
+
+At the 101/128 explanation, the four groups of positive tilted coefficients
+have different lower bounds. The earlier calculation used the weakest bound
+in all sixteen directions, discarding information from the first groups.
+
+For group j, let b_j be a lower bound on the four coefficients at ranks
+4j-3 through 4j. The four corresponding Gaussian-square factors bound the
+characteristic function by ``(1 + 4*b_j**2*u**2)**-1``. Applying Hölder's
+inequality to the m group factors and integrating in Fourier inversion gives::
+
+    sup density <= c_m / (b_1 * ... * b_m)**(1/m)
+    c_m = binomial(2*m-2, m-1) / 4**m.
+
+When all b_j are equal, this is the existing m-group bound. When earlier
+groups have stronger coefficients, their larger values raise the geometric
+mean and lower the density bound. The implementation rounds that geometric
+mean downward to a dyadic rational using integer nth roots. This keeps the
+bound conservative with exact rational arithmetic.
+
+At split 1 and rho=101/128, this changes the saved point bound from about
+0.012103 to about 0.009224. On [51711/65536, 51713/65536], the bound is about
+0.009284. Both are below the 0.01 cutoff. These are point and interval
+certificates for this explanation only; the complete reporting search and
+all-seven-case replay have not yet been rerun with grouped density bounds.
+The second lost history at 7/8 also remains to be checked. The probability
+inequality is unchanged; only its Fourier density estimate is sharper.

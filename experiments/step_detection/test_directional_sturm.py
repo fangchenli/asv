@@ -94,7 +94,7 @@ def test_saved_witness_and_neighboring_interval_cross_cutoff():
     assert point['status'] == interval['status'] == 'certified_excluded'
     assert F(point['p_upper']) < F(957, 100000)
     assert F(interval['p_upper']) < F(964, 100000)
-    assert interval['selected_tilt'] == '1/8' and interval['selected_count'] == 12
+    assert interval['selected_tilt'] == '1/8' and interval['selected_count'] == 16
     best = next(item for item in interval['attempts'] if item['tilt'] == '1/8')
     selected = next(item for item in best['directions'] if item['count'] == 12)
     assert selected['selected_eigenvalue_bound'] == 'plateau_sturm'
@@ -102,6 +102,37 @@ def test_saved_witness_and_neighboring_interval_cross_cutoff():
         assert F(sturm.certify_interval(model, candidate, candidate)['p_upper_squared']) <= F(
             interval['p_upper_squared']
         )
+
+
+def test_grouped_fourier_density_bounds_are_conservative():
+    weights = [F(3), F(2), F(1)]
+    bounds = sturm.grouped_density_bounds(weights, bits=16)
+    product = F(1)
+    for groups, item in enumerate(bounds, start=1):
+        product *= weights[groups - 1]
+        root_lower = F(item['geometric_mean_lower'])
+        density_upper = F(item['density_upper'])
+        constant = sturm.spectral.density_constant(4 * groups)
+        assert root_lower**groups <= product
+        # This comparison avoids approximating the irrational exact root.
+        assert density_upper**groups * product >= constant**groups
+        assert density_upper <= constant / weights[groups - 1]
+    with pytest.raises(ValueError):
+        sturm.grouped_density_bounds([F(1), F(0)])
+    with pytest.raises(ValueError):
+        sturm.grouped_density_bounds([F(1)], bits=0)
+
+
+def test_grouped_density_certificate_covers_early_replay_witness():
+    model, rho, width = saved_model(), F(101, 128), F(1, 65536)
+    point = sturm.certify_interval(model, rho, rho)
+    interval = sturm.certify_interval(model, rho - width, rho + width)
+    assert point['status'] == interval['status'] == 'certified_excluded'
+    assert F(point['p_upper']) < F(1, 100)
+    assert F(interval['p_upper']) < F(1, 100)
+    assert interval['selected_tilt'] == '1/8' and interval['selected_count'] == 16
+    best = next(item for item in interval['attempts'] if item['tilt'] == '1/8')
+    assert len(best['grouped_density_bounds']) == 4
 
 
 def test_refinement_preserves_old_bound_and_invariances():

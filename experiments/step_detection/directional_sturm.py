@@ -100,6 +100,54 @@ def residual_eigenvalue_bounds(n, split, count, left, right):
     return {'toeplitz': original, 'full_sturm': full, 'plateau_sturm': block}
 
 
+def _floor_nth_root(value, degree):
+    """Exact floor of a nonnegative integer nth root."""
+    low, high = 0, 1 << ((value.bit_length() + degree - 1) // degree)
+    while high**degree <= value:
+        high *= 2
+    while high - low > 1:
+        middle = (low + high) // 2
+        if middle**degree <= value:
+            low = middle
+        else:
+            high = middle
+    return low
+
+
+def grouped_density_bounds(tilted_weight_lowers, *, bits=64):
+    """Fourier density bounds retaining successive groups of four weights.
+
+    Entry j is a lower bound on the j-th selected positive tilted coefficient,
+    for ranks 4, 8, 12, ... . Hölder combines the first m groups into a bound
+    ``c_m / geometric_mean(weights)``. Roots are rounded down exactly, so the
+    returned density bounds are rational upper bounds.
+    """
+    weights = [F(value) for value in tilted_weight_lowers]
+    if not isinstance(bits, int) or isinstance(bits, bool) or bits < 1:
+        raise ValueError('Require positive integer root precision')
+    if any(value <= 0 for value in weights):
+        raise ValueError('Require positive tilted-weight lower bounds')
+    scale = 1 << bits
+    product = F(1)
+    results = []
+    for groups, weight in enumerate(weights, start=1):
+        product *= weight
+        degree = groups
+        scaled_floor = product.numerator * scale**degree // product.denominator
+        root_lower = F(_floor_nth_root(scaled_floor, degree), scale)
+        if root_lower <= 0:
+            break
+        density_upper = spectral.density_constant(4 * groups) / root_lower
+        results.append(
+            {
+                'count': 4 * groups,
+                'geometric_mean_lower': str(root_lower),
+                'density_upper': str(density_upper),
+            }
+        )
+    return results
+
+
 def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant.BITS):
     """Same determinant and density correction, with stronger eigenvalue inputs."""
     tilt, delta = F(tilt), F(delta)
@@ -117,6 +165,7 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
     if 'determinant_enclosure' not in base or F(base['determinant_enclosure'][0]) <= 0:
         return result
     correction = F(1)
+    tilted_weight_lowers = []
     for count in spectral.COUNTS:
         if count > model['n'] - 2:
             continue
@@ -126,6 +175,8 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
         weight = eigen_lower / F(base['radius_upper']) - 1
         tilted = weight / (1 + 2 * tilt * weight) if weight > 0 else F(0)
         candidate = max(F(1), tilt * tilted / spectral.density_constant(count))
+        if tilted > 0:
+            tilted_weight_lowers.append(tilted)
         result['directions'].append(
             {
                 'count': count,
@@ -138,6 +189,12 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
         )
         if candidate > correction:
             correction, result['selected_count'] = candidate, count
+    grouped = grouped_density_bounds(tilted_weight_lowers)
+    result['grouped_density_bounds'] = grouped
+    for item in grouped:
+        candidate = max(F(1), tilt / F(item['density_upper']))
+        if candidate > correction:
+            correction, result['selected_count'] = candidate, item['count']
     squared = min(F(1), 1 / (F(base['determinant_enclosure'][0]) * correction**2))
     result.update(
         density_correction=str(correction),
