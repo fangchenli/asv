@@ -51,3 +51,9 @@ import StepDetection
 #print axioms StepDetection.block_quadratic_at_profiled_coefficients
 #print axioms StepDetection.profiled_quadratic_eq_projected_covariance_inverse
 #print axioms StepDetection.DeterminantTrace.saved_profiled_quadratic_eq_ratio
+#print axioms StepDetection.DeterminantTrace.saved_total_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_gram00_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_gram01_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_gram11_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_linear0_from_observations
+#print axioms StepDetection.DeterminantTrace.saved_linear1_from_observations

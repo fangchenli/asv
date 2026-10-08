@@ -31,6 +31,28 @@ def qreal(value):
     return f'({value.numerator} : ℝ) / {value.denominator}'
 
 
+def iexpr(coefficients):
+    terms = []
+    for degree, coefficient in enumerate(coefficients):
+        coefficient = F(coefficient)
+        if coefficient.denominator != 1:
+            raise ValueError('Scaled sufficient-statistic coefficient is not integral')
+        coefficient = coefficient.numerator
+        if not coefficient:
+            continue
+        term = f'{abs(coefficient)}'
+        if degree:
+            term += f' * rho ^ {degree}'
+        terms.append(('-' if coefficient < 0 else '+', term))
+    if not terms:
+        return '0'
+    sign, first = terms[0]
+    expression = ('-' if sign == '-' else '') + first
+    for sign, term in terms[1:]:
+        expression += f' {sign} {term}'
+    return expression
+
+
 def scalar_expression(coefficients, variable='rho'):
     terms = []
     for degree, coefficient in enumerate(coefficients):
@@ -75,6 +97,22 @@ def render():
     gram = [[ar1.precision_product(x, y) for y in columns] for x in columns]
     linear = [ar1.precision_product(x, models.values) for x in columns]
     saved_num, saved_den = full.residual_ratio(models, split)
+    scale = 2**49
+    saved_values = [int(F(value) * scale) for value in history['case']['values']]
+    saved_values_lean = ', '.join(str(value) for value in saved_values)
+    rational_stats = [
+        ('total', models.total),
+        ('gram00', gram[0][0]),
+        ('gram01', gram[0][1]),
+        ('gram11', gram[1][1]),
+        ('linear0', linear[0]),
+        ('linear1', linear[1]),
+    ]
+    rational_defs = '\n'.join(
+        f'def saved{name.title()}Scaled (rho : ℤ) : ℤ := '
+        f'{iexpr([F(coefficient) * scale**2 for coefficient in coefficients])}'
+        for name, coefficients in rational_stats
+    )
 
     definitions = [
         f'noncomputable def fitTotal (rho : ℝ) : ℝ := {scalar_expression(models.total)}',
@@ -99,9 +137,55 @@ import Mathlib.Algebra.Polynomial.Eval.Algebra
 import Mathlib.Tactic
 
 set_option maxRecDepth 4096
+set_option maxHeartbeats 5000000
 
 namespace StepDetection.DeterminantTrace
 open Polynomial
+
+open scoped BigOperators
+
+def observationScale : ℤ := {scale}
+def savedObservationsI : Fin 100 → ℤ := ![{saved_values_lean}]
+def savedEntryI (i : ℕ) : ℤ := if h : i < 100 then savedObservationsI ⟨i, h⟩ else 0
+def savedPlateau0I (i : ℕ) : ℤ := if i = 0 then observationScale else 0
+def savedPlateau1I (i : ℕ) : ℤ := if i = 0 then 0 else observationScale
+def precisionProductI (rho : ℤ) (a b : ℕ → ℤ) : ℤ :=
+  (∑ i ∈ Finset.range 100, a i * b i) -
+    rho * (∑ i ∈ Finset.range 99, (a i * b (i + 1) + a (i + 1) * b i)) +
+    rho ^ 2 * (∑ i ∈ Finset.range 98, a (i + 1) * b (i + 1))
+
+{rational_defs}
+
+theorem saved_total_from_observations (rho : ℤ) :
+    precisionProductI rho savedEntryI savedEntryI = savedTotalScaled rho := by
+  norm_num [precisionProductI, savedTotalScaled, savedEntryI, savedObservationsI,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram00_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau0I savedPlateau0I = savedGram00Scaled rho := by
+  norm_num [precisionProductI, savedGram00Scaled, savedPlateau0I, observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram01_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau0I savedPlateau1I = savedGram01Scaled rho := by
+  norm_num [precisionProductI, savedGram01Scaled, savedPlateau0I, savedPlateau1I,
+    observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram11_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau1I savedPlateau1I = savedGram11Scaled rho := by
+  norm_num [precisionProductI, savedGram11Scaled, savedPlateau1I, observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_linear0_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau0I savedEntryI = savedLinear0Scaled rho := by
+  norm_num [precisionProductI, savedLinear0Scaled, savedPlateau0I, savedEntryI,
+    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
+
+theorem saved_linear1_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau1I savedEntryI = savedLinear1Scaled rho := by
+  norm_num [precisionProductI, savedLinear1Scaled, savedPlateau1I, savedEntryI,
+    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
 
 {chr(10).join(definitions)}
 

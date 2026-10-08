@@ -7,9 +7,60 @@ import Mathlib.Algebra.Polynomial.Eval.Algebra
 import Mathlib.Tactic
 
 set_option maxRecDepth 4096
+set_option maxHeartbeats 5000000
 
 namespace StepDetection.DeterminantTrace
 open Polynomial
+
+open scoped BigOperators
+
+def observationScale : ℤ := 562949953421312
+def savedObservationsI : Fin 100 → ℤ := ![5719750796368758, 5598603637477873, 5653109738170161, 5441006257148147, 5655512509785174, 5601748538488546, 5516443189562798, 5672353272882844, 5458521159968253, 5781161554971977, 5459641067838505, 5614425527584400, 5580245151797767, 5870956792555537, 5380631692565703, 5603752845091102, 5564580712424584, 5469655205547365, 5616992442003531, 5618944749878656, 5551413477593498, 5708726971091898, 5552626322544687, 5783675767291237, 5421423682236114, 6196534162656405, 6074247234595538, 6037290897329809, 6137830634170186, 6056198395693011, 6236518533039710, 5853821826261030, 5987951571859880, 6219044619005328, 5807729854867318, 6164773948890793, 5924861320991727, 6048240857624364, 6283903256555031, 6022785383954573, 6117007396782471, 5996649691140553, 6132627043855813, 5894183536458644, 6130833204194826, 6209079267466046, 5940565898172715, 6145460052769856, 6054614832023486, 6076981465043784, 6065551481565752, 6118824268301120, 6159344510863385, 6069433446657416, 5952417033803828, 6084772252070620, 6117858513383540, 5989061684402437, 6143773434052897, 6030605690467660, 6288730544137733, 5800964106545089, 6197894194306021, 6211762165497625, 6029874209732533, 6037995978745221, 6120284339238192, 6144346888569981, 5868302226071951, 6304580718679052, 5944692223247377, 6265691215403239, 5970963165467000, 6224761895748752, 5905012623519624, 6143961311520054, 6071706440778093, 5962762606547645, 6048965878419026, 5931245906732893, 6106013468283719, 6126276728407042, 6246470620133250, 5924940761529955, 6245443009226771, 5955077013858980, 6127308896216582, 6007009233056328, 6137677276496639, 6109634031443778, 5979439072579922, 6421156452585136, 5858522573726614, 6077453364263579, 5968094958130939, 6022939610605467, 6094286108630879, 6058336918895428, 5937384680670800, 6206484402028216]
+def savedEntryI (i : ℕ) : ℤ := if h : i < 100 then savedObservationsI ⟨i, h⟩ else 0
+def savedPlateau0I (i : ℕ) : ℤ := if i = 0 then observationScale else 0
+def savedPlateau1I (i : ℕ) : ℤ := if i = 0 then 0 else observationScale
+def precisionProductI (rho : ℤ) (a b : ℕ → ℤ) : ℤ :=
+  (∑ i ∈ Finset.range 100, a i * b i) -
+    rho * (∑ i ∈ Finset.range 99, (a i * b (i + 1) + a (i + 1) * b i)) +
+    rho ^ 2 * (∑ i ∈ Finset.range 98, a (i + 1) * b (i + 1))
+
+def savedTotalScaled (rho : ℤ) : ℤ := 3551544753539750706545168409113648 - 7026593747140125873202724907396102 * rho ^ 1 + 3480308755734570123269195230508428 * rho ^ 2
+def savedGram00Scaled (rho : ℤ) : ℤ := 316912650057057350374175801344
+def savedGram01Scaled (rho : ℤ) : ℤ := -316912650057057350374175801344 * rho ^ 1
+def savedGram11Scaled (rho : ℤ) : ℤ := 31374352355648677687043404333056 - 62114879411183240673338457063424 * rho ^ 1 + 31057439705591620336669228531712 * rho ^ 2
+def savedLinear0Scaled (rho : ℤ) : ℤ := 3219933444397304534288088170496 - 3151733656942556539603046629376 * rho ^ 1
+def savedLinear1Scaled (rho : ℤ) : ℤ := 331995218644392988129098735812608 - 660564696971208840594621353426944 * rho ^ 1 + 328501278539361104470837576073216 * rho ^ 2
+
+theorem saved_total_from_observations (rho : ℤ) :
+    precisionProductI rho savedEntryI savedEntryI = savedTotalScaled rho := by
+  norm_num [precisionProductI, savedTotalScaled, savedEntryI, savedObservationsI,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram00_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau0I savedPlateau0I = savedGram00Scaled rho := by
+  norm_num [precisionProductI, savedGram00Scaled, savedPlateau0I, observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram01_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau0I savedPlateau1I = savedGram01Scaled rho := by
+  norm_num [precisionProductI, savedGram01Scaled, savedPlateau0I, savedPlateau1I,
+    observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_gram11_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau1I savedPlateau1I = savedGram11Scaled rho := by
+  norm_num [precisionProductI, savedGram11Scaled, savedPlateau1I, observationScale,
+    Finset.sum_range_succ] <;> ring
+
+theorem saved_linear0_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau0I savedEntryI = savedLinear0Scaled rho := by
+  norm_num [precisionProductI, savedLinear0Scaled, savedPlateau0I, savedEntryI,
+    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
+
+theorem saved_linear1_from_observations (rho : ℤ) :
+    precisionProductI rho savedPlateau1I savedEntryI = savedLinear1Scaled rho := by
+  norm_num [precisionProductI, savedLinear1Scaled, savedPlateau1I, savedEntryI,
+    savedObservationsI, observationScale, Finset.sum_range_succ] <;> ring
 
 noncomputable def fitTotal (rho : ℝ) : ℝ := (221971547096234419159073025569603 : ℝ) / 19807040628566084398385987584 - (3513296873570062936601362453698051 : ℝ) / 158456325028528675187087900672 * rho ^ 1 + (870077188933642530817298807627107 : ℝ) / 79228162514264337593543950336 * rho ^ 2
 noncomputable def fitGram00 (_rho : ℝ) : ℝ := (1 : ℝ)

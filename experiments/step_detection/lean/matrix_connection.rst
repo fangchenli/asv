@@ -148,11 +148,15 @@ For the saved split, ``SavedGLS.lean`` now proves that the profiled quadratic
 from the exact GLS sufficient statistics equals the archived
 ``numerator / denominator`` at every admissible ``rho``. The generator
 ``export_gls.py`` extracts those statistics from the frozen history, checks
-the archive and source hashes, and regenerates the Lean definitions. Lean
-checks the resulting exact algebra. The extraction itself still runs in
-Python: this proof does not yet encode the 100 observations in Lean and
-recompute every precision product there. The spectral correction and
-Gaussian probability argument are further proof obligations; the probability
+the archive and source hashes, and writes the 100 observations into Lean as
+integers times ``2⁻⁴⁹``. Lean independently applies the tridiagonal AR(1)
+precision formula to that vector and proves the total, three plateau Gram
+entries, and two linear terms equal the generated sufficient-statistic
+polynomials (after multiplying by the common scale squared). The finite sums
+are evaluated exactly, so changing even one encoded observation breaks these
+proofs. The remaining extraction step is the JSON-to-Lean generation, guarded
+by the archived hash checks. The spectral correction and Gaussian
+probability argument are further proof obligations; the probability
 inequality and density-correction lower bound remain explicit hypotheses.
 
 This extension covers one archived certificate throughout its correlation
