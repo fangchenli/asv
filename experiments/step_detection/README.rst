@@ -1,6 +1,10 @@
 Why ASV detects steps this way
 ==============================
 
+For the latest consolidated result, start with the `current status
+<current_status.rst>`_. This page is a chronological record of the broader
+step-detection investigation.
+
 A benchmark runs a repeatable task to measure performance. ASV runs benchmarks
 across versions of a program so we can see when performance changes. For a
 timing benchmark, an increase means the task became slower.
