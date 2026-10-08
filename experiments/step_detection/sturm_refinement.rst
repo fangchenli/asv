@@ -202,10 +202,9 @@ proofs. The `running guide <running.rst>`_ gives reproduction commands.
 Frozen references and ASV's production detector are unchanged.
 
 The subsequent `complete Sturm replay <sturm_reporting.rst>`_ integrates this
-eigenvalue bound and verifies all seven saved cases. Its early negative
-correlation case is unresolved at the default depth limit. Later experiments
-below sharpen the Fourier density estimate at its 101/128 witness; further
-subdivision then finds a different survivor at 99/128.
+eigenvalue bound and verifies all seven saved cases. Grouped Fourier bounds
+exclude the early case's 101/128 witness; one extra subdivision then finds a
+different survivor at 99/128.
 
 Keeping stronger directions in the density bound
 -------------------------------------------------
@@ -263,5 +262,5 @@ At rho=101/128, the point bound falls from the grouped-Hölder value about
 Both use tau=1/8 and sixteen directions. These are exact rational
 certificates rounded here for readability. The full replay excludes this
 local explanation but the search finds a different survivor at split 2 and
-rho=99/128 when its depth limit is raised to 20. The overall saved-case alert
+rho=99/128 with the default depth set to 17. The overall saved-case alert
 count therefore remains unchanged.

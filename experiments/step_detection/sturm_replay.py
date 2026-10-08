@@ -76,7 +76,7 @@ def replay(output, workers):
     items = examples()
     metadata = {
         'purpose': 'Verified development replay; not a fresh sensitivity evaluation',
-        'work': {'max_cells': 4096, 'max_depth': 16},
+        'work': {'max_cells': 4096, 'max_depth': 17},
         'tilts': [str(tilt) for tilt in sturm.spectral.TILTS],
         'counts': list(sturm.spectral.COUNTS),
         'source_hashes': {

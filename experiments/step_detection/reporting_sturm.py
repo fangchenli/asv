@@ -46,7 +46,7 @@ def point_bounds(model, rho, delta, *, use_tail=True, use_sturm=True):
     }
 
 
-def evidence(values, config=None, *, max_cells=4096, max_depth=16, use_tail=True, use_sturm=True):
+def evidence(values, config=None, *, max_cells=4096, max_depth=17, use_tail=True, use_sturm=True):
     """Certify every location and rho in (-1,1), or return a non-alert.
 
     A surviving explanation belongs to the implemented conservative confidence

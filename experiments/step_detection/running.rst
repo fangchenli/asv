@@ -756,11 +756,14 @@ original inputs/results, reconstructs every reporting and saved-witness
 certificate, and verifies the compressed bytes by a round trip. Numerical
 decompositions never determine reporting decisions.
 
-The latest grouped-Fourier result is saved as
+The depth-16 grouped-Fourier run is saved as
 `the v2 summary <data/sturm_reporting_v2_heterogeneous_summary.json>`_ and
 `the v2 archive <data/sturm_reporting_v2_heterogeneous_diagnosis.json.gz>`_.
-To reproduce those names, use a fresh run directory and pass them to the
-artifact builder, for example ``runs/sturm_replay_v2`` for the run directory.
+The current depth-17 replay is saved as `the v3 summary
+<data/sturm_reporting_v3_depth17_summary.json>`_ and `the v3 archive
+<data/sturm_reporting_v3_depth17_diagnosis.json.gz>`_. To reproduce those
+names, use a fresh run directory, for example ``runs/sturm_replay_v3``, and
+pass the v3 paths to the artifact builder.
 
 Run the integration and proof-integrity checks::
 
