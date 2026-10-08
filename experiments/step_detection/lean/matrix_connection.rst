@@ -137,9 +137,18 @@ factor ``1-rho²`` converting the AR(1) precision numerator to full precision.
 At ``rho = 0``, ``residualSS`` equals this ratio. The identification of that
 ratio with the actual precision-weighted residual quadratic is still open.
 
-The next radius obligation is to express the observed centered residual in
-the completed coordinates and prove that its profiled quadratic is exactly
-the saved polynomial ratio. The spectral
+The profiled quadratic link is now proved generically. Given residual
+coordinates ``z``, the fitted plateau coefficients are
+``-H11⁻¹ H12 z``; they make the first block of the precision-weighted
+residual zero. The remaining quadratic is the Schur complement, which the
+preceding theorem identifies with the inverse projected covariance. This is
+the matrix form of minimizing the precision-weighted residual over the two
+plateau levels.
+
+The remaining saved-data obligation is to express the observed centered
+residual in these coordinates and prove that its profiled quadratic is
+exactly the archived polynomial ratio ``numerator / denominator``. The
+spectral
 correction and Gaussian probability argument are further proof obligations;
 the probability inequality and density-correction lower bound remain
 explicit hypotheses.

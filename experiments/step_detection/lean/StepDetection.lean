@@ -8,3 +8,4 @@ import StepDetection.Bernstein
 import StepDetection.SavedRadius
 import StepDetection.SchurInverse
 import StepDetection.ProfiledPrecision
+import StepDetection.ProfiledQuadratic
