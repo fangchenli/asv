@@ -113,10 +113,13 @@ lower bound and combines it with the saved scalar arithmetic to conclude
 ``p < 1/100``.
 
 The probability inequality and the density-correction lower bound remain
-explicit hypotheses. The next useful connection is the radius certificate:
-prove that the saved radius upper bound is valid for the benchmark residuals
-and that using it in the determinant is conservative. The spectral correction
-and Gaussian probability argument are further proof obligations.
+explicit hypotheses. The generic theorem ``inverse_bottomRight_eq_schur``
+now supplies the block-inverse step: the inverse of a covariance block is the
+Schur complement of the matching precision block. To finish the radius
+connection, apply it in plateau/residual coordinates, account for the
+normalization of the plateau columns, and identify the resulting quadratic
+form with the saved residual ratio. The spectral correction and Gaussian
+probability argument are further proof obligations.
 
 This extension covers one archived certificate throughout its correlation
 interval. It does not prove the full Python detector correct or improve

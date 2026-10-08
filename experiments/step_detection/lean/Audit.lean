@@ -42,3 +42,4 @@ import StepDetection
 #print axioms StepDetection.residualRadius_le_of_ratio_bounds
 #print axioms StepDetection.bernsteinExpansion_bounds
 #print axioms StepDetection.SavedRadius.saved_radius_bound
+#print axioms StepDetection.inverse_bottomRight_eq_schur
