@@ -131,10 +131,15 @@ basis. For the saved split, ``det(X' X) = 99``, so
 ``saved_residual_coordinates_det_ne_zero`` proves this for any valid
 orthonormal residual basis.
 
-The next radius obligation is to write the observed centered residual in
-these coordinates, apply the profiled precision identity to its quadratic
-form, and show that the result is exactly the saved ratio ``numerator /
-denominator`` with its scale factors. The spectral
+For the archived polynomial, Lean now records the scalar scale convention:
+the radius uses the reciprocal of ``numerator / denominator``, with the
+factor ``1-rho²`` converting the AR(1) precision numerator to full precision.
+At ``rho = 0``, ``residualSS`` equals this ratio. The identification of that
+ratio with the actual precision-weighted residual quadratic is still open.
+
+The next radius obligation is to express the observed centered residual in
+the completed coordinates and prove that its profiled quadratic is exactly
+the saved polynomial ratio. The spectral
 correction and Gaussian probability argument are further proof obligations;
 the probability inequality and density-correction lower bound remain
 explicit hypotheses.

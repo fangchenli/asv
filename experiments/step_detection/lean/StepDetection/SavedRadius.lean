@@ -78,6 +78,33 @@ theorem numerator_lower_bound {t : ℝ} (ht : 0 ≤ t) (htone : t ≤ 1) :
   exact (bernsteinExpansion_bounds (lower := numeratorLower) (upper := numeratorUpper)
     ht htone hcoeff).1
 
+/-- The saved ratio `numerator / denominator` is the precision-weighted
+    residual quadratic; the radius uses its reciprocal. -/
+theorem saved_radius_as_precision_ratio {t : ℝ} (ht : 0 ≤ t) (htone : t ≤ 1) :
+    residualRadius (parameter t) residualSS (numerator (parameter t))
+        (denominator (parameter t)) =
+      (1 - (parameter t) ^ 2) * residualSS /
+        (numerator (parameter t) / denominator (parameter t)) := by
+  have hrho : parameter t ≤ right := by
+    unfold parameter left right
+    norm_num
+    nlinarith
+  have hrho_one : right < 1 := by norm_num [right]
+  have hden : 0 < denominator (parameter t) := by
+    rw [denominator]
+    nlinarith
+  have hnum : 0 < numerator (parameter t) := by
+    exact lt_of_lt_of_le (by norm_num [numeratorLower])
+      (numerator_lower_bound ht htone)
+  unfold residualRadius
+  field_simp [ne_of_gt hden, ne_of_gt hnum]
+
+/-- At zero correlation, the saved scale is the ordinary residual sum of
+    squares, expressed as the same precision numerator/denominator ratio. -/
+theorem saved_residualSS_eq_zero_precision_ratio :
+    residualSS = numerator 0 / denominator 0 := by
+  norm_num [residualSS, numerator, denominator]
+
 theorem denominator_upper_bound {t : ℝ} (ht : 0 ≤ t) (htone : t ≤ 1) :
     denominator (parameter t) ≤ denominatorUpper := by
   rw [denominator_bernstein_identity]
