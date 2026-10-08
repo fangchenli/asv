@@ -50,3 +50,4 @@ import StepDetection
 #print axioms StepDetection.DeterminantTrace.saved_residual_coordinates_det_ne_zero
 #print axioms StepDetection.block_quadratic_at_profiled_coefficients
 #print axioms StepDetection.profiled_quadratic_eq_projected_covariance_inverse
+#print axioms StepDetection.DeterminantTrace.saved_profiled_quadratic_eq_ratio

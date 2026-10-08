@@ -131,11 +131,10 @@ basis. For the saved split, ``det(X' X) = 99``, so
 ``saved_residual_coordinates_det_ne_zero`` proves this for any valid
 orthonormal residual basis.
 
-For the archived polynomial, Lean now records the scalar scale convention:
-the radius uses the reciprocal of ``numerator / denominator``, with the
-factor ``1-rho²`` converting the AR(1) precision numerator to full precision.
-At ``rho = 0``, ``residualSS`` equals this ratio. The identification of that
-ratio with the actual precision-weighted residual quadratic is still open.
+For the archived polynomial, Lean records the scalar scale convention: the
+radius uses the reciprocal of ``numerator / denominator``, with the factor
+``1-rho²`` converting the AR(1) precision numerator to full precision. At
+``rho = 0``, ``residualSS`` equals this ratio.
 
 The profiled quadratic link is now proved generically. Given residual
 coordinates ``z``, the fitted plateau coefficients are
@@ -145,13 +144,16 @@ preceding theorem identifies with the inverse projected covariance. This is
 the matrix form of minimizing the precision-weighted residual over the two
 plateau levels.
 
-The remaining saved-data obligation is to express the observed centered
-residual in these coordinates and prove that its profiled quadratic is
-exactly the archived polynomial ratio ``numerator / denominator``. The
-spectral
-correction and Gaussian probability argument are further proof obligations;
-the probability inequality and density-correction lower bound remain
-explicit hypotheses.
+For the saved split, ``SavedGLS.lean`` now proves that the profiled quadratic
+from the exact GLS sufficient statistics equals the archived
+``numerator / denominator`` at every admissible ``rho``. The generator
+``export_gls.py`` extracts those statistics from the frozen history, checks
+the archive and source hashes, and regenerates the Lean definitions. Lean
+checks the resulting exact algebra. The extraction itself still runs in
+Python: this proof does not yet encode the 100 observations in Lean and
+recompute every precision product there. The spectral correction and
+Gaussian probability argument are further proof obligations; the probability
+inequality and density-correction lower bound remain explicit hypotheses.
 
 This extension covers one archived certificate throughout its correlation
 interval. It does not prove the full Python detector correct or improve
@@ -167,7 +169,7 @@ From the repository root, use the same pinned Lean setup as the
     .venv/bin/python experiments/step_detection/lean/verify.py \
         --lake "$HOME/.elan/bin/lake"
 
-The verifier checks all three generated exports, builds the proofs, and
+The verifier checks all generated exports, builds the proofs, and
 audits the final theorems' transitive axioms. In addition to the previous
 two corruption checks, it doubles every covariance entry in a temporary
 copy of the AR(1) proof. Lean must reject that incorrect matrix identity.
