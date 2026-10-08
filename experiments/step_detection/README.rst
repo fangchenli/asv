@@ -3,7 +3,8 @@ Why ASV detects steps this way
 
 For the latest consolidated result, start with the `current status
 <current_status.rst>`_. This page is a chronological record of the broader
-step-detection investigation.
+step-detection investigation. For a categorized index of all documentation
+and Python modules, use the `experiment catalog <catalog.rst>`_.
 
 A benchmark runs a repeatable task to measure performance. ASV runs benchmarks
 across versions of a program so we can see when performance changes. For a
