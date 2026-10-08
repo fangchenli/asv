@@ -124,10 +124,17 @@ plateau-profiled precision block, with the original plateau normalization
 accounted for.
 
 This closes the linear-algebra bridge needed to express the projected
-covariance quadratic form through the precision matrix. The remaining
-radius work is to instantiate the theorem for ASV's concrete plateau and
-residual coordinates and show that the resulting quadratic form is exactly
-the saved residual ratio, including its scale factors. The spectral
+covariance quadratic form through the precision matrix. The coordinate check
+is now also in Lean: orthogonality, ``U' U = I``, and a nonzero determinant
+of ``X' X`` imply that the concatenated plateau and residual columns form a
+basis. For the saved split, ``det(X' X) = 99``, so
+``saved_residual_coordinates_det_ne_zero`` proves this for any valid
+orthonormal residual basis.
+
+The next radius obligation is to write the observed centered residual in
+these coordinates, apply the profiled precision identity to its quadratic
+form, and show that the result is exactly the saved ratio ``numerator /
+denominator`` with its scale factors. The spectral
 correction and Gaussian probability argument are further proof obligations;
 the probability inequality and density-correction lower bound remain
 explicit hypotheses.

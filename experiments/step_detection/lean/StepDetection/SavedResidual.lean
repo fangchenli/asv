@@ -2,11 +2,37 @@ import StepDetection.SavedMatrix.Gram
 import StepDetection.AR1
 import StepDetection.SavedPositive
 import StepDetection.MatrixReindex
+import StepDetection.ProfiledPrecision
 
 set_option maxRecDepth 2048
 
 namespace StepDetection.DeterminantTrace
 open Matrix
+
+/-- The saved two-plateau design and any orthonormal residual basis form a
+    complete coordinate system; the plateau Gram determinant is 99. -/
+theorem saved_residual_coordinates_det_ne_zero
+    (U : Matrix (Fin 100) (Fin 98) ℝ)
+    (hU : Uᵀ * U = 1) (hXU : plateauColumnsᵀ * U = 0) :
+    (fromCols (plateauColumns.submatrix
+      (finSumFinEquiv : Fin 2 ⊕ Fin 98 ≃ Fin 100) id)
+      (U.submatrix (finSumFinEquiv : Fin 2 ⊕ Fin 98 ≃ Fin 100) id)).det ≠ 0 := by
+  let e : Fin 2 ⊕ Fin 98 ≃ Fin 100 := finSumFinEquiv
+  let X := plateauColumns.submatrix e id
+  let V := U.submatrix e id
+  have hVV : Vᵀ * V = 1 := by
+    simpa only [V, Matrix.transpose_submatrix, Matrix.submatrix_mul_equiv,
+      Matrix.submatrix_id_id] using hU
+  have hXV : Xᵀ * V = 0 := by
+    simpa only [X, V, Matrix.transpose_submatrix, Matrix.submatrix_mul_equiv,
+      Matrix.submatrix_id_id] using hXU
+  have hXX : (Xᵀ * X).det ≠ 0 := by
+    have hgram : Xᵀ * X = plateauColumnsᵀ * plateauColumns := by
+      simp only [X, Matrix.transpose_submatrix, Matrix.submatrix_mul_equiv,
+        Matrix.submatrix_id_id]
+    rw [hgram, plateau_gram_det]
+    norm_num
+  exact residual_coordinates_det_ne_zero X V hVV hXV hXX
 
 theorem recorded_gram_is_inverse {rho : ℝ} (hrho : inputBounds.Contains rho) :
     recordedGram rho = plateauColumnsᵀ * (shiftedCovariance rho)⁻¹ * plateauColumns := by

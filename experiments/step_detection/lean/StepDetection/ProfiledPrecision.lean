@@ -5,6 +5,29 @@ open Matrix
 
 variable {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m] [DecidableEq n]
 
+/-- Orthogonal residual coordinates complete a full-rank design to a basis.
+    The determinant of the combined Gram matrix is the design Gram
+    determinant, so the combined square matrix has nonzero determinant. -/
+theorem residual_coordinates_det_ne_zero
+    (X : Matrix (m ⊕ n) m ℝ) (U : Matrix (m ⊕ n) n ℝ)
+    (hUU : Uᵀ * U = 1) (hXU : Xᵀ * U = 0)
+    (hXX : (Xᵀ * X).det ≠ 0) : (fromCols X U).det ≠ 0 := by
+  have hUX : Uᵀ * X = 0 := by
+    have h := congrArg Matrix.transpose hXU
+    simpa only [Matrix.transpose_mul, Matrix.transpose_transpose,
+      Matrix.transpose_zero] using h
+  have hgram : (fromCols X U)ᵀ * fromCols X U =
+      fromBlocks (Xᵀ * X) 0 0 (1 : Matrix n n ℝ) := by
+    rw [Matrix.transpose_fromCols, Matrix.fromRows_mul_fromCols, hUU, hXU, hUX]
+  have hdet := congrArg Matrix.det hgram
+  simp only [Matrix.det_mul, Matrix.det_transpose, Matrix.det_fromBlocks_zero₁₂,
+    Matrix.det_one, mul_one] at hdet
+  have hp : (fromCols X U).det ≠ 0 := by
+    intro hz
+    rw [hz, zero_mul] at hdet
+    exact hXX hdet.symm
+  exact hp
+
 /-- Profiling out the first block of a precision matrix gives the inverse of
     the covariance compressed to the orthonormal complementary directions.
     The first block's Gram matrix is retained throughout the proof. -/
