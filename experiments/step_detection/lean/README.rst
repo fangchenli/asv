@@ -122,8 +122,10 @@ The research pipeline currently has these proof boundaries:
 2. Determinant calculations and Sturm eigenvalue counts produce the lower
    bounds. Lean checks the complete determinant arithmetic trace, including
    every reciprocal's nonzero-denominator condition, and proves its matrix
-   identity. The residual-radius inequality is proved generically in Lean;
-   the archived polynomial bounds that instantiate it and the spectral
+   identity. Lean proves the generic residual-radius inequality and Bernstein
+   coefficient enclosure rule, then checks the archived radius polynomials
+   and their bounds for the saved example. The projected-covariance identity
+   behind this radius formula, generic history derivation, and spectral
    correction remain outside Lean.
 3. The Gaussian argument relates those quantities to a probability bound.
    It remains outside Lean.

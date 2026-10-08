@@ -93,12 +93,19 @@ precision numerator. For a nonnegative correlation interval, Lean proves
 that lower-bounding ``numerator`` and upper-bounding ``denominator`` gives
 the radius bound used by the certificate. It uses ``1-rho² ≤ 1+right`` on
 ``0 ≤ rho ≤ right ≤ 1``. This is the inequality in
-``residualRadius_le_of_ratio_bounds``.
+``residualRadius_le_of_ratio_bounds``. For the saved interval, Lean uses the
+tighter ``1-rho² ≤ 1-left²`` in
+``residualRadius_le_of_interval_ratio_bounds``.
 
-The proof currently checks this implication once the polynomial enclosures
-are supplied. Establishing those enclosures from the saved residual
-coefficients is still open; they are currently computed by exact rational
-Bernstein bounds in Python.
+For the archived split, the numerator is cubic and the denominator is linear.
+The Lean module ``SavedRadius.lean`` checks their exact power-to-Bernstein
+identities, proves the coefficient bounds, and combines them with the radius
+inequality to recover the saved radius upper bound over the whole interval.
+``export_radius.py`` reconstructs those coefficients from the frozen history
+and checks their provenance hashes. This closes the radius step for this
+formula and interval bound for this example; it does not yet prove the
+general link from the projected-covariance radius to this precision-quadratic
+formula, or derive the residual polynomials in Lean from arbitrary histories.
 
 ``cutoff_with_residual_matrix`` now takes a probability inequality expressed
 using the actual residual matrix determinant. It derives the determinant

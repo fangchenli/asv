@@ -4,3 +4,5 @@ import StepDetection.SavedCertificate
 import StepDetection.DeterminantTrace.Result
 import StepDetection.SavedResidual
 import StepDetection.Radius
+import StepDetection.Bernstein
+import StepDetection.SavedRadius

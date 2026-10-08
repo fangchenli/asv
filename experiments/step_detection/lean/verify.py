@@ -25,6 +25,7 @@ def main():
     print(run([sys.executable, 'export_certificate.py', '--check']).stdout, end='')
     print(run([sys.executable, 'export_trace.py', '--check']).stdout, end='')
     print(run([sys.executable, 'export_matrix.py', '--check']).stdout, end='')
+    print(run([sys.executable, 'export_radius.py']).stdout, end='')
     subprocess.run([args.lake, 'build'], cwd=ROOT, check=True)
     audit = run([args.lake, 'env', 'lean', 'Audit.lean'])
     print(audit.stdout, end='')
