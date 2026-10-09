@@ -42,7 +42,9 @@ def precision_count_below(n, correlation, threshold):
             last_sign = sign
         if i < n:
             next_index = i + 1
-            diagonal_num = rho_den_squared if next_index == n else rho_den_squared + rho_num_squared
+            diagonal_num = (
+                rho_den_squared if next_index == n else rho_den_squared + rho_num_squared
+            )
             coefficient = diagonal_num * threshold_den - threshold_num * rho_den_squared
             if next_index == 2:
                 next_minor = coefficient * current - rho_num_squared * threshold_den**2 * previous
@@ -196,7 +198,9 @@ def heterogeneous_density_bounds(tilted_weight_lowers, *, bits=64):
             density_upper += rate ** (2 * groups - 2) / denominator
         density_upper /= 2
         if density_upper <= 0:
-            raise ArithmeticError('Fourier partial fractions did not give a positive density bound')
+            raise ArithmeticError(
+                'Fourier partial fractions did not give a positive density bound'
+            )
         results.append(
             {
                 'count': 4 * groups,
@@ -232,9 +236,7 @@ def rank_group_weights(n, split, left, right, radius_upper, tilt, *, max_rank=48
         for rank in range(start, min(start + 3, n - 2) + 1):
             # A rank-r direction in the residual space is bounded below by
             # rank r+1 in the zero-sum subspace of the longer plateau.
-            eigenvalue = covariance_eigenvalue_lower(
-                length, rank + 1, left, right
-            )
+            eigenvalue = covariance_eigenvalue_lower(length, rank + 1, left, right)
             weight = eigenvalue / radius_upper - 1
             if weight <= 0:
                 product = F(0)
@@ -251,10 +253,23 @@ def rank_group_weights(n, split, left, right, radius_upper, tilt, *, max_rank=48
     return result
 
 
-def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant.BITS):
+def at_tilt(
+    model,
+    left,
+    right,
+    tilt,
+    *,
+    delta=direction.DELTA,
+    bits=determinant.BITS,
+    determinant_certifier=None,
+    rank_groups_on_intervals=False,
+):
     """Same determinant and density correction, with stronger eigenvalue inputs."""
     tilt, delta = F(tilt), F(delta)
-    base = determinant.certify_interval(model, left, right, tilt=tilt, delta=delta, bits=bits)
+    certifier = (
+        determinant.certify_interval if determinant_certifier is None else determinant_certifier
+    )
+    base = certifier(model, left, right, tilt=tilt, delta=delta, bits=bits)
     result = {
         'tilt': str(tilt),
         'base': base,
@@ -305,7 +320,7 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
         if candidate > correction:
             correction, result['selected_count'] = candidate, item['count']
     squared = min(F(1), 1 / (F(base['determinant_enclosure'][0]) * correction**2))
-    if squared < delta**2:
+    if squared < delta**2 and (left == right or not rank_groups_on_intervals):
         result.update(
             density_correction=str(correction),
             p_upper_squared=str(squared),
@@ -313,7 +328,7 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
             status='certified_excluded',
         )
         return result
-    if left != right:
+    if left != right and not rank_groups_on_intervals:
         # Rank-by-rank bounds are reserved for candidate points. The interval
         # route retains its existing uniform certificate and subdivision rule,
         # avoiding many costly eigenvalue refinements that do not alter it.
@@ -349,10 +364,29 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
     return result
 
 
-def certify_interval(model, left, right, *, delta=direction.DELTA, bits=determinant.BITS):
+def certify_interval(
+    model,
+    left,
+    right,
+    *,
+    delta=direction.DELTA,
+    bits=determinant.BITS,
+    determinant_certifier=None,
+    rank_groups_on_intervals=False,
+):
     """Strengthen the two-tilt certificate without changing its probability rule."""
     attempts = [
-        at_tilt(model, left, right, tilt, delta=delta, bits=bits) for tilt in spectral.TILTS
+        at_tilt(
+            model,
+            left,
+            right,
+            tilt,
+            delta=delta,
+            bits=bits,
+            determinant_certifier=determinant_certifier,
+            rank_groups_on_intervals=rank_groups_on_intervals,
+        )
+        for tilt in spectral.TILTS
     ]
     best = min(attempts, key=lambda result: F(result['p_upper_squared']))
     return {

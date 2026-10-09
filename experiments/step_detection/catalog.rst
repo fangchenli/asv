@@ -131,6 +131,9 @@ complete saved-case search.
 * `sturm_unresolved_diagnosis.rst <sturm_unresolved_diagnosis.rst>`_:
   exact midpoint and one-split diagnosis of the nine unresolved candidate
   searches.
+* `continuant_partition_diagnosis.py`_ and
+  `saved 16-piece diagnosis <data/sturm_fresh_v2_continuant_partition_n40.json>`_:
+  post-hoc 16-piece continuant certificate for one saved hard case.
 * `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
   and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
   verified saved-case results for the latest point-bound refinement.
@@ -193,6 +196,8 @@ Diagnostics, replay, and verification
   `directional_diagnosis.py`_: construct saved mathematical diagnoses.
 * `determinant_continuant.py`_: experimental exact-polynomial determinant
   enclosure for correlation intervals near ``rho = 1``.
+* `continuant_partition_diagnosis.py`_: reproduce a partitioned proof for one
+  frozen unresolved case.
 * `spectral_replay.py`_, `sturm_replay.py`_, and
   `determinant_replay.py`_: replay saved cases.
 * `spectral_replay_artifacts.py`_, `sturm_replay_artifacts.py`_,
@@ -270,6 +275,8 @@ Older or supporting documents
 .. _directional_determinant.py: directional_determinant.py
 .. _directional_spectral.py: directional_spectral.py
 .. _directional_sturm.py: directional_sturm.py
+.. _determinant_continuant.py: determinant_continuant.py
+.. _continuant_partition_diagnosis.py: continuant_partition_diagnosis.py
 .. _threshold_study.py: threshold_study.py
 .. _ablation_study.py: ablation_study.py
 .. _robustness_study.py: robustness_study.py

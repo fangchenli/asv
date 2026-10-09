@@ -93,10 +93,37 @@ def test_centered_continuant_bound_contains_exact_interval_values(n, split):
         assert lower <= dense_rational_determinant(n, split, rho, a, b)
 
 
+@pytest.mark.parametrize('degree', [1, 2, 4])
+def test_taylor_continuant_bound_contains_exact_interval_values(degree):
+    n, split, a, b = 9, 4, F(7, 8), F(3, 7)
+    left, right = F(7, 8) - F(1, 512), F(7, 8) + F(1, 512)
+    lower = continuant.determinant_interval_taylor(n, split, left, right, a, b, degree=degree)
+    assert lower is not None and lower > 0
+    for rho in (left, (left + right) / 2, right):
+        assert lower <= dense_rational_determinant(n, split, rho, a, b)
+
+
+def test_taylor_continuant_point_matches_exact_continuant():
+    args = (9, 4, F(7, 8), F(7, 8), F(7, 8), F(3, 7))
+    exact = continuant.determinant_interval(*args)
+    for degree in (1, 2, 4):
+        assert continuant.determinant_interval_taylor(*args, degree=degree) == exact
+
+
 def test_de_casteljau_bisection_preserves_exact_bernstein_bounds():
     left, right = continuant._split_bernstein((F(0), F(0), F(1, 3)))
     assert left == (F(0), F(0), F(1, 12))
     assert right == (F(1, 12), F(1, 6), F(1, 3))
+
+
+def test_paired_bernstein_coefficients_bound_a_polynomial_ratio():
+    numerator = continuant._bernstein_coefficients((F(1), F(0), F(1)), F(0), F(1))
+    denominator = continuant._bernstein_coefficients((F(1), F(1)), F(0), F(1))
+    lower = continuant._bernstein_ratio_lower(numerator, denominator)
+    assert lower == F(2, 3)
+    for x in (F(0), F(1, 4), F(1, 2), F(3, 4), F(1)):
+        exact = (1 + x**2) / (1 + x)
+        assert lower <= exact
 
 
 def saved_losses():

@@ -101,11 +101,13 @@ certifies five of nine saved witnesses; four still have at least one
 uncertified half. Those four fail at the determinant enclosure near
 ``rho = 1``; increasing precision to 512 bits and extensive subdivision did
 not fix a representative case. A continuant/Bernstein prototype now
-certifies 13 of 16 equal pieces in one 40-reading witness interval; three
-pieces near ``rho = 1`` remain just above 0.01. Exact rational setup takes
-tens of seconds, and the 32-piece follow-up exceeded two minutes. The next
-mathematical task is to reduce coefficient cost and refine only the endpoint
-pieces before another benchmark comparison.
+certifies all 16 equal pieces of one 40-reading witness when it also uses the
+rank-group density correction on intervals. The largest p-value upper bound
+is about 0.00878. The reproducible `saved diagnosis
+<data/sturm_fresh_v2_continuant_partition_n40.json>`_ took tens of seconds;
+a 32-piece attempt exceeded two minutes. The next mathematical task is to
+recheck the other three hard cases and reduce coefficient cost before
+another benchmark comparison.
 
 Further detail
 --------------

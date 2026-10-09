@@ -60,12 +60,9 @@ input archive hashes. The committed `diagnosis data
 <data/sturm_fresh_v2_unresolved_diagnosis.json>`_ preserves all nine
 certificates and the numerical diagnostics.
 
-The next mathematical step is a different enclosure for the determinant near
-``rho = 1``. A centered or polynomial/continuant formulation should reduce the
-dependency in the LDL recurrence. It must be checked against exact point
-values and existing interval certificates before using it in a new frozen
-evaluation. A larger global search budget is unlikely to help until this
-determinant bottleneck is addressed.
+The next mathematical step is to control coefficient growth in a determinant
+enclosure near ``rho = 1``. A larger global search budget is unlikely to help
+until this determinant bottleneck is addressed.
 
 Continuant prototype
 --------------------
@@ -78,22 +75,39 @@ check its lower bound against independent dense determinants at several
 points in an interval.
 
 On one saved 40-reading hard case, a shared-radius calculation with the
-continuant and Bernstein bounds divides the full witness interval into 16
-pieces. Thirteen certify below 0.01; the last three have upper bounds about
-0.01002, 0.01013, and 0.01024. Both interval endpoints certify at about
-0.0085 and 0.0088 under the same radius bound. This shows the method is close
-to certifying the whole interval, but still needs finer subdivision near
-``rho = 1``.
+continuant and paired Bernstein bounds divides the full witness interval into
+16 pieces. All 16 certify below 0.01; the largest p-value upper bound is
+about 0.00878. The proof applies the rank-group density correction on every
+interval. The `saved result
+<data/sturm_fresh_v2_continuant_partition_n40.json>`_ preserves each exact
+bound, and `continuant_partition_diagnosis.py`_ reproduces it. This is a
+post-hoc proof of the saved witness only; it does not revise the frozen study
+record.
 
 The exact polynomial and Bernstein setup takes tens of seconds for this one
 case. A 32-piece follow-up did not finish within about two minutes and was
-stopped while evaluating the exact rational subinterval bounds. The
-calculation is therefore a proof of mathematical direction, not a practical
-replacement. The new route has not been used in the fresh-study results or
-production detector.
+stopped while evaluating the exact rational subinterval bounds. This route
+can certify a previously unresolved witness, but its cost and behavior on the
+other three hard cases are not yet known. It has not been used in the frozen
+fresh-study results or production detector.
 
-The next step is to reduce exact coefficient growth and reuse centered
-continuant bounds while refining just the endpoint pieces. Then recheck all
-four stubborn cases and the other five before any fresh evaluation. The
-small exact determinant tests and the exact de Casteljau split check pass;
-the large-case measurements remain exploratory.
+Taylor-model follow-up
+----------------------
+
+I also tested a degree-limited Taylor model. It keeps a few exact coefficients
+around the interval midpoint and encloses all discarded terms with a
+conservative remainder bound. The model passes independent exact determinant
+checks on small matrices. On the 40-reading witness, degrees 2 and 4 are too
+loose; degree 6 produces a determinant-ratio lower bound around 1605, but the
+full-interval probability bound is still about 0.0116, above the 0.01 cutoff.
+Degree 8 tightens the determinant only slightly. Splitting the interval and
+using the exact Bernstein route remains necessary for this case.
+
+The Taylor model also does not solve the scaling problem: degree 2 took about
+23 seconds on one 100-reading witness and still returned no positive lower
+bound. Since its remainder gets very large in the continuant recurrence, more
+Taylor terms cost more without an evident route to a useful certificate. The
+small exact tests are retained, but this is not currently a candidate for the
+search implementation. The useful next direction is to reduce coefficient
+growth in the Bernstein proof, then test adaptive partitions on all four hard
+cases.

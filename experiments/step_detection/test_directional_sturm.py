@@ -162,11 +162,7 @@ def test_heterogeneous_fourier_integral_is_exact_and_handles_equal_weights():
     assert F(bounds[1]['density_upper']) == F(1, 20)
     equal = sturm.heterogeneous_density_bounds([F(2), F(2), F(1)])
     assert len(equal) == 3
-    assert all(
-        F(item['group_weight_lowers'][i]) <= F(2)
-        for i, item in enumerate(equal)
-        if i < 2
-    )
+    assert all(F(item['group_weight_lowers'][i]) <= F(2) for i, item in enumerate(equal) if i < 2)
     for groups, item in enumerate(equal, start=1):
         weights = [F(value) for value in item['group_weight_lowers']]
         holder_upper = F(sturm.grouped_density_bounds(weights)[-1]['density_upper'])
@@ -183,9 +179,7 @@ def test_individual_rank_groups_bound_the_corresponding_fourier_factors():
         start = 4 * group_index + 1
         product = F(1)
         for rank in range(start, start + 4):
-            eigen_lower = sturm.covariance_eigenvalue_lower(
-                length, rank + 1, rho, rho
-            )
+            eigen_lower = sturm.covariance_eigenvalue_lower(length, rank + 1, rho, rho)
             weight = eigen_lower / radius - 1
             assert weight > 0
             product *= weight / (1 + 2 * tilt * weight)
@@ -196,7 +190,8 @@ def test_rank_group_density_sharpens_the_early_survivor_without_claiming_alert()
     path = Path(__file__).parent / 'data/sturm_reporting_v3_depth17_diagnosis.json.gz'
     archive = json.loads(gzip.decompress(path.read_bytes()))
     row = next(
-        row for row in archive['rows']
+        row
+        for row in archive['rows']
         if row['case']['id'].endswith('early-seed1601')
         and row['result']['status'] == 'surviving_explanation'
     )
@@ -223,6 +218,10 @@ def test_grouped_density_certificate_covers_early_replay_witness():
     best = next(item for item in interval['attempts'] if item['tilt'] == '1/8')
     assert len(best['grouped_density_bounds']) == 4
     assert len(best['heterogeneous_density_bounds']) == 4
+    ranked = sturm.certify_interval(model, rho - width, rho + width, rank_groups_on_intervals=True)
+    assert ranked['status'] == 'certified_excluded'
+    ranked_best = next(item for item in ranked['attempts'] if item['tilt'] == '1/8')
+    assert ranked_best['rank_group_weights']
 
 
 def test_refinement_preserves_old_bound_and_invariances():
