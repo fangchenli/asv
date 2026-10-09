@@ -90,6 +90,13 @@ case. It avoids interval subdivision, though the setup cost remains high.
 Its behavior on the other three hard cases is not yet known. It has not been
 used in the frozen fresh-study results or production detector.
 
+I attempted the same full-interval calculation on a saved 100-reading hard
+case. Exact polynomial construction had not completed after 120 seconds, so I
+stopped the run before it could produce a certificate. This is a clear
+scaling limit of the current rational-polynomial implementation. The next
+algorithm work needs to reduce or avoid global exact coefficient growth
+before applying this proof to the other large cases.
+
 Taylor-model follow-up
 ----------------------
 
