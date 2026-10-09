@@ -191,6 +191,8 @@ Diagnostics, replay, and verification
   cases and explain where confidence bounds lose information.
 * `determinant_diagnosis.py`_, `sturm_diagnosis.py`_, and
   `directional_diagnosis.py`_: construct saved mathematical diagnoses.
+* `determinant_continuant.py`_: experimental exact-polynomial determinant
+  enclosure for correlation intervals near ``rho = 1``.
 * `spectral_replay.py`_, `sturm_replay.py`_, and
   `determinant_replay.py`_: replay saved cases.
 * `spectral_replay_artifacts.py`_, `sturm_replay_artifacts.py`_,

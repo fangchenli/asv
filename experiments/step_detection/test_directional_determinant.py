@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from experiments.step_detection import determinant_continuant as continuant
 from experiments.step_detection import directional_determinant as bound
 from experiments.step_detection import directional_tail as old
 from experiments.step_detection import residual_direction as direction
@@ -80,6 +81,16 @@ def test_interval_contains_independent_exact_projected_determinants(n, split, rh
     for offset in (-width, -width / 2, F(0), width / 2, width):
         exact = dense_rational_determinant(n, split, rho + offset, a, b)
         assert interval[0] <= exact <= interval[1]
+
+
+@pytest.mark.parametrize('n,split', [(6, 1), (6, 3), (9, 4)])
+def test_centered_continuant_bound_contains_exact_interval_values(n, split):
+    a, b = F(7, 8), F(3, 7)
+    left, right = F(7, 8) - F(1, 4096), F(7, 8) + F(1, 4096)
+    lower = continuant.determinant_interval(n, split, left, right, a, b)
+    assert lower is not None and lower > 0
+    for rho in (left, (left + right) / 2, right):
+        assert lower <= dense_rational_determinant(n, split, rho, a, b)
 
 
 def saved_losses():

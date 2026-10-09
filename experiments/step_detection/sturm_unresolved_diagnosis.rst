@@ -66,3 +66,27 @@ dependency in the LDL recurrence. It must be checked against exact point
 values and existing interval certificates before using it in a new frozen
 evaluation. A larger global search budget is unlikely to help until this
 determinant bottleneck is addressed.
+
+Continuant prototype
+--------------------
+
+An experimental `continuant implementation
+<determinant_continuant.py>`_ writes the projected determinant as an exact
+rational polynomial, then bounds it around the interval midpoint. It matches
+the existing point determinant on small rational examples, and the tests
+check its lower bound against independent dense determinants at several
+points in an interval.
+
+On one saved 40-reading hard case, it produces a positive determinant lower
+bound of about 449 on a half-interval where interval LDL returns no positive
+bound. Applying the existing density correction gives a p-value upper bound
+of about 0.036, still above the 0.01 cutoff. The polynomial calculation took
+about 28 seconds for this one interval in the local environment. The approach
+therefore shows that a different enclosure can recover positivity, but it is
+not yet tight or fast enough to replace the current search. It has not been
+used in the fresh-study results or production detector.
+
+The next step is to tighten and optimize the local polynomial bound, then
+recheck all four stubborn cases and the other five cases before any fresh
+evaluation. This prototype's exact tests pass, but the large-case result is
+only an exploratory measurement.
