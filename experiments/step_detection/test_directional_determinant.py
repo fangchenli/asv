@@ -93,6 +93,12 @@ def test_centered_continuant_bound_contains_exact_interval_values(n, split):
         assert lower <= dense_rational_determinant(n, split, rho, a, b)
 
 
+def test_de_casteljau_bisection_preserves_exact_bernstein_bounds():
+    left, right = continuant._split_bernstein((F(0), F(0), F(1, 3)))
+    assert left == (F(0), F(0), F(1, 12))
+    assert right == (F(1, 12), F(1, 6), F(1, 3))
+
+
 def saved_losses():
     root = Path(__file__).parent / 'data'
     diagnosis = json.loads((root / 'directional_v1_loss_diagnosis.json').read_text())

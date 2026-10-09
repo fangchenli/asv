@@ -77,16 +77,23 @@ the existing point determinant on small rational examples, and the tests
 check its lower bound against independent dense determinants at several
 points in an interval.
 
-On one saved 40-reading hard case, it produces a positive determinant lower
-bound of about 449 on a half-interval where interval LDL returns no positive
-bound. Applying the existing density correction gives a p-value upper bound
-of about 0.036, still above the 0.01 cutoff. The polynomial calculation took
-about 28 seconds for this one interval in the local environment. The approach
-therefore shows that a different enclosure can recover positivity, but it is
-not yet tight or fast enough to replace the current search. It has not been
-used in the fresh-study results or production detector.
+On one saved 40-reading hard case, a shared-radius calculation with the
+continuant and Bernstein bounds divides the full witness interval into 16
+pieces. Thirteen certify below 0.01; the last three have upper bounds about
+0.01002, 0.01013, and 0.01024. Both interval endpoints certify at about
+0.0085 and 0.0088 under the same radius bound. This shows the method is close
+to certifying the whole interval, but still needs finer subdivision near
+``rho = 1``.
 
-The next step is to tighten and optimize the local polynomial bound, then
-recheck all four stubborn cases and the other five cases before any fresh
-evaluation. This prototype's exact tests pass, but the large-case result is
-only an exploratory measurement.
+The exact polynomial and Bernstein setup takes tens of seconds for this one
+case. A 32-piece follow-up did not finish within about two minutes and was
+stopped while evaluating the exact rational subinterval bounds. The
+calculation is therefore a proof of mathematical direction, not a practical
+replacement. The new route has not been used in the fresh-study results or
+production detector.
+
+The next step is to reduce exact coefficient growth and reuse centered
+continuant bounds while refining just the endpoint pieces. Then recheck all
+four stubborn cases and the other five before any fresh evaluation. The
+small exact determinant tests and the exact de Casteljau split check pass;
+the large-case measurements remain exploratory.

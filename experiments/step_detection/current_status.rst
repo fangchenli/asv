@@ -100,11 +100,12 @@ considering integration. The `unresolved-search diagnosis
 certifies five of nine saved witnesses; four still have at least one
 uncertified half. Those four fail at the determinant enclosure near
 ``rho = 1``; increasing precision to 512 bits and extensive subdivision did
-not fix a representative case. An exact-polynomial continuant prototype now
-recovers a positive determinant bound in one 40-reading case, but the
-resulting p-value upper bound remains above 0.01 and took about 28 seconds.
-The next mathematical task is to tighten and speed up that enclosure before
-another benchmark comparison.
+not fix a representative case. A continuant/Bernstein prototype now
+certifies 13 of 16 equal pieces in one 40-reading witness interval; three
+pieces near ``rho = 1`` remain just above 0.01. Exact rational setup takes
+tens of seconds, and the 32-piece follow-up exceeded two minutes. The next
+mathematical task is to reduce coefficient cost and refine only the endpoint
+pieces before another benchmark comparison.
 
 Further detail
 --------------
