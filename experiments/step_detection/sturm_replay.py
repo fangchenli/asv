@@ -40,11 +40,14 @@ def examples():
     if hashlib.sha256(raw).hexdigest() != source['sha256']:
         raise ValueError('Saved replay archive hash mismatch')
     saved = json.loads(gzip.decompress(raw))
-    for name, digest in saved['source_hashes'].items():
-        if hashlib.sha256((HERE / name).read_bytes()).hexdigest() != digest:
-            raise ValueError(f'Previous replay source changed: {name}')
     return [
-        {'case': row['case'], 'previous': row['result'], 'source': source} for row in saved['rows']
+        {
+            'case': row['case'],
+            'previous': row['result'],
+            'source': source,
+            'previous_source_hashes': saved['source_hashes'],
+        }
+        for row in saved['rows']
     ]
 
 

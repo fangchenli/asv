@@ -173,6 +173,44 @@ def test_heterogeneous_fourier_integral_is_exact_and_handles_equal_weights():
         assert F(item['density_upper']) <= holder_upper
 
 
+def test_individual_rank_groups_bound_the_corresponding_fourier_factors():
+    n, split, rho = 30, 9, F(3, 4)
+    radius, tilt = F(1, 2), F(1, 8)
+    groups = sturm.rank_group_weights(n, split, rho, rho, radius, tilt, bits=64)
+    assert groups
+    length = max(split, n - split)
+    for group_index, mean_lower in enumerate(groups):
+        start = 4 * group_index + 1
+        product = F(1)
+        for rank in range(start, start + 4):
+            eigen_lower = sturm.covariance_eigenvalue_lower(
+                length, rank + 1, rho, rho
+            )
+            weight = eigen_lower / radius - 1
+            assert weight > 0
+            product *= weight / (1 + 2 * tilt * weight)
+        assert mean_lower**4 <= product
+
+
+def test_rank_group_density_sharpens_the_early_survivor_without_claiming_alert():
+    path = Path(__file__).parent / 'data/sturm_reporting_v3_depth17_diagnosis.json.gz'
+    archive = json.loads(gzip.decompress(path.read_bytes()))
+    row = next(
+        row for row in archive['rows']
+        if row['case']['id'].endswith('early-seed1601')
+        and row['result']['status'] == 'surviving_explanation'
+    )
+    witness = row['result']['witness']
+    rho = F(witness['rho'])
+    model = direction.state(row['case']['values'], witness['split'])
+    old = F(witness['confidence_bounds']['sturm']['p_upper'])
+    improved = sturm.certify_interval(model, rho, rho)
+    assert F(1, 100) < F(improved['p_upper']) < old
+    best = next(attempt for attempt in improved['attempts'] if attempt['tilt'] == '1/8')
+    assert best['selected_count'] == 28
+    assert len(best['rank_group_weights']) == 7
+
+
 def test_grouped_density_certificate_covers_early_replay_witness():
     model, rho, width = saved_model(), F(101, 128), F(1, 65536)
     point = sturm.certify_interval(model, rho, rho)

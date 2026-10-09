@@ -207,6 +207,50 @@ def heterogeneous_density_bounds(tilted_weight_lowers, *, bits=64):
     return results
 
 
+def rank_group_weights(n, split, left, right, radius_upper, tilt, *, max_rank=48, bits=64):
+    """Lower bounds on geometric-mean tilted weights in each four-rank block.
+
+    Interlacing embeds the zero-sum vectors on the longer plateau in the
+    two-plateau residual space. Bounding each covariance eigenvalue separately
+    keeps more information than assigning the weakest rank in a block to all
+    four directions. AM-GM then bounds that block's Fourier factor using the
+    geometric mean of its four coefficients.
+    """
+    if not 1 <= split < n or not -1 < F(left) <= F(right) < 1:
+        raise ValueError('Require an interior split and stationary interval')
+    radius_upper, tilt = F(radius_upper), F(tilt)
+    if radius_upper <= 0 or not 0 < tilt < F(1, 2):
+        raise ValueError('Require positive radius and a finite exponential tilt')
+    if bits < 1 or max_rank < 4 or max_rank % 4:
+        raise ValueError('Require positive precision and a rank limit divisible by four')
+    length, scale = max(split, n - split), 1 << bits
+    result = []
+    last_rank = min(max_rank, n - 2)
+    last_rank -= last_rank % 4
+    for start in range(1, last_rank + 1, 4):
+        product = F(1)
+        for rank in range(start, min(start + 3, n - 2) + 1):
+            # A rank-r direction in the residual space is bounded below by
+            # rank r+1 in the zero-sum subspace of the longer plateau.
+            eigenvalue = covariance_eigenvalue_lower(
+                length, rank + 1, left, right
+            )
+            weight = eigenvalue / radius_upper - 1
+            if weight <= 0:
+                product = F(0)
+                break
+            product *= weight / (1 + 2 * tilt * weight)
+        if product <= 0:
+            break
+        degree = rank - start + 1
+        scaled_floor = product.numerator * scale**degree // product.denominator
+        mean_lower = F(_floor_nth_root(scaled_floor, degree), scale)
+        if mean_lower <= 0:
+            break
+        result.append(mean_lower)
+    return result
+
+
 def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant.BITS):
     """Same determinant and density correction, with stronger eigenvalue inputs."""
     tilt, delta = F(tilt), F(delta)
@@ -257,6 +301,41 @@ def at_tilt(model, left, right, tilt, *, delta=direction.DELTA, bits=determinant
     heterogeneous = heterogeneous_density_bounds(tilted_weight_lowers)
     result['heterogeneous_density_bounds'] = heterogeneous
     for item in heterogeneous:
+        candidate = max(F(1), tilt / F(item['density_upper']))
+        if candidate > correction:
+            correction, result['selected_count'] = candidate, item['count']
+    squared = min(F(1), 1 / (F(base['determinant_enclosure'][0]) * correction**2))
+    if squared < delta**2:
+        result.update(
+            density_correction=str(correction),
+            p_upper_squared=str(squared),
+            p_upper=str(min(F(1), direction.sqrt_lower(squared, bits=48) + F(1, 2**48))),
+            status='certified_excluded',
+        )
+        return result
+    if left != right:
+        # Rank-by-rank bounds are reserved for candidate points. The interval
+        # route retains its existing uniform certificate and subdivision rule,
+        # avoiding many costly eigenvalue refinements that do not alter it.
+        result.update(
+            density_correction=str(correction),
+            p_upper_squared=str(squared),
+            p_upper=str(min(F(1), direction.sqrt_lower(squared, bits=48) + F(1, 2**48))),
+        )
+        return result
+    rank_groups = rank_group_weights(
+        model['n'],
+        model['split'],
+        left,
+        right,
+        F(base['radius_upper']),
+        tilt,
+        max_rank=48,
+    )
+    rank_density = heterogeneous_density_bounds(rank_groups)
+    result['rank_group_weights'] = [str(value) for value in rank_groups]
+    result['rank_group_density_bounds'] = rank_density
+    for item in rank_density:
         candidate = max(F(1), tilt / F(item['density_upper']))
         if candidate > correction:
             correction, result['selected_count'] = candidate, item['count']
