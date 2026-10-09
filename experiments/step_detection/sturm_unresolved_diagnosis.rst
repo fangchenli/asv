@@ -23,6 +23,23 @@ of the current cases, while four cases also expose looseness that persists
 after a simple extra split. Those four need a tighter interval probability
 bound, a more informative partition, or both.
 
+Where the four failures occur
+-----------------------------
+
+The four remaining failures are all positive-correlation intervals near
+``rho = 1``. Both tested tilts fail while enclosing the determinant, before
+the Fourier-density correction is evaluated. The determinant is positive at
+each interval midpoint, so the issue is the interval enclosure rather than a
+nonpositive point determinant.
+
+Increasing the dyadic arithmetic precision from 192 to 512 bits did not make
+these determinant enclosures positive. On one representative 100-reading
+case, subdividing a failing half into as many as 1,024 equal pieces also left
+every piece's determinant lower bound nonpositive. This makes simple
+precision increases or brute-force subdivision poor next steps. The likely
+source is dependency growth in the interval tridiagonal LDL recurrence near
+the highly correlated endpoint.
+
 This is a local diagnosis of the nine saved witnesses, not a complete replay
 with a larger work budget. A successful midpoint or half-interval check does
 not itself establish that the full search would finish within its cell and
@@ -43,7 +60,9 @@ input archive hashes. The committed `diagnosis data
 <data/sturm_fresh_v2_unresolved_diagnosis.json>`_ preserves all nine
 certificates and the numerical diagnostics.
 
-The result suggests a focused next mathematical step: inspect the four halves
-that remain uncertified, identify which component of the Fourier upper bound
-dominates there, and refine that component before spending effort on a larger
-global search budget.
+The next mathematical step is a different enclosure for the determinant near
+``rho = 1``. A centered or polynomial/continuant formulation should reduce the
+dependency in the LDL recurrence. It must be checked against exact point
+values and existing interval certificates before using it in a new frozen
+evaluation. A larger global search budget is unlikely to help until this
+determinant bottleneck is addressed.

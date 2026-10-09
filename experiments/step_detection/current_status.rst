@@ -98,7 +98,10 @@ the remaining looseness in the tail bound, then use a new frozen study before
 considering integration. The `unresolved-search diagnosis
 <sturm_unresolved_diagnosis.rst>`_ shows that one extra interval split
 certifies five of nine saved witnesses; four still have at least one
-uncertified half.
+uncertified half. Those four fail at the determinant enclosure near
+``rho = 1``; increasing precision to 512 bits and extensive subdivision did
+not fix a representative case. The next mathematical task is a tighter
+determinant enclosure, before another benchmark comparison.
 
 Further detail
 --------------
