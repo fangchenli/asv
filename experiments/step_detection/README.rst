@@ -387,5 +387,22 @@ For function names, the exact recurrence, and executable examples, see the
 `improvement plan <improvement_plan.rst>`_ describes how to evaluate changes
 to the solver, penalty search, and noise model separately.
 
+Latest step-detection result
+----------------------------
+
+The experimental Sturm reference now has a sharper point bound: it uses a
+separate certified lower bound for each direction instead of assigning the
+weakest bound in a group of four to all four. On the saved 99/128 example,
+the upper bound fell from 0.01229 to 0.01085, still above the 0.01 cutoff.
+The seven-case replay preserved every alert decision.
+
+On a separate frozen set of 360 histories, the complete Sturm reference
+alerted on 53/144 positive cases, versus 52/144 for the control, with zero
+alerts among 216 null cases for both. The candidate had nine unresolved
+positive searches versus one for the control. That is one paired gain and
+more abstentions, so it is not yet evidence for a production change. See the
+`current status <current_status.rst>`_ and `fresh evaluation report
+<sturm_fresh_report.rst>`_ for details and archived results.
+
 This explanation describes source revision
 ``d33754e129c025beb5c2ca440c3c280433b264f7``.

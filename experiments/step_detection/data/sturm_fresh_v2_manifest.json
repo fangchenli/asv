@@ -1,0 +1,104 @@
+{
+  "frozen": {
+    "purpose": "Independent evaluation of the rank-group Fourier refinement",
+    "design": {
+      "sizes": [
+        40,
+        100
+      ],
+      "changes": [
+        0,
+        0.04,
+        0.05,
+        0.06,
+        0.08
+      ],
+      "noise": [
+        0.005,
+        0.02
+      ],
+      "locations": [
+        "early",
+        "middle",
+        "recent"
+      ],
+      "seeds": [
+        1602,
+        1603
+      ],
+      "conditions": {
+        "negative": -0.5,
+        "independent_constant": 0,
+        "positive": 0.7
+      },
+      "stream_prefix": "sturm-ar1-fresh-v1"
+    },
+    "work": {
+      "max_cells": 4096,
+      "max_depth": 17
+    },
+    "confidence": {
+      "total_alpha": 0.05,
+      "confidence_alpha": 0.01,
+      "reporting_alpha": 0.04,
+      "tilts": [
+        "1/16",
+        "1/8"
+      ],
+      "rank_groups": "four consecutive ranks, separately bounded and geometrically combined"
+    },
+    "methods": {
+      "control": "same complete reporting search with split-aware Sturm route disabled",
+      "candidate": "same search with split-aware Sturm route enabled"
+    },
+    "source_hashes": {
+      "sturm_fresh_study.py": "a86ce20bd319f55526f8c8c866535fe060e8b6c2733f682e7719e2d944f552fb",
+      "sturm_fresh_protocol.rst": "2b433174087da5940b85d7901cf78f49357b0ed5932992c229ded1c04bded96c",
+      "reporting_sturm.py": "f286e6d6c6011e54dc703fc38b8cd7c4607d182f405a92b6e55692b540581771",
+      "directional_sturm.py": "c92e1342531871b92751a183e3ea5108361e22aeb06dfdf4fc205e8c017c9a9e",
+      "directional_spectral.py": "f35fa63b548f2f957fd166eeabcdd3dc132e0673212269a4e8a72feba6b7d738",
+      "directional_determinant.py": "74a5e39d45c48e1f234259d407a856d50f51b7e1f3c91da8ce34fe654b6b80e3",
+      "directional_tail.py": "ae51093a0475f371e74ba5a6a4bd8cfff02c1b391c7a7a8d3edb97d95f567588",
+      "residual_direction.py": "11e2e6a7cc68bdbe6fe61da4341d445199015319a0c6bc9510efe9316c63c7db",
+      "rational_polynomial.py": "bb63e487a13a96e1f20c9de6b5ce28be39efcf2feceff6c2322a062a97b7b723",
+      "reporting_ar1.py": "2a9d7bc2114af59e22cff7033336db81011703ca6a3fda4a0abdf33c5357b52e",
+      "reporting_ar1_full.py": "713d29e55ce7a139a8e81756f467729c9ff3fd225a71d8feb89910fc9928940e"
+    },
+    "calibrations": {
+      "40": {
+        "n": 40,
+        "alpha": 0.04,
+        "size_share": 0.8,
+        "threshold": 0.05,
+        "size_alpha": 0.032,
+        "fit_alpha": 0.007999999999999998,
+        "size_t_critical": 1.9077624139126208,
+        "fit_f_critical": 16.893789135918187,
+        "total_alpha": 0.05,
+        "confidence_alpha": 0.01
+      },
+      "100": {
+        "n": 100,
+        "alpha": 0.04,
+        "size_share": 0.8,
+        "threshold": 0.05,
+        "size_alpha": 0.032,
+        "fit_alpha": 0.007999999999999998,
+        "size_t_critical": 1.873350581611851,
+        "fit_f_critical": 16.923560183442497,
+        "total_alpha": 0.05,
+        "confidence_alpha": 0.01
+      }
+    },
+    "python": "3.14.5",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "git_revision": "ae0e18c1be1f3e4115025cbc3b6f1f6e57e4338f",
+  "workers": 6,
+  "thread_environment": {
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  }
+}

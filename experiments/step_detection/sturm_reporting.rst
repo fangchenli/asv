@@ -98,20 +98,25 @@ conversion, calibration, degenerate data, work limits, and damaged proofs
 or metadata, including changed eigenvalue precision. The 38 mathematical
 tests cover exact Sturm roots, the integer recurrence against its rational
 reference, eigenvalue bounds, heterogeneous Fourier integrals, individual
-rank groups, and saved point and interval certificates. Disabling the Sturm route recovers
-the original directional search exactly after removing the additional
-metadata.
+rank groups, and saved point and interval certificates. Disabling the Sturm
+route recovers the original directional search exactly after removing the
+additional metadata.
+
+Two fresh-study design tests also check the new stream separation, sample
+counts, and frozen source metadata.
 
 The `depth-16 summary <data/sturm_reporting_v2_heterogeneous_summary.json>`_
-preserves the earlier unresolved run. The latest `depth-17 summary
-<data/sturm_reporting_v3_depth17_summary.json>`_ contains all seven current
-decisions. Its compressed `full archive
-<data/sturm_reporting_v3_depth17_diagnosis.json.gz>`_ retains the
+preserves the earlier unresolved run. The `depth-17 summary
+<data/sturm_reporting_v3_depth17_summary.json>`_ contains the preceding
+decisions. The newest `rank-group summary
+<data/sturm_reporting_v4_rank_groups_summary.json>`_ records all seven
+verified outcomes after the point-bound refinement. Its compressed `full
+archive <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_ retains the
 inputs, previous and current results, certificates, source hashes, and
-numerical diagnoses. The archive builder checks each result and saved
-witness interval against the preceding archive. Commands are in the
-`running guide <running.rst>`_.
+numerical diagnoses. Commands are in the `running guide <running.rst>`_.
 
-This remains development evidence on saved cases. The earlier fresh-study
-detection count remains 58/144; the new rank-group method is being evaluated
-on a separately frozen fresh set. ASV's production detector is unchanged.
+The fresh comparison is reported separately in
+`sturm_fresh_report.rst <sturm_fresh_report.rst>`_. Its result is one
+additional positive alert, no null alerts, and eight more unresolved positive
+searches than the control. This remains development evidence; ASV's
+production detector is unchanged.

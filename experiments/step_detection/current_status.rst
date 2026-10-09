@@ -76,11 +76,13 @@ What this contributes to ASV
 
 These changes live under ``experiments/step_detection/``. They are a
 mathematical prototype for a possible future improvement. **ASV's production
-step detector has not been changed.** An independent 360-history comparison
-is now running on new random streams. It compares the complete search with
-and without the rank-group point refinement, measuring false alerts as well
-as detections and paired gains and losses. Even a favorable result remains
-experimental evidence.
+step detector has not been changed.** On the independent 360-history
+comparison, the Sturm-enabled reference detected 53/144 positive histories,
+versus 52/144 for the control: one paired gain and no losses. Both had zero
+alerts among 216 null histories. The candidate also left nine positive
+searches unresolved, versus one for the control, so this is a small
+descriptive gain with more abstentions, not evidence of a broad improvement.
+See the `fresh evaluation report <sturm_fresh_report.rst>`_.
 
 The Lean pilot checks some exact interval and determinant arithmetic. It does
 not yet formalize the new Fourier probability inequality or the complete
@@ -90,8 +92,10 @@ What remains
 ------------
 
 The rank-group bound still misses the 0.01 cutoff at the saved 99/128
-candidate. The independent study will show whether its added point
-certificates change decisions on a separate set of histories.
+candidate. The fresh study's single gained alert does not resolve that
+mathematical gap or justify a production change. Any next step should target
+the unresolved cases and the remaining looseness in the tail bound, then use
+a new frozen study before considering integration.
 
 Further detail
 --------------
@@ -100,6 +104,7 @@ The `plain-language introduction <README.rst>`_ explains how ASV fits steps
 to benchmark histories. The `mathematical derivation <sturm_refinement.rst>`_
 develops the eigenvalue and Fourier bounds. The `replay report
 <sturm_reporting.rst>`_ describes the seven saved cases, and the
-`verified replay summary <data/sturm_reporting_v3_depth17_summary.json>`_
-records their outcomes. The initial `experiment guide <running.rst>`_ gives
-reproduction commands.
+`verified replay summary <data/sturm_reporting_v4_rank_groups_summary.json>`_
+records their latest outcomes. The `fresh evaluation report
+<sturm_fresh_report.rst>`_ describes the independent comparison. The
+`experiment guide <running.rst>`_ gives reproduction commands.

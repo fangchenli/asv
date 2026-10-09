@@ -125,9 +125,12 @@ complete saved-case search.
   eigenvalue bounds and heterogeneous Fourier density bounds.
 * `sturm_reporting.rst <sturm_reporting.rst>`_: complete depth-17 replay and
   remaining saved explanation.
-* `data/sturm_reporting_v3_depth17_summary.json <data/sturm_reporting_v3_depth17_summary.json>`_
-  and `data/sturm_reporting_v3_depth17_diagnosis.json.gz <data/sturm_reporting_v3_depth17_diagnosis.json.gz>`_:
-  verified current replay results and full archive.
+* `sturm_fresh_protocol.rst <sturm_fresh_protocol.rst>`_ and
+  `sturm_fresh_report.rst <sturm_fresh_report.rst>`_: frozen evaluation of
+  the complete Sturm reference on independent histories.
+* `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
+  and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
+  verified saved-case results for the latest point-bound refinement.
 
 Python modules by role
 ----------------------

@@ -1,0 +1,594 @@
+{
+  "purpose": "Independent evaluation of the rank-group Fourier refinement",
+  "case_count": 360,
+  "positive_count": 144,
+  "null_count": 216,
+  "frozen_sha256": "4271a3d2783a4736b745c5ca6dff4b70ca93fa052a897f4ac40d3be4d830dc27",
+  "inputs": {
+    "file": "inputs.jsonl.gz",
+    "sha256": "412ba1bcc33a5ff0a7032a0adc4f2a9b05f44f2ffddccb12257da7da43e89ea8"
+  },
+  "records": {
+    "file": "records.jsonl.gz",
+    "sha256": "40bdb7656afc1df0952551d9fb6b09888a7baf3d7269a0d711a814ecd6641b70"
+  },
+  "breakdown": {
+    "all": {
+      "methods": {
+        "control": {
+          "histories": 360,
+          "alerts": 52,
+          "statuses": {
+            "certified_alert": 52,
+            "surviving_explanation": 307,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 7.0,
+          "median_seconds": 0.445633937495586
+        },
+        "rank_group": {
+          "histories": 360,
+          "alerts": 53,
+          "statuses": {
+            "certified_alert": 53,
+            "surviving_explanation": 298,
+            "unresolved": 9,
+            "insufficient_variation": 0
+          },
+          "median_cells": 7.0,
+          "median_seconds": 0.5714258335065097
+        }
+      },
+      "paired": {
+        "gained_alerts": 1,
+        "lost_alerts": 0
+      }
+    },
+    "condition=independent_constant": {
+      "methods": {
+        "control": {
+          "histories": 120,
+          "alerts": 22,
+          "statuses": {
+            "certified_alert": 22,
+            "surviving_explanation": 98,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.4031994374963688
+        },
+        "rank_group": {
+          "histories": 120,
+          "alerts": 22,
+          "statuses": {
+            "certified_alert": 22,
+            "surviving_explanation": 97,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.5,
+          "median_seconds": 0.5021479374991031
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "condition=negative": {
+      "methods": {
+        "control": {
+          "histories": 120,
+          "alerts": 24,
+          "statuses": {
+            "certified_alert": 24,
+            "surviving_explanation": 95,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.41237093799281865
+        },
+        "rank_group": {
+          "histories": 120,
+          "alerts": 24,
+          "statuses": {
+            "certified_alert": 24,
+            "surviving_explanation": 94,
+            "unresolved": 2,
+            "insufficient_variation": 0
+          },
+          "median_cells": 6.0,
+          "median_seconds": 0.5676608545036288
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "condition=positive": {
+      "methods": {
+        "control": {
+          "histories": 120,
+          "alerts": 6,
+          "statuses": {
+            "certified_alert": 6,
+            "surviving_explanation": 114,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 16.5,
+          "median_seconds": 1.0936698544974206
+        },
+        "rank_group": {
+          "histories": 120,
+          "alerts": 7,
+          "statuses": {
+            "certified_alert": 7,
+            "surviving_explanation": 107,
+            "unresolved": 6,
+            "insufficient_variation": 0
+          },
+          "median_cells": 16.5,
+          "median_seconds": 1.1356493125203997
+        }
+      },
+      "paired": {
+        "gained_alerts": 1,
+        "lost_alerts": 0
+      }
+    },
+    "n=40": {
+      "methods": {
+        "control": {
+          "histories": 180,
+          "alerts": 22,
+          "statuses": {
+            "certified_alert": 22,
+            "surviving_explanation": 158,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.13773820849746699
+        },
+        "rank_group": {
+          "histories": 180,
+          "alerts": 22,
+          "statuses": {
+            "certified_alert": 22,
+            "surviving_explanation": 157,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.16398410449619405
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "n=100": {
+      "methods": {
+        "control": {
+          "histories": 180,
+          "alerts": 30,
+          "statuses": {
+            "certified_alert": 30,
+            "surviving_explanation": 149,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 7.0,
+          "median_seconds": 0.46044085399626056
+        },
+        "rank_group": {
+          "histories": 180,
+          "alerts": 31,
+          "statuses": {
+            "certified_alert": 31,
+            "surviving_explanation": 141,
+            "unresolved": 8,
+            "insufficient_variation": 0
+          },
+          "median_cells": 9.0,
+          "median_seconds": 0.7279421874991385
+        }
+      },
+      "paired": {
+        "gained_alerts": 1,
+        "lost_alerts": 0
+      }
+    },
+    "change=0": {
+      "methods": {
+        "control": {
+          "histories": 72,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 72,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 1.0,
+          "median_seconds": 0.35881006250565406
+        },
+        "rank_group": {
+          "histories": 72,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 72,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 1.0,
+          "median_seconds": 0.25902433349983767
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "change=0.04": {
+      "methods": {
+        "control": {
+          "histories": 72,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 72,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 8.0,
+          "median_seconds": 0.46821668749907985
+        },
+        "rank_group": {
+          "histories": 72,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 72,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 8.5,
+          "median_seconds": 0.6737213954984327
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "change=0.05": {
+      "methods": {
+        "control": {
+          "histories": 72,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 72,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 11.5,
+          "median_seconds": 1.0114294165032334
+        },
+        "rank_group": {
+          "histories": 72,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 72,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 11.5,
+          "median_seconds": 1.113905625010375
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "change=0.06": {
+      "methods": {
+        "control": {
+          "histories": 72,
+          "alerts": 24,
+          "statuses": {
+            "certified_alert": 24,
+            "surviving_explanation": 47,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 34.5,
+          "median_seconds": 2.279727458000707
+        },
+        "rank_group": {
+          "histories": 72,
+          "alerts": 25,
+          "statuses": {
+            "certified_alert": 25,
+            "surviving_explanation": 43,
+            "unresolved": 4,
+            "insufficient_variation": 0
+          },
+          "median_cells": 38.0,
+          "median_seconds": 2.5705371875083074
+        }
+      },
+      "paired": {
+        "gained_alerts": 1,
+        "lost_alerts": 0
+      }
+    },
+    "change=0.08": {
+      "methods": {
+        "control": {
+          "histories": 72,
+          "alerts": 28,
+          "statuses": {
+            "certified_alert": 28,
+            "surviving_explanation": 44,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 50.0,
+          "median_seconds": 2.6739586249896092
+        },
+        "rank_group": {
+          "histories": 72,
+          "alerts": 28,
+          "statuses": {
+            "certified_alert": 28,
+            "surviving_explanation": 39,
+            "unresolved": 5,
+            "insufficient_variation": 0
+          },
+          "median_cells": 51.0,
+          "median_seconds": 2.7542147709973506
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "noise=0.005": {
+      "methods": {
+        "control": {
+          "histories": 180,
+          "alerts": 50,
+          "statuses": {
+            "certified_alert": 50,
+            "surviving_explanation": 130,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 37.0,
+          "median_seconds": 2.757701104004809
+        },
+        "rank_group": {
+          "histories": 180,
+          "alerts": 50,
+          "statuses": {
+            "certified_alert": 50,
+            "surviving_explanation": 125,
+            "unresolved": 5,
+            "insufficient_variation": 0
+          },
+          "median_cells": 38.0,
+          "median_seconds": 2.8159046254950226
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "noise=0.02": {
+      "methods": {
+        "control": {
+          "histories": 180,
+          "alerts": 2,
+          "statuses": {
+            "certified_alert": 2,
+            "surviving_explanation": 177,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.3468671250011539
+        },
+        "rank_group": {
+          "histories": 180,
+          "alerts": 3,
+          "statuses": {
+            "certified_alert": 3,
+            "surviving_explanation": 173,
+            "unresolved": 4,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.4015341039921623
+        }
+      },
+      "paired": {
+        "gained_alerts": 1,
+        "lost_alerts": 0
+      }
+    },
+    "location=early": {
+      "methods": {
+        "control": {
+          "histories": 120,
+          "alerts": 16,
+          "statuses": {
+            "certified_alert": 16,
+            "surviving_explanation": 104,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 7.0,
+          "median_seconds": 0.42570170849649
+        },
+        "rank_group": {
+          "histories": 120,
+          "alerts": 16,
+          "statuses": {
+            "certified_alert": 16,
+            "surviving_explanation": 102,
+            "unresolved": 2,
+            "insufficient_variation": 0
+          },
+          "median_cells": 7.0,
+          "median_seconds": 0.5910780210033408
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "location=middle": {
+      "methods": {
+        "control": {
+          "histories": 120,
+          "alerts": 19,
+          "statuses": {
+            "certified_alert": 19,
+            "surviving_explanation": 101,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 7.0,
+          "median_seconds": 0.4546284160023788
+        },
+        "rank_group": {
+          "histories": 120,
+          "alerts": 20,
+          "statuses": {
+            "certified_alert": 20,
+            "surviving_explanation": 97,
+            "unresolved": 3,
+            "insufficient_variation": 0
+          },
+          "median_cells": 7.0,
+          "median_seconds": 0.5209910830017179
+        }
+      },
+      "paired": {
+        "gained_alerts": 1,
+        "lost_alerts": 0
+      }
+    },
+    "location=recent": {
+      "methods": {
+        "control": {
+          "histories": 120,
+          "alerts": 17,
+          "statuses": {
+            "certified_alert": 17,
+            "surviving_explanation": 102,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.5,
+          "median_seconds": 0.44602802099689143
+        },
+        "rank_group": {
+          "histories": 120,
+          "alerts": 17,
+          "statuses": {
+            "certified_alert": 17,
+            "surviving_explanation": 99,
+            "unresolved": 4,
+            "insufficient_variation": 0
+          },
+          "median_cells": 9.5,
+          "median_seconds": 0.8307177079987014
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "positive=False": {
+      "methods": {
+        "control": {
+          "histories": 216,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 216,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.39808466649992624
+        },
+        "rank_group": {
+          "histories": 216,
+          "alerts": 0,
+          "statuses": {
+            "certified_alert": 0,
+            "surviving_explanation": 216,
+            "unresolved": 0,
+            "insufficient_variation": 0
+          },
+          "median_cells": 5.0,
+          "median_seconds": 0.4494216455059359
+        }
+      },
+      "paired": {
+        "gained_alerts": 0,
+        "lost_alerts": 0
+      }
+    },
+    "positive=True": {
+      "methods": {
+        "control": {
+          "histories": 144,
+          "alerts": 52,
+          "statuses": {
+            "certified_alert": 52,
+            "surviving_explanation": 91,
+            "unresolved": 1,
+            "insufficient_variation": 0
+          },
+          "median_cells": 42.0,
+          "median_seconds": 2.560004145510902
+        },
+        "rank_group": {
+          "histories": 144,
+          "alerts": 53,
+          "statuses": {
+            "certified_alert": 53,
+            "surviving_explanation": 82,
+            "unresolved": 9,
+            "insufficient_variation": 0
+          },
+          "median_cells": 46.0,
+          "median_seconds": 2.685403707997466
+        }
+      },
+      "paired": {
+        "gained_alerts": 1,
+        "lost_alerts": 0
+      }
+    }
+  },
+  "qualification": "Descriptive results on 120 paired base histories; correlation versions are dependent."
+}
