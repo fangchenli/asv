@@ -189,6 +189,23 @@ demonstrates the API, not an estimate of detection power. A positive scalar
 multiple of the covariance gives the same statistics. The overall noise
 scale is estimated from weighted residuals separately under each model.
 
+Evaluate the rank-group point certificate
+------------------------------------------
+
+The `frozen protocol <sturm_fresh_protocol.rst>`_ compares the complete
+split-aware reporting search with the rank-group point refinement enabled and
+disabled. Its source hashes, settings, and new random streams were frozen
+before generating observations. Run the committed comparison with::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.sturm_fresh_study run \
+        --frozen experiments/step_detection/data/sturm_fresh_v2_frozen.json \
+        --output experiments/step_detection/runs/sturm_fresh_v2 --workers 6
+
+The result stores compressed inputs and full per-history records, then writes
+the overall and subgroup summaries. It refuses changed sources, settings,
+environment, or a preexisting output directory.
+
 ``insufficient_precision`` means the helper abstained, with ``has_alert=False``
 and diagnostic arrays set to None. It is distinct from an ordinary non-alert
 with surviving ``null_splits``. Malformed, non-positive-definite, or excessively

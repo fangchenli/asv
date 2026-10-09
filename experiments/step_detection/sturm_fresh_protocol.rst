@@ -33,11 +33,11 @@ production benchmark or a claim about the C++ detector.
 Create and commit the freeze before running the evaluation::
 
     .venv/bin/python -m experiments.step_detection.sturm_fresh_study freeze \
-        --output experiments/step_detection/data/sturm_fresh_v1_frozen.json
+        --output experiments/step_detection/data/sturm_fresh_v2_frozen.json
 
 Then run the frozen comparison::
 
     VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
         .venv/bin/python -m experiments.step_detection.sturm_fresh_study run \
-        --frozen experiments/step_detection/data/sturm_fresh_v1_frozen.json \
-        --output experiments/step_detection/runs/sturm_fresh_v1 --workers 6
+        --frozen experiments/step_detection/data/sturm_fresh_v2_frozen.json \
+        --output experiments/step_detection/runs/sturm_fresh_v2 --workers 6

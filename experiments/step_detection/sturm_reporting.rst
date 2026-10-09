@@ -49,6 +49,22 @@ rho=99/128. Its probability upper bound is 0.012290, above the 0.01 cutoff.
 This is a valid reason the history still does not alert: excluding one
 explanation exposes another. The early case visits 1,219 cells at depth 17.
 
+The rank-group point refinement computes a lower bound for each covariance
+rank, groups four adjacent ranks, and uses their geometric mean in the same
+Fourier density integral. This tightens the 99/128 point bound to
+**0.0108498**, an 11.7% reduction, while leaving it above 0.01. The floating
+tail estimate remains about 0.007726, with an estimated quadrature error of
+about 4.5e-10; it is diagnostic only. Thus this refinement does not turn the
+case into an alert. It applies only to candidate points; interval coverage
+continues to use the existing certified interval route.
+
+The updated `rank-group replay summary
+<data/sturm_reporting_v4_rank_groups_summary.json>`_ records all seven saved
+cases. The compressed `rank-group replay archive
+<data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_ preserves the full
+proofs and verification details. All seven outcomes verify, with no alert
+decisions gained or lost.
+
 The other six cases
 --------------------
 
@@ -79,10 +95,10 @@ Surviving explanations are independently checked with dense GLS.
 
 The 24 integration tests cover complete coverage, survivors, unit
 conversion, calibration, degenerate data, work limits, and damaged proofs
-or metadata, including changed eigenvalue precision. The 36 mathematical
+or metadata, including changed eigenvalue precision. The 38 mathematical
 tests cover exact Sturm roots, the integer recurrence against its rational
-reference, eigenvalue bounds, heterogeneous Fourier integrals, and the
-saved point and interval certificates. Disabling the Sturm route recovers
+reference, eigenvalue bounds, heterogeneous Fourier integrals, individual
+rank groups, and saved point and interval certificates. Disabling the Sturm route recovers
 the original directional search exactly after removing the additional
 metadata.
 
@@ -96,7 +112,6 @@ numerical diagnoses. The archive builder checks each result and saved
 witness interval against the preceding archive. Commands are in the
 `running guide <running.rst>`_.
 
-This remains development evidence on saved cases. The fresh-study detection
-count remains 58/144, and ASV's production detector is unchanged. The next
-math target is the new 99/128 survivor, where the exact probability upper
-bound remains above the 0.01 cutoff.
+This remains development evidence on saved cases. The earlier fresh-study
+detection count remains 58/144; the new rank-group method is being evaluated
+on a separately frozen fresh set. ASV's production detector is unchanged.

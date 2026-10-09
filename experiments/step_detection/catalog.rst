@@ -174,6 +174,8 @@ Study drivers
 * `reporting_study.py`_: reporting calibration study.
 * `directional_study.py`_: fresh comparison of directional and predictive
   confidence.
+* `sturm_fresh_study.py`_ and `sturm_fresh_protocol.rst`_: frozen independent
+  comparison of the rank-group point-certificate refinement.
 
 Diagnostics, replay, and verification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -213,7 +215,7 @@ statistical derivations:
   `test_direct_stress.py`_, `test_covariance_study.py`_,
   `test_ar1_study.py`_, `test_indexed_study.py`_,
   `test_reporting_study.py`_, `test_directional_study.py`_, and
-  `test_directional_recovery.py`_.
+  `test_directional_recovery.py`_, and `test_sturm_fresh_study.py`_.
 * Statistical-reference checks: `test_ar1_information.py`_,
   `test_reporting_ar1.py`_, `test_reporting_ar1_full.py`_,
   `test_reporting_ar1_jump.py`_, `test_reporting_covariance.py`_,
@@ -270,6 +272,8 @@ Older or supporting documents
 .. _indexed_study.py: indexed_study.py
 .. _reporting_study.py: reporting_study.py
 .. _directional_study.py: directional_study.py
+.. _sturm_fresh_study.py: sturm_fresh_study.py
+.. _sturm_fresh_protocol.rst: sturm_fresh_protocol.rst
 .. _ar1_information.py: ar1_information.py
 .. _full_history_diagnosis.py: full_history_diagnosis.py
 .. _jump_prior_diagnosis.py: jump_prior_diagnosis.py
@@ -313,6 +317,7 @@ Older or supporting documents
 .. _test_reporting_study.py: test_reporting_study.py
 .. _test_directional_study.py: test_directional_study.py
 .. _test_directional_recovery.py: test_directional_recovery.py
+.. _test_sturm_fresh_study.py: test_sturm_fresh_study.py
 .. _test_ar1_information.py: test_ar1_information.py
 .. _test_reporting_ar1.py: test_reporting_ar1.py
 .. _test_reporting_ar1_full.py: test_reporting_ar1_full.py

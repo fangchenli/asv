@@ -11,6 +11,7 @@ import platform
 import random
 import statistics
 import subprocess
+import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
@@ -23,6 +24,11 @@ from . import ar1_study as design_source
 from . import directional_sturm as sturm
 from . import reporting_ar1 as ar1
 from . import reporting_sturm as reporting
+
+if hasattr(sys, 'set_int_max_str_digits'):
+    # Exact interval proofs can legitimately exceed Python's default
+    # human-input safety limit when serialized into an internal archive.
+    sys.set_int_max_str_digits(100_000)
 
 HERE = Path(__file__).parent
 CONDITIONS = design_source.CONDITIONS

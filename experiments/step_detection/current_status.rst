@@ -40,6 +40,13 @@ The experimental certificate now uses three refinements:
   minors instead of repeatedly simplifying fractions. The signs, and
   therefore the eigenvalue counts, are unchanged.
 
+The latest point-certificate refinement bounds individual covariance ranks.
+Previously, each group of four directions used the weakest rank bound for all
+four. The new point calculation bounds each rank separately, then combines
+four lower bounds through their geometric mean in the Fourier integral. The
+interval search still uses its existing interval certificate, so this addition
+affects candidate points without changing interval coverage.
+
 The experimental reporting search also uses depth 17 instead of 16. One
 additional split was enough to certify the interval that previously stopped
 the search as unresolved.
@@ -53,9 +60,11 @@ and **0.0087751** over a small interval. Both are below 0.01, so this
 particular explanation is rejected.
 
 The search then finds another candidate: a step after the second reading,
-with correlation 99/128. Its probability upper bound is **0.012290**, above
-the cutoff, so it remains a plausible explanation. The history still does
-not alert.
+with correlation 99/128. Its earlier probability upper bound was **0.012290**.
+The individual-rank point refinement lowers it to **0.010850**, an 11.7%
+reduction, but it is still above 0.01. The numerical tail diagnostic is about
+0.00773; that floating estimate is not a certificate, so the candidate
+remains and the history still does not alert.
 
 Across the seven saved histories, four alerts remain alerts and the other
 three remain non-alerts. The replay verifies every result. The new bound
@@ -67,9 +76,11 @@ What this contributes to ASV
 
 These changes live under ``experiments/step_detection/``. They are a
 mathematical prototype for a possible future improvement. **ASV's production
-step detector has not been changed.** The latest work also has not been
-evaluated on a fresh benchmark set, so it does not establish a better
-detection rate or false-alert rate in real use.
+step detector has not been changed.** An independent 360-history comparison
+is now running on new random streams. It compares the complete search with
+and without the rank-group point refinement, measuring false alerts as well
+as detections and paired gains and losses. Even a favorable result remains
+experimental evidence.
 
 The Lean pilot checks some exact interval and determinant arithmetic. It does
 not yet formalize the new Fourier probability inequality or the complete
@@ -78,11 +89,9 @@ statistical argument.
 What remains
 ------------
 
-The next mathematical target is the 99/128 candidate, whose bound remains
-above 0.01. After improving the certificate, it should be replayed on saved
-cases and then evaluated on fresh histories with false-alert rates measured
-alongside detection rates. Only that broader evidence can tell us whether
-the prototype belongs in ASV's production implementation.
+The rank-group bound still misses the 0.01 cutoff at the saved 99/128
+candidate. The independent study will show whether its added point
+certificates change decisions on a separate set of histories.
 
 Further detail
 --------------
