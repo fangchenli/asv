@@ -93,6 +93,20 @@ def test_centered_continuant_bound_contains_exact_interval_values(n, split):
         assert lower <= dense_rational_determinant(n, split, rho, a, b)
 
 
+@pytest.mark.parametrize('n,split', [(6, 3), (9, 4)])
+def test_shared_denominator_bernstein_conversion_matches_fraction_path(n, split):
+    left, right, center = F(7, 8), F(29, 32), F(57, 64)
+    scaled = continuant._determinant_polynomials_scaled(n, split, F(7, 8), F(3, 7), center)
+    for integer_polynomial in scaled:
+        direct = continuant._bernstein_integer_coefficients(
+            integer_polynomial[0], integer_polynomial[1], left - center, right - center
+        )
+        fraction_path = continuant._bernstein_coefficients(
+            continuant._sp_to_fraction(integer_polynomial), left - center, right - center
+        )
+        assert direct == fraction_path
+
+
 @pytest.mark.parametrize('degree', [1, 2, 4])
 def test_taylor_continuant_bound_contains_exact_interval_values(degree):
     n, split, a, b = 9, 4, F(7, 8), F(3, 7)

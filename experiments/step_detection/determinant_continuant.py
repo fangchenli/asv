@@ -6,75 +6,123 @@ tridiagonal continuant formula and exact rational polynomials in correlation.
 
 from fractions import Fraction as F
 from functools import lru_cache
-from math import comb, lcm
+from math import comb, gcd, lcm
 
 from . import rational_polynomial as poly
 
 
-def _multiply(first, second):
-    """Multiply rational polynomials with integer convolution and shared scales."""
-    first_scale = lcm(*(value.denominator for value in first))
-    second_scale = lcm(*(value.denominator for value in second))
-    left = [int(value * first_scale) for value in first]
-    right = [int(value * second_scale) for value in second]
+def _scaled_polynomial(coefficients, denominator=1):
+    """Canonical integer coefficients with one shared positive denominator."""
+    coefficients = list(coefficients)
+    while len(coefficients) > 1 and coefficients[-1] == 0:
+        coefficients.pop()
+    divisor = denominator
+    for coefficient in coefficients:
+        divisor = gcd(divisor, abs(coefficient))
+    divisor = max(divisor, 1)
+    return tuple(value // divisor for value in coefficients), denominator // divisor
+
+
+def _sp_constant(value):
+    value = F(value)
+    return _scaled_polynomial((value.numerator,), value.denominator)
+
+
+def _sp_add(first, second):
+    first_coefficients, first_denominator = first
+    second_coefficients, second_denominator = second
+    common = gcd(first_denominator, second_denominator)
+    first_scale = second_denominator // common
+    second_scale = first_denominator // common
+    length = max(len(first_coefficients), len(second_coefficients))
+    coefficients = [0] * length
+    for index in range(length):
+        left = first_coefficients[index] if index < len(first_coefficients) else 0
+        right = second_coefficients[index] if index < len(second_coefficients) else 0
+        coefficients[index] = left * first_scale + right * second_scale
+    return _scaled_polynomial(coefficients, first_denominator * first_scale)
+
+
+def _sp_scale(polynomial, factor):
+    factor = F(factor)
+    return _scaled_polynomial(
+        (value * factor.numerator for value in polynomial[0]),
+        polynomial[1] * factor.denominator,
+    )
+
+
+def _sp_multiply(first, second):
+    left, right = first[0], second[0]
     product = [0] * (len(left) + len(right) - 1)
     for i, x in enumerate(left):
         for j, y in enumerate(right):
             product[i + j] += x * y
-    denominator = first_scale * second_scale
-    return poly.polynomial(F(value, denominator) for value in product)
+    return _scaled_polynomial(product, first[1] * second[1])
 
 
-def _continuants(n, a, b, center):
-    rho = poly.polynomial((center, 1))
-    rho2 = _multiply(rho, rho)
-    q = poly.subtract(poly.polynomial((1,)), rho2)
-    end = poly.add(poly.polynomial((a,)), poly.scale(q, b))
-    inner = poly.add(poly.scale(poly.add(poly.polynomial((1,)), rho2), a), poly.scale(q, b))
-    off2 = poly.scale(rho2, a * a)
+def _sp_subtract(first, second):
+    return _sp_add(first, _sp_scale(second, -1))
 
-    leading = [poly.polynomial((1,)), end]
+
+def _sp_continuants(n, a, b, center):
+    center = F(center)
+    rho = _scaled_polynomial((center.numerator, center.denominator), center.denominator)
+    rho2 = _sp_multiply(rho, rho)
+    q = _sp_subtract(_sp_constant(1), rho2)
+    end = _sp_add(_sp_constant(a), _sp_scale(q, b))
+    inner = _sp_add(
+        _sp_scale(_sp_add(_sp_constant(1), rho2), a),
+        _sp_scale(q, b),
+    )
+    off2 = _sp_scale(rho2, F(a) ** 2)
+
+    leading = [_sp_constant(1), end]
     for size in range(2, n + 1):
         diagonal = end if size == n else inner
         leading.append(
-            poly.subtract(_multiply(diagonal, leading[-1]), _multiply(off2, leading[-2]))
+            _sp_subtract(
+                _sp_multiply(diagonal, leading[-1]),
+                _sp_multiply(off2, leading[-2]),
+            )
         )
 
-    trailing = [poly.polynomial((0,)) for _ in range(n + 1)]
-    trailing[n] = poly.polynomial((1,))
+    trailing = [_sp_constant(0) for _ in range(n + 1)]
+    trailing[n] = _sp_constant(1)
     trailing[n - 1] = end
     for start in reversed(range(n - 1)):
         diagonal = end if start == 0 else inner
-        trailing[start] = poly.subtract(
-            _multiply(diagonal, trailing[start + 1]),
-            _multiply(off2, trailing[start + 2]),
+        trailing[start] = _sp_subtract(
+            _sp_multiply(diagonal, trailing[start + 1]),
+            _sp_multiply(off2, trailing[start + 2]),
         )
     return q, leading, trailing, rho
 
 
-def _within_block_sum(lo, hi, a_rho, leading, trailing):
-    """Numerator of the sum of inverse entries within one contiguous block."""
-    partial = poly.polynomial((0,))
-    prefix_sum = poly.polynomial((0,))
-    diagonal_sum = poly.polynomial((0,))
+def _sp_within_block_sum(lo, hi, a_rho, leading, trailing):
+    partial = _sp_constant(0)
+    prefix_sum = _sp_constant(0)
+    diagonal_sum = _sp_constant(0)
     for j in range(lo, hi):
-        partial = poly.add(_multiply(a_rho, partial), leading[j])
-        prefix_sum = poly.add(prefix_sum, _multiply(partial, trailing[j + 1]))
-        diagonal_sum = poly.add(diagonal_sum, _multiply(leading[j], trailing[j + 1]))
-    return poly.subtract(poly.scale(prefix_sum, 2), diagonal_sum)
+        partial = _sp_add(_sp_multiply(a_rho, partial), leading[j])
+        prefix_sum = _sp_add(prefix_sum, _sp_multiply(partial, trailing[j + 1]))
+        diagonal_sum = _sp_add(diagonal_sum, _sp_multiply(leading[j], trailing[j + 1]))
+    return _sp_subtract(_sp_scale(prefix_sum, 2), diagonal_sum)
 
 
-def _between_block_sum(lo_a, hi_a, lo_b, hi_b, a_rho, leading, trailing):
-    """Numerator of the inverse-entry sum between ordered disjoint blocks."""
-    partial = poly.polynomial((0,))
-    total = poly.polynomial((0,))
+def _sp_between_block_sum(lo_a, hi_a, lo_b, hi_b, a_rho, leading, trailing):
+    partial = _sp_constant(0)
+    total = _sp_constant(0)
     for j in range(lo_a, hi_b):
-        partial = _multiply(a_rho, partial)
+        partial = _sp_multiply(a_rho, partial)
         if lo_a <= j < hi_a:
-            partial = poly.add(partial, leading[j])
+            partial = _sp_add(partial, leading[j])
         if lo_b <= j < hi_b:
-            total = poly.add(total, _multiply(partial, trailing[j + 1]))
+            total = _sp_add(total, _sp_multiply(partial, trailing[j + 1]))
     return total
+
+
+def _sp_to_fraction(polynomial):
+    return poly.polynomial(F(value, polynomial[1]) for value in polynomial[0])
 
 
 def _tm_constant(value, degree):
@@ -207,38 +255,47 @@ def determinant_interval_taylor(n, split, left, right, a, b, degree=4):
 
 
 @lru_cache(maxsize=32)
-def determinant_polynomial(n, split, a, b, center=F(0)):
-    """Return numerator/denominator polynomials for det(aI+b U'R U)."""
+def _determinant_polynomials_scaled(n, split, a, b, center):
     if n < 3 or not 1 <= split < n or a <= 0 or b <= 0:
         raise ValueError('Require a valid residual split and positive coefficients')
-    q, leading, trailing, rho = _continuants(n, F(a), F(b), F(center))
+    a, b = F(a), F(b)
+    q, leading, trailing, rho = _sp_continuants(n, a, b, F(center))
     full_det = leading[n]
     blocks = ((0, split), (split, n))
-    a_rho = poly.scale(rho, F(a))
-    sums = [_within_block_sum(*block, a_rho, leading, trailing) for block in blocks]
-    cross_sum = _between_block_sum(*blocks[0], *blocks[1], a_rho, leading, trailing)
+    a_rho = _sp_scale(rho, a)
+    sums = [_sp_within_block_sum(*block, a_rho, leading, trailing) for block in blocks]
+    cross_sum = _sp_between_block_sum(*blocks[0], *blocks[1], a_rho, leading, trailing)
 
-    shift = poly.scale(q, F(b))
-    h00 = poly.subtract(poly.scale(full_det, split), poly.multiply(shift, sums[0]))
-    h11 = poly.subtract(poly.scale(full_det, n - split), poly.multiply(shift, sums[1]))
-    h01 = poly.scale(poly.multiply(shift, cross_sum), -1)
-    numerator = poly.subtract(_multiply(h00, h11), _multiply(h01, h01))
-    denominator = poly.scale(_multiply(q, full_det), F(a * a * split * (n - split)))
+    shift = _sp_scale(q, b)
+    h00 = _sp_subtract(_sp_scale(full_det, split), _sp_multiply(shift, sums[0]))
+    h11 = _sp_subtract(_sp_scale(full_det, n - split), _sp_multiply(shift, sums[1]))
+    h01 = _sp_scale(_sp_multiply(shift, cross_sum), -1)
+    numerator = _sp_subtract(_sp_multiply(h00, h11), _sp_multiply(h01, h01))
+    denominator = _sp_scale(_sp_multiply(q, full_det), F(a * a * split * (n - split)))
     return numerator, denominator
 
 
-def _centered_bounds(coefficients, radius):
-    """Bound a polynomial on ``[-radius, radius]`` by its Taylor coefficients."""
-    variation = sum(abs(value) * radius**k for k, value in enumerate(coefficients) if k)
-    return coefficients[0] - variation, coefficients[0] + variation
+@lru_cache(maxsize=32)
+def determinant_polynomial(n, split, a, b, center=F(0)):
+    """Return numerator/denominator polynomials for det(aI+b U'R U)."""
+    scaled = _determinant_polynomials_scaled(n, split, F(a), F(b), F(center))
+    return tuple(_sp_to_fraction(polynomial) for polynomial in scaled)
 
 
-def _bernstein_coefficients(coefficients, left, right):
-    """Convert power coefficients to Bernstein coefficients on [left,right]."""
-    degree = len(coefficients) - 1
+def _centered_bounds_scaled(polynomial, radius):
+    coefficients, denominator = polynomial
+    variation = sum(
+        F(abs(value), denominator) * radius**degree
+        for degree, value in enumerate(coefficients)
+        if degree
+    )
+    constant = F(coefficients[0], denominator)
+    return constant - variation, constant + variation
+
+
+def _bernstein_integer_coefficients(integers, coefficient_denominator, left, right):
+    degree = len(integers) - 1
     width = right - left
-    coefficient_denominator = lcm(*(value.denominator for value in coefficients))
-    integers = [int(value * coefficient_denominator) for value in coefficients]
     left_denominator, width_denominator = left.denominator, width.denominator
     common_denominator = (
         coefficient_denominator * left_denominator**degree * width_denominator**degree
@@ -271,6 +328,13 @@ def _bernstein_coefficients(coefficients, left, right):
     ]
     denominator = common_denominator * bernstein_denominator
     return tuple(F(value, denominator) for value in bernstein_numerators)
+
+
+def _bernstein_coefficients(coefficients, left, right):
+    """Convert power coefficients to Bernstein coefficients on [left,right]."""
+    coefficient_denominator = lcm(*(value.denominator for value in coefficients))
+    integers = [int(value * coefficient_denominator) for value in coefficients]
+    return _bernstein_integer_coefficients(integers, coefficient_denominator, left, right)
 
 
 def _split_bernstein(coefficients):
@@ -334,11 +398,15 @@ def determinant_interval(n, split, left, right, a, b):
         raise ValueError('Require 0 <= left <= right < 1')
     center = (left + right) / 2
     radius = (right - left) / 2
-    numerator, denominator = determinant_polynomial(n, split, F(a), F(b), center)
-    numerator_bernstein = _bernstein_coefficients(numerator, -radius, radius)
-    denominator_bernstein = _bernstein_coefficients(denominator, -radius, radius)
-    n_lower = max(_centered_bounds(numerator, radius)[0], min(numerator_bernstein))
-    d_upper = min(_centered_bounds(denominator, radius)[1], max(denominator_bernstein))
+    numerator, denominator = _determinant_polynomials_scaled(n, split, F(a), F(b), center)
+    numerator_bernstein = _bernstein_integer_coefficients(
+        numerator[0], numerator[1], -radius, radius
+    )
+    denominator_bernstein = _bernstein_integer_coefficients(
+        denominator[0], denominator[1], -radius, radius
+    )
+    n_lower = max(_centered_bounds_scaled(numerator, radius)[0], min(numerator_bernstein))
+    d_upper = min(_centered_bounds_scaled(denominator, radius)[1], max(denominator_bernstein))
     if n_lower <= 0 or d_upper <= 0:
         return None
     independent_ratio = n_lower / d_upper

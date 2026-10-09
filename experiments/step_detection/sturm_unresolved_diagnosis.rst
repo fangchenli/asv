@@ -97,6 +97,20 @@ scaling limit of the current rational-polynomial implementation. The next
 algorithm work needs to reduce or avoid global exact coefficient growth
 before applying this proof to the other large cases.
 
+Shared-denominator arithmetic
+-----------------------------
+
+The polynomial recurrence now stores each polynomial as integer coefficients
+over one shared denominator, reducing common factors after arithmetic. The
+Bernstein conversion consumes that representation directly instead of first
+turning every coefficient back into a separate ``Fraction``. Exact tests show
+that the direct conversion matches the Fraction route, and the full n=40
+certificate reproduces the same exact probability bound. This reduces some
+rational-normalization work, but the n=100 full-interval attempt with this
+backend still did not finish within 120 seconds. Shared denominators help
+with normalization; they do not prevent the coefficients themselves from
+growing too large.
+
 Taylor-model follow-up
 ----------------------
 

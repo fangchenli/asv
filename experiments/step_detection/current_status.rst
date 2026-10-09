@@ -107,11 +107,11 @@ upper bound on the tail probability is about 0.00879. The reproducible `full
 interval certificate
 <data/sturm_fresh_v2_continuant_full_interval_n40.json>`_ needs no interval
 subdivision. This is still a post-hoc proof of one saved witness, not a change
-to the frozen study outcome. The next mathematical task is to test the same
-whole-interval bound on the other three hard cases and reduce exact
-coefficient cost before another benchmark comparison. The first n=100
-whole-interval attempt did not finish exact polynomial construction within a
-120-second cap, so this method is not yet viable at that size.
+to the frozen study outcome. Shared-denominator integer arithmetic reduces
+rational normalization and reproduces the same certificate, but the n=100
+whole-interval construction still did not finish within a 120-second cap.
+The next mathematical task is to control coefficient growth and test the
+other hard cases before another benchmark comparison.
 
 Further detail
 --------------
