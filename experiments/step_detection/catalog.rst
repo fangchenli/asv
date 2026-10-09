@@ -131,9 +131,11 @@ complete saved-case search.
 * `sturm_unresolved_diagnosis.rst <sturm_unresolved_diagnosis.rst>`_:
   exact midpoint and one-split diagnosis of the nine unresolved candidate
   searches.
-* `continuant_partition_diagnosis.py`_ and
-  `saved 16-piece diagnosis <data/sturm_fresh_v2_continuant_partition_n40.json>`_:
-  post-hoc 16-piece continuant certificate for one saved hard case.
+* `continuant_partition_diagnosis.py`_ and saved `full-interval
+  <data/sturm_fresh_v2_continuant_full_interval_n40.json>`, `eight-piece
+  <data/sturm_fresh_v2_continuant_partition_n40_8.json>`, and `16-piece
+  <data/sturm_fresh_v2_continuant_partition_n40.json>`_ diagnoses: post-hoc
+  continuant certificates for one saved hard case.
 * `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
   and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
   verified saved-case results for the latest point-bound refinement.

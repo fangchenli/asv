@@ -101,13 +101,15 @@ certifies five of nine saved witnesses; four still have at least one
 uncertified half. Those four fail at the determinant enclosure near
 ``rho = 1``; increasing precision to 512 bits and extensive subdivision did
 not fix a representative case. A continuant/Bernstein prototype now
-certifies all 16 equal pieces of one 40-reading witness when it also uses the
-rank-group density correction on intervals. The largest p-value upper bound
-is about 0.00878. The reproducible `saved diagnosis
-<data/sturm_fresh_v2_continuant_partition_n40.json>`_ took tens of seconds;
-a 32-piece attempt exceeded two minutes. The next mathematical task is to
-recheck the other three hard cases and reduce coefficient cost before
-another benchmark comparison.
+certifies the full interval of one 40-reading witness in a single Bernstein
+bound when it also uses the rank-group density correction on intervals. The
+upper bound on the tail probability is about 0.00879. The reproducible `full
+interval certificate
+<data/sturm_fresh_v2_continuant_full_interval_n40.json>`_ needs no interval
+subdivision. This is still a post-hoc proof of one saved witness, not a change
+to the frozen study outcome. The next mathematical task is to test the same
+whole-interval bound on the other three hard cases and reduce exact
+coefficient cost before another benchmark comparison.
 
 Further detail
 --------------

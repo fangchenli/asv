@@ -75,21 +75,20 @@ check its lower bound against independent dense determinants at several
 points in an interval.
 
 On one saved 40-reading hard case, a shared-radius calculation with the
-continuant and paired Bernstein bounds divides the full witness interval into
-16 pieces. All 16 certify below 0.01; the largest p-value upper bound is
-about 0.00878. The proof applies the rank-group density correction on every
-interval. The `saved result
-<data/sturm_fresh_v2_continuant_partition_n40.json>`_ preserves each exact
-bound, and `continuant_partition_diagnosis.py`_ reproduces it. This is a
-post-hoc proof of the saved witness only; it does not revise the frozen study
-record.
+continuant and paired Bernstein bounds certifies the full witness interval
+without subdivision. The largest p-value upper bound is about 0.00878. The
+proof also applies the rank-group density correction on the full interval.
+The `saved full-interval result
+<data/sturm_fresh_v2_continuant_full_interval_n40.json>`_ preserves the exact
+bound, and `continuant_partition_diagnosis.py`_ reproduces it with
+``--divisions 1``. The earlier eight- and 16-piece calculations also
+certified, but are unnecessary for this witness. This is a post-hoc proof of
+the saved witness only; it does not revise the frozen study record.
 
 The exact polynomial and Bernstein setup takes tens of seconds for this one
-case. A 32-piece follow-up did not finish within about two minutes and was
-stopped while evaluating the exact rational subinterval bounds. This route
-can certify a previously unresolved witness, but its cost and behavior on the
-other three hard cases are not yet known. It has not been used in the frozen
-fresh-study results or production detector.
+case. It avoids interval subdivision, though the setup cost remains high.
+Its behavior on the other three hard cases is not yet known. It has not been
+used in the frozen fresh-study results or production detector.
 
 Taylor-model follow-up
 ----------------------
@@ -100,17 +99,16 @@ conservative remainder bound. The model passes independent exact determinant
 checks on small matrices. On the 40-reading witness, degrees 2 and 4 are too
 loose; degree 6 produces a determinant-ratio lower bound around 1605, but the
 full-interval probability bound is still about 0.0116, above the 0.01 cutoff.
-Degree 8 tightens the determinant only slightly. Splitting the interval and
-using the exact Bernstein route remains necessary for this case.
+Degree 8 tightens the determinant only slightly. The paired Bernstein ratio
+does prove the full interval; the Taylor remainder bound is simply too loose.
 
 The Taylor model also does not solve the scaling problem: degree 2 took about
 23 seconds on one 100-reading witness and still returned no positive lower
 bound. Since its remainder gets very large in the continuant recurrence, more
 Taylor terms cost more without an evident route to a useful certificate. The
 small exact tests are retained, but this is not currently a candidate for the
-search implementation. The useful next direction is to reduce coefficient
-growth in the Bernstein proof, then test adaptive partitions on all four hard
-cases.
+search implementation. The useful next direction is to test the full-interval
+Bernstein bound on the other three hard cases and reduce coefficient growth.
 
 I also tried computing the continuants directly in the Bernstein basis to
 avoid the power-to-Bernstein conversion. The small exact coefficients matched
