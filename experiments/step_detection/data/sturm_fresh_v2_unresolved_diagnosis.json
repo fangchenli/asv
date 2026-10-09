@@ -1,0 +1,1008 @@
+{
+  "purpose": "Post-hoc interval diagnosis only; no decisions or settings were changed",
+  "confidence_cutoff": "1/100",
+  "input_archive_sha256": "412ba1bcc33a5ff0a7032a0adc4f2a9b05f44f2ffddccb12257da7da43e89ea8",
+  "record_archive_sha256": "40bdb7656afc1df0952551d9fb6b09888a7baf3d7269a0d711a814ecd6641b70",
+  "case_count": 9,
+  "rows": [
+    {
+      "id": "independent_constant-sturm-ar1-fresh-v1-n100-d0.08-s0.02-recent-seed1602",
+      "condition": "independent_constant",
+      "n": 100,
+      "change": 0.08,
+      "noise": 0.02,
+      "location": "recent",
+      "original_stop": {
+        "reason": "max_depth",
+        "cells": 1263,
+        "split": 1,
+        "left": "2031/2048",
+        "right": "64993/65536",
+        "width": "1/65536"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "1",
+        "selected_tilt": "1/16",
+        "selected_count": null,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "129985/131072",
+        "status": "certified_excluded",
+        "p_upper": "18848146175/281474976710656",
+        "selected_tilt": "1/8",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "46975273455/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "18848146175/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "certified_excluded",
+          "p_upper": "16805756411/70368744177664",
+          "selected_tilt": "1/16",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "16805756411/70368744177664",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        },
+        {
+          "status": "certified_excluded",
+          "p_upper": "33637946273/140737488355328",
+          "selected_tilt": "1/16",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "33637946273/140737488355328",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 4.398451727194441e-05,
+        "quadrature_error_estimate": 2.6442679044557257e-11
+      }
+    },
+    {
+      "id": "negative-sturm-ar1-fresh-v1-n100-d0.06-s0.02-recent-seed1602",
+      "condition": "negative",
+      "n": 100,
+      "change": 0.06,
+      "noise": 0.02,
+      "location": "recent",
+      "original_stop": {
+        "reason": "max_cells",
+        "cells": 4096,
+        "split": 52,
+        "left": "3/4",
+        "right": "25/32",
+        "width": "1/32"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "1",
+        "selected_tilt": "1/16",
+        "selected_count": null,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "49/64",
+        "status": "certified_excluded",
+        "p_upper": "515494951/281474976710656",
+        "selected_tilt": "1/8",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "8361457143/70368744177664",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "515494951/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "certified_excluded",
+          "p_upper": "122218288107/281474976710656",
+          "selected_tilt": "1/8",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1069806383775/140737488355328",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "122218288107/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            }
+          ]
+        },
+        {
+          "status": "certified_excluded",
+          "p_upper": "289621673437/281474976710656",
+          "selected_tilt": "1/8",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1035381863207/140737488355328",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "289621673437/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 2.250257091773733e-09,
+        "quadrature_error_estimate": 8.605437917678468e-10
+      }
+    },
+    {
+      "id": "negative-sturm-ar1-fresh-v1-n100-d0.06-s0.02-recent-seed1603",
+      "condition": "negative",
+      "n": 100,
+      "change": 0.06,
+      "noise": 0.02,
+      "location": "recent",
+      "original_stop": {
+        "reason": "max_cells",
+        "cells": 4096,
+        "split": 42,
+        "left": "101/128",
+        "right": "51/64",
+        "width": "1/128"
+      },
+      "interval_certificate": {
+        "status": "certified_excluded",
+        "p_upper": "57562003667/281474976710656",
+        "selected_tilt": "1/8",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "433086331299/140737488355328",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "57562003667/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "203/256",
+        "status": "certified_excluded",
+        "p_upper": "1815481993/140737488355328",
+        "selected_tilt": "1/8",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "99281560861/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1815481993/140737488355328",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "certified_excluded",
+          "p_upper": "447177431/8796093022208",
+          "selected_tilt": "1/8",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "298190621299/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "447177431/8796093022208",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            }
+          ]
+        },
+        {
+          "status": "certified_excluded",
+          "p_upper": "12970128303/281474976710656",
+          "selected_tilt": "1/8",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "68385427225/70368744177664",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "12970128303/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 4.1648316884135284e-07,
+        "quadrature_error_estimate": 2.415452367220414e-10
+      }
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.06-s0.005-middle-seed1603",
+      "condition": "positive",
+      "n": 100,
+      "change": 0.06,
+      "noise": 0.005,
+      "location": "middle",
+      "original_stop": {
+        "reason": "max_depth",
+        "cells": 636,
+        "split": 50,
+        "left": "32493/32768",
+        "right": "64987/65536",
+        "width": "1/65536"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "2830888495149/281474976710656",
+        "selected_tilt": "1/16",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "2830888495149/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "129973/131072",
+        "status": "certified_excluded",
+        "p_upper": "632628264911/140737488355328",
+        "selected_tilt": "1/16",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "632628264911/140737488355328",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "744768324215/140737488355328",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "certified_excluded",
+          "p_upper": "1651887136621/281474976710656",
+          "selected_tilt": "1/16",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1651887136621/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "114379330559/8796093022208",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            }
+          ]
+        },
+        {
+          "status": "certified_excluded",
+          "p_upper": "1652616167845/281474976710656",
+          "selected_tilt": "1/16",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1652616167845/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1838565146747/140737488355328",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 0.0021872046856101224,
+        "quadrature_error_estimate": 1.3538026971722253e-10
+      }
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-early-seed1603",
+      "condition": "positive",
+      "n": 100,
+      "change": 0.08,
+      "noise": 0.005,
+      "location": "early",
+      "original_stop": {
+        "reason": "max_depth",
+        "cells": 57,
+        "split": 25,
+        "left": "65529/65536",
+        "right": "32765/32768",
+        "width": "1/65536"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "1",
+        "selected_tilt": "1/16",
+        "selected_count": null,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "131059/131072",
+        "status": "certified_excluded",
+        "p_upper": "2645156015967/281474976710656",
+        "selected_tilt": "1/16",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "2645156015967/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1295253673781/70368744177664",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        },
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 0.004997588605243797,
+        "quadrature_error_estimate": 3.273145173058781e-10
+      }
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-middle-seed1602",
+      "condition": "positive",
+      "n": 100,
+      "change": 0.08,
+      "noise": 0.005,
+      "location": "middle",
+      "original_stop": {
+        "reason": "max_depth",
+        "cells": 82,
+        "split": 50,
+        "left": "32765/32768",
+        "right": "65531/65536",
+        "width": "1/65536"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "1",
+        "selected_tilt": "1/16",
+        "selected_count": null,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "131061/131072",
+        "status": "certified_excluded",
+        "p_upper": "2765238611151/281474976710656",
+        "selected_tilt": "1/16",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "2765238611151/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "2606761759569/140737488355328",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        },
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 0.005209956698974505,
+        "quadrature_error_estimate": 3.296931741636809e-10
+      }
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-recent-seed1603",
+      "condition": "positive",
+      "n": 100,
+      "change": 0.08,
+      "noise": 0.005,
+      "location": "recent",
+      "original_stop": {
+        "reason": "max_depth",
+        "cells": 122,
+        "split": 90,
+        "left": "65529/65536",
+        "right": "32765/32768",
+        "width": "1/65536"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "1",
+        "selected_tilt": "1/16",
+        "selected_count": null,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "131059/131072",
+        "status": "certified_excluded",
+        "p_upper": "1622299618925/281474976710656",
+        "selected_tilt": "1/16",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1622299618925/281474976710656",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "691901014769/70368744177664",
+            "selected_count": 20,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        },
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 0.0031805814026132917,
+        "quadrature_error_estimate": 6.973256798154532e-09
+      }
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.02-middle-seed1603",
+      "condition": "positive",
+      "n": 100,
+      "change": 0.08,
+      "noise": 0.02,
+      "location": "middle",
+      "original_stop": {
+        "reason": "max_depth",
+        "cells": 79,
+        "split": 50,
+        "left": "64977/65536",
+        "right": "32489/32768",
+        "width": "1/65536"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "1",
+        "selected_tilt": "1/16",
+        "selected_count": null,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "129955/131072",
+        "status": "certified_excluded",
+        "p_upper": "5685164409/70368744177664",
+        "selected_tilt": "1/8",
+        "selected_count": 16,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "38414544213/140737488355328",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "5685164409/70368744177664",
+            "selected_count": 16,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "certified_excluded",
+          "p_upper": "112360229295/281474976710656",
+          "selected_tilt": "1/16",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "112360229295/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        },
+        {
+          "status": "certified_excluded",
+          "p_upper": "112454605467/281474976710656",
+          "selected_tilt": "1/16",
+          "selected_count": 16,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "112454605467/281474976710656",
+              "selected_count": 16,
+              "reason": null,
+              "base_reason": null
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 5.0755270065983016e-05,
+        "quadrature_error_estimate": 9.430529203121756e-12
+      }
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n40-d0.06-s0.005-early-seed1603",
+      "condition": "positive",
+      "n": 40,
+      "change": 0.06,
+      "noise": 0.005,
+      "location": "early",
+      "original_stop": {
+        "reason": "max_depth",
+        "cells": 42,
+        "split": 10,
+        "left": "65499/65536",
+        "right": "16375/16384",
+        "width": "1/65536"
+      },
+      "interval_certificate": {
+        "status": "not_certified",
+        "p_upper": "1",
+        "selected_tilt": "1/16",
+        "selected_count": null,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "1",
+            "selected_count": null,
+            "reason": null,
+            "base_reason": "Determinant enclosure is nonpositive"
+          }
+        ]
+      },
+      "midpoint_certificate": {
+        "rho": "130999/131072",
+        "status": "certified_excluded",
+        "p_upper": "298942773181/35184372088832",
+        "selected_tilt": "1/8",
+        "selected_count": 12,
+        "attempts": [
+          {
+            "tilt": "1/16",
+            "p_upper": "6961874112607/281474976710656",
+            "selected_count": 8,
+            "reason": null,
+            "base_reason": null
+          },
+          {
+            "tilt": "1/8",
+            "p_upper": "298942773181/35184372088832",
+            "selected_count": 12,
+            "reason": null,
+            "base_reason": null
+          }
+        ]
+      },
+      "one_level_subdivision": [
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        },
+        {
+          "status": "not_certified",
+          "p_upper": "1",
+          "selected_tilt": "1/16",
+          "selected_count": null,
+          "attempts": [
+            {
+              "tilt": "1/16",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            },
+            {
+              "tilt": "1/8",
+              "p_upper": "1",
+              "selected_count": null,
+              "reason": null,
+              "base_reason": "Determinant enclosure is nonpositive"
+            }
+          ]
+        }
+      ],
+      "numerical_tail_at_midpoint": {
+        "probability": 0.0021288924083184835,
+        "quadrature_error_estimate": 1.6425905532558138e-10
+      }
+    }
+  ]
+}

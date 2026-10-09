@@ -42,6 +42,13 @@ with 6% or 8% changes, especially under positive correlation. Full counts
 by correlation, length, change, noise, and location are in the committed
 summary JSON.
 
+A post-hoc `diagnosis of the nine unresolved searches
+<sturm_unresolved_diagnosis.rst>`_ finds that each saved witness midpoint is
+certified below the cutoff, while four witness intervals remain uncertified
+even after one additional split. This identifies interval-bound looseness;
+it does not change the original outcomes or show that the search would finish
+under a larger work budget.
+
 .. list-table:: Positive histories by generating correlation
    :header-rows: 1
 

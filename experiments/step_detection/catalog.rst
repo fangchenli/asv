@@ -128,6 +128,9 @@ complete saved-case search.
 * `sturm_fresh_protocol.rst <sturm_fresh_protocol.rst>`_ and
   `sturm_fresh_report.rst <sturm_fresh_report.rst>`_: frozen evaluation of
   the complete Sturm reference on independent histories.
+* `sturm_unresolved_diagnosis.rst <sturm_unresolved_diagnosis.rst>`_:
+  exact midpoint and one-split diagnosis of the nine unresolved candidate
+  searches.
 * `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
   and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
   verified saved-case results for the latest point-bound refinement.

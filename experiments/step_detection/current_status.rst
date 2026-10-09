@@ -94,8 +94,11 @@ What remains
 The rank-group bound still misses the 0.01 cutoff at the saved 99/128
 candidate. The fresh study's single gained alert does not resolve that
 mathematical gap or justify a production change. Any next step should target
-the unresolved cases and the remaining looseness in the tail bound, then use
-a new frozen study before considering integration.
+the remaining looseness in the tail bound, then use a new frozen study before
+considering integration. The `unresolved-search diagnosis
+<sturm_unresolved_diagnosis.rst>`_ shows that one extra interval split
+certifies five of nine saved witnesses; four still have at least one
+uncertified half.
 
 Further detail
 --------------
