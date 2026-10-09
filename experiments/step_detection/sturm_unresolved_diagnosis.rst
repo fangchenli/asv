@@ -132,8 +132,11 @@ search implementation. The useful next direction is to test the full-interval
 Bernstein bound on the other three hard cases and reduce coefficient growth.
 
 I also tried computing the continuants directly in the Bernstein basis to
-avoid the power-to-Bernstein conversion. The small exact coefficients matched
-the power-basis result after degree elevation, but the rational recurrence had
-not completed on the 40-reading case after more than a minute and was
-stopped. This basis change alone does not control the large exact fractions,
-so it is not kept as implementation code.
+avoid the power-to-Bernstein conversion. A Fraction-based recurrence ran for
+more than a minute without finishing. I then implemented the Bernstein
+recurrence with shared-denominator integers. It finished the 40-reading case
+in about 43 seconds and produced the same determinant lower bound as the
+power-basis path, which takes about six seconds end to end on this witness.
+The direct recurrence therefore costs more without tightening the proof. It
+was removed; the representation change alone does not control coefficient
+growth.
