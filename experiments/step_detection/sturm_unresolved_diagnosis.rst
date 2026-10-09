@@ -111,3 +111,10 @@ small exact tests are retained, but this is not currently a candidate for the
 search implementation. The useful next direction is to reduce coefficient
 growth in the Bernstein proof, then test adaptive partitions on all four hard
 cases.
+
+I also tried computing the continuants directly in the Bernstein basis to
+avoid the power-to-Bernstein conversion. The small exact coefficients matched
+the power-basis result after degree elevation, but the rational recurrence had
+not completed on the 40-reading case after more than a minute and was
+stopped. This basis change alone does not control the large exact fractions,
+so it is not kept as implementation code.
