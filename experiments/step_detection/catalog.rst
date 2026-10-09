@@ -136,6 +136,12 @@ complete saved-case search.
   <data/sturm_fresh_v2_continuant_partition_n40_8.json>`, and `16-piece
   <data/sturm_fresh_v2_continuant_partition_n40.json>`_ diagnoses: post-hoc
   continuant certificates for one saved hard case.
+* `interval_polynomial_diagnosis.py`_ and its `n=100 certificate
+  <data/sturm_fresh_v2_interval_poly_n100_middle.json>`_: post-hoc
+  outward-rounded polynomial certificate for another unresolved interval.
+  The `four-piece hard-case diagnostic
+  <data/sturm_fresh_v2_interval_poly_n100_hard_early_d4.json>`_ records a
+  stubborn case that this bound still cannot certify.
 * `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
   and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
   verified saved-case results for the latest point-bound refinement.
@@ -198,6 +204,8 @@ Diagnostics, replay, and verification
   `directional_diagnosis.py`_: construct saved mathematical diagnoses.
 * `determinant_continuant.py`_: experimental exact-polynomial determinant
   enclosure for correlation intervals near ``rho = 1``.
+* `determinant_interval_polynomial.py`_: outward-rounded, fixed-precision
+  polynomial coefficient intervals for scalable Bernstein bounds.
 * `continuant_partition_diagnosis.py`_: reproduce a partitioned proof for one
   frozen unresolved case.
 * `spectral_replay.py`_, `sturm_replay.py`_, and
@@ -279,6 +287,7 @@ Older or supporting documents
 .. _directional_sturm.py: directional_sturm.py
 .. _determinant_continuant.py: determinant_continuant.py
 .. _continuant_partition_diagnosis.py: continuant_partition_diagnosis.py
+.. _interval_polynomial_diagnosis.py: interval_polynomial_diagnosis.py
 .. _threshold_study.py: threshold_study.py
 .. _ablation_study.py: ablation_study.py
 .. _robustness_study.py: robustness_study.py

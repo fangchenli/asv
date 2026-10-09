@@ -10,6 +10,7 @@ import numpy as np
 import pytest
 
 from experiments.step_detection import determinant_continuant as continuant
+from experiments.step_detection import determinant_interval_polynomial as interval_poly
 from experiments.step_detection import directional_determinant as bound
 from experiments.step_detection import directional_tail as old
 from experiments.step_detection import residual_direction as direction
@@ -105,6 +106,34 @@ def test_shared_denominator_bernstein_conversion_matches_fraction_path(n, split)
             continuant._sp_to_fraction(integer_polynomial), left - center, right - center
         )
         assert direct == fraction_path
+
+
+@pytest.mark.parametrize('n,split', [(6, 3), (9, 4)])
+def test_outward_polynomial_coefficients_and_bernstein_bound(n, split):
+    left, right, a, b, bits = F(7, 8), F(29, 32), F(7, 8), F(3, 7), 96
+    center, radius, scale = (left + right) / 2, (right - left) / 2, 1 << bits
+    exact = continuant._determinant_polynomials_scaled(n, split, a, b, center)
+    rounded = interval_poly._continuants(n, split, a, b, center, scale)
+    for exact_poly, interval_poly_coeffs in zip(exact, rounded):
+        for value, (lower, upper) in zip(exact_poly[0], interval_poly_coeffs):
+            exact_coefficient = F(value, exact_poly[1])
+            assert F(lower, scale) <= exact_coefficient <= F(upper, scale)
+        exact_bernstein = continuant._bernstein_coefficients(
+            continuant._sp_to_fraction(exact_poly), -radius, radius
+        )
+        rounded_bernstein = interval_poly._bernstein(interval_poly_coeffs, -radius, radius, scale)
+        if len(exact_bernstein) < len(rounded_bernstein):
+            exact_bernstein = continuant._elevate_bernstein(
+                exact_bernstein, len(rounded_bernstein) - 1
+            )
+        assert all(
+            F(lower, scale) <= value <= F(upper, scale)
+            for value, (lower, upper) in zip(exact_bernstein, rounded_bernstein)
+        )
+    lower = interval_poly.determinant_interval(n, split, left, right, a, b, bits=bits)
+    assert lower is not None and lower > 0
+    for rho in (left, (left + right) / 2, right):
+        assert lower <= dense_rational_determinant(n, split, rho, a, b)
 
 
 @pytest.mark.parametrize('degree', [1, 2, 4])

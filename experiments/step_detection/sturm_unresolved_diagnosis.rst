@@ -111,6 +111,37 @@ backend still did not finish within 120 seconds. Shared denominators help
 with normalization; they do not prevent the coefficients themselves from
 growing too large.
 
+Outward-rounded coefficient intervals
+--------------------------------------
+
+The next version rounds each coefficient outward to a fixed dyadic scale
+after every polynomial operation. Each coefficient is now an interval, so
+rounding cannot invalidate the enclosure. The recurrence still uses the
+power basis, which avoids the costly Bernstein-basis arithmetic, and converts
+the final coefficient intervals to Bernstein bounds with outward rounding.
+Small exact tests verify both coefficient containment and the transformed
+Bernstein bounds.
+
+This resolves one n=100 witness over its entire saved interval. At 128 bits,
+the determinant lower bound is about 2808.39 and the rank-group probability
+upper bound is ``763783093383/140737488355328``, about 0.00543. The `saved
+certificate <data/sturm_fresh_v2_interval_poly_n100_middle.json>`_ records
+the exact result, and `interval_polynomial_diagnosis.py`_ reproduces it. The
+same interval succeeds at 192 and 256 bits with the same reported lower bound.
+This is a post-hoc proof of one saved witness and does not alter the frozen
+study record or production detector.
+
+I also tested a genuinely stubborn 100-reading witness with an 8% early
+change. The full-interval bound is positive, but its best tail-probability
+upper bound is about 0.02346, above the 0.01 cutoff. Splitting it into two
+equal pieces barely changes the worst piece (about 0.02345). Four pieces
+improve the first three local bounds, but the last quarter still has an upper
+bound about 0.02345. The reproducible `four-piece diagnostic
+<data/sturm_fresh_v2_interval_poly_n100_hard_early_d4.json>`_ records these
+results. Thus the current limitation is not just one broad interval: the
+rank-group tail bound remains too weak near the high-correlation end of this
+case.
+
 Taylor-model follow-up
 ----------------------
 

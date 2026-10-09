@@ -106,12 +106,18 @@ bound when it also uses the rank-group density correction on intervals. The
 upper bound on the tail probability is about 0.00879. The reproducible `full
 interval certificate
 <data/sturm_fresh_v2_continuant_full_interval_n40.json>`_ needs no interval
-subdivision. This is still a post-hoc proof of one saved witness, not a change
-to the frozen study outcome. Shared-denominator integer arithmetic reduces
-rational normalization and reproduces the same certificate, but the n=100
-whole-interval construction still did not finish within a 120-second cap.
-The next mathematical task is to control coefficient growth and test the
-other hard cases before another benchmark comparison.
+subdivision. A fixed-precision outward-rounded coefficient recurrence now
+certifies a second full witness interval at n=100, with tail-probability
+upper bound about 0.00543. Both are post-hoc proofs; frozen study outcomes
+remain unchanged. Shared-denominator exact arithmetic alone did not finish
+n=100 within 120 seconds, while rounding every polynomial coefficient
+outward at 128 bits produced the certificate in seconds. Two hard witness
+The n=100 certificate is a scale demonstration, not a new resolution: that
+case already certifies after one split in the original search. On a genuinely
+stubborn n=100 witness, the outward-rounded bound stays above the 0.01 cutoff
+after dividing the interval into two or four pieces. The worst piece is about
+0.0234, with the last quarter limiting. The polynomial method has not yet
+resolved this hard case, and no new benchmark comparison is justified.
 
 Further detail
 --------------
