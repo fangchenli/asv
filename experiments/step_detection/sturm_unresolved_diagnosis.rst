@@ -294,10 +294,42 @@ middle case previously failed with eight local-radius pieces at 0.01161550;
 cancelling the shared factor brings its single-piece bound below 0.01.
 The exact middle-case bound is ``2780194237603/281474976710656``.
 
-All four certificates concern saved intervals. They do not establish that
-the full search will finish within its budget, or that more histories will
-alert. The next implementation step is an opt-in full-search fallback and
-a replay of the unresolved histories; frozen study outcomes stay unchanged.
+All four certificates concern saved intervals. A complete search must also
+cover every other correlation interval at every proposed step location.
+
+Full-search fallback
+--------------------
+
+The normalized certificate is now available to the complete experimental
+search through ``reporting_sturm.evidence(values, use_normalized=True)``.
+``directional_normalized.py`` owns the radius calculation and combines the
+polynomial determinant with the existing Sturm density correction. The
+standalone interval diagnostic uses the same radius calculation.
+
+The search first tries its existing inexpensive routes. If none can certify
+a cell and subdivision has reached depth 17, it can try the normalized
+certificate. The cell must lie inside ``0 <= rho < 1``. A successful proof
+closes that cell and the search continues; a failed proof leaves the history
+unresolved. The default remains ``use_normalized=False``.
+
+The replay fixes the added work at eight calls per history, using the same
+two tilts, 128-bit polynomial coefficients, and 192-bit radius bounds. It
+retains the 4,096-cell search limit. Reaching a limit with uncovered
+intervals produces no alert. The confidence cutoff comes directly from the
+existing calibration, without rounding it upward to a decimal fraction.
+
+Each successful fallback is saved as a ``direction_normalized`` certificate.
+The verifier rebuilds it from independently centered data, checks exact
+equality of the proof, and checks interval coverage. Alert results still
+require complete coverage of ``(-1, 1)`` at every candidate step location.
+Checks cover changed units, altered probabilities, invalid endpoints,
+disabled bounds, missing coverage, and inconsistent work counters.
+
+The nine-case replay is post-hoc: these histories were selected because the
+frozen study left them unresolved. Its outcomes describe search completion
+on those cases; they are not a new estimate of detection or false-alert
+rates. The `experiment guide <running.rst>`_ contains the reproduction
+command and output format.
 
 Taylor-model follow-up
 ----------------------

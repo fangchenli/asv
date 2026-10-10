@@ -5,6 +5,7 @@ from collections import Counter
 from fractions import Fraction as F
 
 from . import directional_diagnosis as inherited
+from . import directional_normalized as normalized
 from . import directional_sturm as sturm
 from . import residual_direction as direction
 
@@ -25,6 +26,14 @@ def verify(values, result):
     assert confidence['sturm_tilts'] == [str(tilt) for tilt in sturm.spectral.TILTS]
     assert confidence['sturm_counts'] == list(sturm.spectral.COUNTS)
     assert result['has_alert'] == (result['status'] == 'certified_alert')
+    normalized_config = confidence.get('normalized')
+    if normalized_config is not None:
+        assert normalized_config['enabled'] is True
+        assert normalized_config['bits'] == normalized.BITS
+        assert normalized_config['radius_bits'] == normalized.RADIUS_BITS
+        for key in ('calls', 'max_cells'):
+            assert type(normalized_config[key]) is int and normalized_config[key] >= 0
+        assert normalized_config['calls'] <= normalized_config['max_cells']
     delta = F(confidence['delta'])
     states, routes = {}, Counter()
     coverage = {split: [] for split in range(1, len(values))}
@@ -46,6 +55,17 @@ def verify(values, result):
             proof = sturm.certify_interval(state(split), left, right, delta=delta)
             assert cell['proof'] == proof and proof['status'] == 'certified_excluded'
             assert F(proof['p_upper_squared']) < delta**2
+        elif cell['route'] == 'direction_normalized':
+            assert normalized_config is not None and 0 <= left < right < 1
+            assert cell['extra'] is None
+            proof = normalized.certify_interval(state(split), left, right, delta=delta)
+            assert cell['proof'] == proof and proof['status'] == 'certified_excluded'
+            assert F(proof['p_upper_squared']) < delta**2
+    if normalized_config is not None:
+        assert routes['direction_normalized'] <= normalized_config['calls']
+        assert normalized_config['calls'] - routes['direction_normalized'] <= 1
+        if result['status'] != 'unresolved':
+            assert normalized_config['calls'] == routes['direction_normalized']
     for intervals in coverage.values():
         intervals.sort()
         assert all(a[1] <= b[0] for a, b in zip(intervals[:-1], intervals[1:], strict=True))
@@ -55,7 +75,9 @@ def verify(values, result):
 
     legacy = copy.deepcopy(result)
     legacy['certificate'] = [
-        cell for cell in legacy['certificate'] if cell['route'] != 'direction_sturm'
+        cell
+        for cell in legacy['certificate']
+        if cell['route'] not in ('direction_sturm', 'direction_normalized')
     ]
     if result['status'] == 'surviving_explanation':
         witness = result['witness']

@@ -11,10 +11,9 @@ from pathlib import Path
 
 from . import determinant_interval_polynomial as polynomial
 from . import directional_determinant as determinant
+from . import directional_normalized as normalized
 from . import directional_spectral as spectral
 from . import directional_sturm as sturm
-from . import directional_tail as tail
-from . import rational_polynomial as rational
 from . import reporting_ar1 as ar1
 from . import reporting_sturm as reporting
 
@@ -77,20 +76,7 @@ def _radius_upper(model, left, right, *, stationary_normalized=False):
             ]
         )
 
-    def enclosure(poly):
-        return (
-            (rational.evaluate(poly, left),)
-            if left == right
-            else rational.bernstein(poly, left, right)
-        )
-
-    numerator = min(enclosure(model['num']))
-    denominator = enclosure(model['den'])
-    if numerator <= 0 or min(denominator) <= 0 or model['ss'] <= 0:
-        raise ArithmeticError('Normalized residual ratio enclosure is inconclusive')
-    # R/r = (R/q)/(r/q), q=1-rho**2. Bound r/q directly; dividing an
-    # existing upper bound for r by a separate bound for q loses cancellation.
-    return tail.ceil_dyadic(model['ss'] * max(denominator) / numerator, bits=determinant.BITS)
+    return normalized.radius_upper(model, left, right)
 
 
 def diagnose(case, record, *, bits, divisions=1, radius_scope='cell', stationary_normalized=False):

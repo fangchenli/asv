@@ -1151,6 +1151,30 @@ after selecting each piece's best tilt. Older artifacts' top-level
 ``p_upper`` in schema version 1 described the best piece; compare their per-piece attempts and
 ``max_cell_p_upper`` instead. Frozen study decisions remain unchanged.
 
+Replay the normalized fallback through the complete search::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m experiments.step_detection.normalized_replay \
+        --workers 2 --output /tmp/asv-normalized-replay
+
+This replays all nine unresolved histories from the frozen study, preserving
+the 4,096-cell and depth-17 search limits. Each history gets at most eight
+normalized fallback calls, each with the same two tilts, 128-bit polynomial
+coefficients, and a 192-bit radius bound. The fallback only runs when a
+positive interior interval would otherwise hit the depth limit. The output
+directory must be new. It receives a manifest, each completed verified
+result, a compressed archive, and a summary. Use ``--case-id`` (repeatable)
+to select specific saved histories.
+
+The Python API is ``reporting_sturm.evidence(values, use_normalized=True,
+max_normalized_cells=8)``. Omit ``use_normalized`` to keep the original
+search. A zero fallback budget permits no calls. An inconclusive proof or
+an exhausted budget returns an unresolved result. Successful interval
+proofs have route ``direction_normalized``; ``sturm_verification.verify``
+reconstructs them from the data and checks coverage before accepting an
+alert. This replay is post-hoc development evidence; the frozen study's
+decisions and production ASV remain unchanged.
+
 Checks
 ------
 
@@ -1199,3 +1223,11 @@ Run the experiment tests and the production step-detection tests::
 The experiment tests live outside the default production test directory and
 must be named explicitly. The native cases are skipped if the extension is
 not built; a benchmark run requesting native measurements fails in that case.
+
+Check the normalized fallback, verifier, and diagnostic::
+
+    VECLIB_MAXIMUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+        .venv/bin/python -m pytest -p no:rerunfailures \
+        experiments/step_detection/test_reporting_normalized.py \
+        experiments/step_detection/test_reporting_sturm.py \
+        experiments/step_detection/test_interval_polynomial_diagnosis.py -q

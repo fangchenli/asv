@@ -123,12 +123,13 @@ The previous eight-piece calculation reached only about 0.01161550. The
 exact bound. The `diagnosis report <sturm_unresolved_diagnosis.rst>`_ includes
 the derivation and results for the other three hard witnesses.
 
-These are post-hoc proofs of saved intervals. They do not establish that a
-complete search will finish or that additional histories will alert. The
-normalization is opt-in; the default certificate keeps its previous units.
-Next, use this certificate as an opt-in fallback in the full search and
-replay the unresolved histories. A new frozen comparison is still needed
-before considering production integration.
+The full experimental search now has an opt-in normalized fallback. It
+tries the new proof when an interior positive-correlation interval would
+otherwise hit the depth limit, with at most eight calls per history. The
+verifier reconstructs each proof and checks interval coverage. Defaults and
+the frozen study's decisions stay unchanged. The `experiment guide
+<running.rst>`_ explains how to run it. A new frozen comparison is still
+needed before considering production integration.
 
 Further detail
 --------------

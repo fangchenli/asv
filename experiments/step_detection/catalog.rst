@@ -216,6 +216,10 @@ Diagnostics, replay, and verification
   enclosure for correlation intervals near ``rho = 1``.
 * `determinant_interval_polynomial.py`_: outward-rounded, fixed-precision
   polynomial coefficient intervals for scalable Bernstein bounds.
+* `directional_normalized.py <directional_normalized.py>`_: normalized radius,
+  determinant, and density certificate used by the opt-in reporting fallback.
+* `normalized_replay.py <normalized_replay.py>`_: bounded, verified full-search
+  replay of the nine unresolved histories from the frozen study.
 * `continuant_partition_diagnosis.py`_: reproduce a partitioned proof for one
   frozen unresolved case.
 * `spectral_replay.py`_, `sturm_replay.py`_, and
@@ -237,7 +241,8 @@ chain is covered by `test_residual_direction.py`_,
 `test_directional_tail.py`_, `test_directional_determinant.py`_,
 `test_directional_spectral.py`_, `test_directional_sturm.py`_,
 `test_reporting_determinant.py`_, `test_reporting_directional.py`_,
-`test_reporting_spectral.py`_, and `test_reporting_sturm.py`_. The remaining
+`test_reporting_spectral.py`_, `test_reporting_sturm.py`_, and
+`test_reporting_normalized.py <test_reporting_normalized.py>`_. The remaining
 tests cover their corresponding study drivers, fitting references, and
 statistical derivations:
 

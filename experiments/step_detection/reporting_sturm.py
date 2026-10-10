@@ -7,6 +7,7 @@ until a new certificate removes an interval or a saved point explanation.
 import math
 from fractions import Fraction as F
 
+from . import directional_normalized as normalized
 from . import directional_sturm as sturm
 from . import directional_tail as tail
 from . import rational_polynomial as p
@@ -46,19 +47,31 @@ def point_bounds(model, rho, delta, *, use_tail=True, use_sturm=True):
     }
 
 
-def evidence(values, config=None, *, max_cells=4096, max_depth=17, use_tail=True, use_sturm=True):
+def evidence(
+    values,
+    config=None,
+    *,
+    max_cells=4096,
+    max_depth=17,
+    use_tail=True,
+    use_sturm=True,
+    use_normalized=False,
+    max_normalized_cells=8,
+):
     """Certify every location and rho in (-1,1), or return a non-alert.
 
     A surviving explanation belongs to the implemented conservative confidence
     set. It need not survive an ideal, exactly evaluated directional tail test.
     Disabling the Sturm bound reproduces the inherited search. Disabling
     both tail and sturm bounds gives the uniform-direction control.
+    The opt-in normalized polynomial route runs only when a positive interior
+    cell would otherwise hit max_depth, for at most max_normalized_cells calls.
     """
     y = list(values)
     n = len(y)
     if not 8 <= n <= 200 or any(not math.isfinite(x) for x in y):
         raise ValueError('Use 8 to 200 finite observations')
-    if not isinstance(use_tail, bool) or not isinstance(use_sturm, bool):
+    if any(not isinstance(flag, bool) for flag in (use_tail, use_sturm, use_normalized)):
         raise ValueError('Bound switches must be boolean')
     config = ar1.calibration(n) if config is None else dict(config)
     expected = ar1.calibration(
@@ -69,7 +82,7 @@ def evidence(values, config=None, *, max_cells=4096, max_depth=17, use_tail=True
     )
     if config != expected:
         raise ValueError('Use an unmodified matching calibration')
-    for count, minimum in ((max_cells, 1), (max_depth, 0)):
+    for count, minimum in ((max_cells, 1), (max_depth, 0), (max_normalized_cells, 0)):
         if not isinstance(count, int) or isinstance(count, bool) or count < minimum:
             raise ValueError('Invalid certification budget')
     # Never enlarge the supplied binary floating-point confidence allocation.
@@ -77,6 +90,7 @@ def evidence(values, config=None, *, max_cells=4096, max_depth=17, use_tail=True
     models = ar1.Models(y)
     certificates, states = [], {}
     visited = 0
+    normalized_calls = 0
 
     def result(status, witness=None):
         return {
@@ -86,6 +100,19 @@ def evidence(values, config=None, *, max_cells=4096, max_depth=17, use_tail=True
             'cells_visited': visited,
             'certificate': certificates,
             'confidence': {
+                **(
+                    {
+                        'normalized': {
+                            'enabled': True,
+                            'bits': normalized.BITS,
+                            'radius_bits': normalized.RADIUS_BITS,
+                            'max_cells': max_normalized_cells,
+                            'calls': normalized_calls,
+                        }
+                    }
+                    if use_normalized
+                    else {}
+                ),
                 'rule': 'directional_full_sturm',
                 'sturm_enabled': use_sturm,
                 'sturm_bits': sturm.determinant.BITS,
@@ -173,13 +200,27 @@ def evidence(values, config=None, *, max_cells=4096, max_depth=17, use_tail=True
                             )
                             continue
                     if depth >= max_depth:
+                        reason = 'max_depth'
+                        if use_normalized and 0 <= left < right < 1:
+                            if normalized_calls >= max_normalized_cells:
+                                reason = 'max_normalized_cells'
+                            else:
+                                normalized_calls += 1
+                                proof = normalized.certify_interval(
+                                    model, left, right, delta=delta
+                                )
+                                if proof['status'] == 'certified_excluded':
+                                    certificates.append(
+                                        {**cell, 'route': 'direction_normalized', 'proof': proof}
+                                    )
+                                    continue
                         return result(
                             'unresolved',
                             {
                                 'split': split,
                                 'left': str(left),
                                 'right': str(right),
-                                'reason': 'max_depth',
+                                'reason': reason,
                             },
                         )
                     pending.extend(((midpoint, right, depth + 1), (left, midpoint, depth + 1)))
