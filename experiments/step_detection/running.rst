@@ -1091,6 +1091,50 @@ Each run writes:
 Keep the full artifacts when investigating a changed boundary. They distinguish
 an optimizer finding a lower score from a method finding a more accurate change.
 
+Reproduce the polynomial interval diagnosis
+------------------------------------------
+
+These commands read the frozen fresh-study archives and write separate
+post-hoc diagnostics. Run from the repository root and choose a new output
+path each time; the script refuses to overwrite an existing file.
+
+Recompute the radius on each of two pieces of the hard n=100 early-change
+witness::
+
+    .venv/bin/python -m experiments.step_detection.interval_polynomial_diagnosis \
+        --case-id positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-early-seed1603 \
+        --bits 128 --divisions 2 --radius-scope cell \
+        --output /tmp/asv-local-radius-2.json
+
+Use ``--divisions 8 --output /tmp/asv-local-radius-8.json`` instead to
+reproduce the full saved-interval certificate below 0.01. The two-piece
+diagnostic remains above the cutoff.
+
+For the other two hard n=100 witnesses, use eight divisions and these case
+identifiers with separate output paths:
+
+* ``positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-middle-seed1602``
+* ``positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-recent-seed1603``
+
+The middle case remains above the cutoff; the recent case certifies.
+
+To reproduce the earlier four-piece calculation with one radius shared by
+the entire parent interval::
+
+    .venv/bin/python -m experiments.step_detection.interval_polynomial_diagnosis \
+        --case-id positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-early-seed1603 \
+        --bits 128 --divisions 4 --radius-scope parent \
+        --output /tmp/asv-parent-radius-4.json
+
+``--divisions`` must be a positive power of two. ``--radius-scope cell``
+is the default. Polynomial coefficients use the requested precision; the
+radius bound uses the existing 192-bit routine, recorded as ``radius_bits``.
+Schema version 2 stores the radius and both tilt attempts for each piece.
+Its top-level ``p_upper`` and ``p_upper_squared`` report the worst piece
+after selecting each piece's best tilt. Older artifacts' top-level
+``p_upper`` described the best piece; compare their per-piece attempts and
+``max_cell_p_upper`` instead. Frozen study decisions remain unchanged.
+
 Checks
 ------
 

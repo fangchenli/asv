@@ -80,7 +80,8 @@ without subdivision. The largest p-value upper bound is about 0.00878. The
 proof also applies the rank-group density correction on the full interval.
 The `saved full-interval result
 <data/sturm_fresh_v2_continuant_full_interval_n40.json>`_ preserves the exact
-bound, and `continuant_partition_diagnosis.py`_ reproduces it with
+bound, and the `partition script <continuant_partition_diagnosis.py>`_
+reproduces it with
 ``--divisions 1``. The earlier eight- and 16-piece calculations also
 certified, but are unnecessary for this witness. This is a post-hoc proof of
 the saved witness only; it does not revise the frozen study record.
@@ -126,8 +127,9 @@ This resolves one n=100 witness over its entire saved interval. At 128 bits,
 the determinant lower bound is about 2808.39 and the rank-group probability
 upper bound is ``763783093383/140737488355328``, about 0.00543. The `saved
 certificate <data/sturm_fresh_v2_interval_poly_n100_middle.json>`_ records
-the exact result, and `interval_polynomial_diagnosis.py`_ reproduces it. The
-same interval succeeds at 192 and 256 bits with the same reported lower bound.
+the exact result, and the `polynomial diagnostic
+<interval_polynomial_diagnosis.py>`_ reproduces its numerical bounds. The same
+interval succeeds at 192 and 256 bits with the same reported lower bound.
 This is a post-hoc proof of one saved witness and does not alter the frozen
 study record or production detector.
 
@@ -138,9 +140,82 @@ equal pieces barely changes the worst piece (about 0.02345). Four pieces
 improve the first three local bounds, but the last quarter still has an upper
 bound about 0.02345. The reproducible `four-piece diagnostic
 <data/sturm_fresh_v2_interval_poly_n100_hard_early_d4.json>`_ records these
-results. Thus the current limitation is not just one broad interval: the
-rank-group tail bound remains too weak near the high-correlation end of this
-case.
+results. These runs retained the radius bound from the original interval
+while subdividing the determinant calculation. They therefore do not show
+that the probability inequality itself has reached a limit.
+
+Recomputing the radius after subdivision
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The radius compares the observed residual direction with the candidate noise
+covariance. It varies with correlation. In the early-change witness, the
+original interval's radius upper bound is about 0.00041794. Over just the
+last quarter it can be bounded by about 0.00037296. Reusing the larger value
+is safe, but prevents subdivision from recovering much of the lost precision.
+
+The diagnostic now recomputes this bound on each piece. Both the polynomial
+determinant and the density correction receive that piece's radius. For
+correlation rho, the existing radius formula is
+``(1 - rho**2) * ss * den(rho) / num(rho)``. Here ``ss`` measures the
+observed residual size, and ``num`` and ``den`` are the model's existing
+residual-ratio polynomials. Bounding those factors on a smaller interval
+gives a valid local radius upper bound. No new probability inequality is
+needed: a smaller valid upper bound strengthens both the determinant and
+the positive weights used by the density correction.
+
+The overall report must also cover every piece. It chooses the smallest
+probability upper bound across the tested tilts within each piece, then
+reports the largest of those piecewise bounds. The previous top-level
+``p_upper`` incorrectly reported the best piece; ``max_cell_p_upper`` and
+the all-pieces status were already conservative. Schema version 2 makes both
+probability fields describe the full interval and identifies the worst piece.
+This is a maximum, rather than a sum, because the pieces are alternative
+values of a model parameter; the certificate must hold for whichever value
+is the true one.
+
+For the early-change witness, the `two-piece result
+<data/sturm_fresh_v2_interval_poly_n100_early_local_d2.json>`_ improves the
+worst bound to about 0.0147004, still above the cutoff. With eight pieces,
+all pieces certify. The `complete eight-piece record
+<data/sturm_fresh_v2_interval_poly_n100_early_local_d8.json>`_ has worst upper
+bound ``175736591167/17592186044416``, approximately 0.00998947. That is only
+about 0.00001053 below the cutoff, but the exact rational comparison is
+strict. The best tilt is 1/16 in every piece. This resolves the saved witness;
+it does not rerun or change the original search's outcome.
+
+The same settings (eight pieces, 128-bit polynomial coefficients, and local
+192-bit radius bounds) give these results for all three hard n=100 witnesses:
+
+.. list-table:: Full-interval upper bounds after local-radius subdivision
+   :header-rows: 1
+
+   * - Change location
+     - Worst probability upper bound
+     - All pieces below 0.01?
+   * - Early
+     - 0.00998947
+     - Yes
+   * - Middle
+     - 0.01161550
+     - No
+   * - Recent
+     - 0.00550398
+     - Yes
+
+These displayed decimals are rounded upward. The `middle-case record
+<data/sturm_fresh_v2_interval_poly_n100_middle_local_d8.json>`_ preserves the
+failure, and the `recent-case record
+<data/sturm_fresh_v2_interval_poly_n100_recent_local_d8.json>`_ preserves the
+second new certificate. Combined with the earlier n=40 certificate, three of
+the four stubborn witnesses are now resolved locally. No full search was
+rerun, so the fresh study's alert and unresolved counts are unchanged.
+
+The middle case is the next mathematical target. The factor ``1 - rho**2``
+appears in both the covariance representation and the radius. Bounding those
+quantities separately can combine values from different correlations, which
+loses information even after subdivision. Cancelling the shared factor before
+enclosing the determinant and eigenvalue ratios is a plausible next
+refinement; it has not been implemented or validated here.
 
 Taylor-model follow-up
 ----------------------

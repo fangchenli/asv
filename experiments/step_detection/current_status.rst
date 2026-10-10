@@ -106,18 +106,32 @@ bound when it also uses the rank-group density correction on intervals. The
 upper bound on the tail probability is about 0.00879. The reproducible `full
 interval certificate
 <data/sturm_fresh_v2_continuant_full_interval_n40.json>`_ needs no interval
-subdivision. A fixed-precision outward-rounded coefficient recurrence now
-certifies a second full witness interval at n=100, with tail-probability
-upper bound about 0.00543. Both are post-hoc proofs; frozen study outcomes
-remain unchanged. Shared-denominator exact arithmetic alone did not finish
-n=100 within 120 seconds, while rounding every polynomial coefficient
-outward at 128 bits produced the certificate in seconds. Two hard witness
-The n=100 certificate is a scale demonstration, not a new resolution: that
-case already certifies after one split in the original search. On a genuinely
-stubborn n=100 witness, the outward-rounded bound stays above the 0.01 cutoff
-after dividing the interval into two or four pieces. The worst piece is about
-0.0234, with the last quarter limiting. The polynomial method has not yet
-resolved this hard case, and no new benchmark comparison is justified.
+subdivision.
+
+The outward-rounded polynomial recurrence now handles n=100 too. Its first
+success, an upper bound about 0.00543, was a scale demonstration: that witness
+already certified after one split with the previous interval method.
+
+The latest change resolves a harder n=100 early-change witness. The earlier
+four-piece calculation retained one radius bound from the original interval
+and stalled at about 0.02344. Recomputing the radius for each piece gives a
+worst bound about 0.01470 with two pieces and **0.00998947 with eight**. The
+`eight-piece certificate
+<data/sturm_fresh_v2_interval_poly_n100_early_local_d8.json>`_ proves the full
+saved interval below 0.01. The report now also correctly summarizes a
+partition by its worst piece, after choosing each piece's best tilt.
+
+The same eight-piece check certifies the n=100 recent-change witness at
+about **0.00550398**. The middle-change witness still misses the cutoff at
+about **0.01161549**. Together with the n=40 result, three of the four stubborn
+saved intervals now have certificates. The next mathematical target is the
+middle case: its covariance and radius share a correlation-dependent factor
+that the current calculation bounds separately.
+
+These are post-hoc proofs of saved intervals. They do not establish that a
+complete search will finish or that additional histories will alert. A
+complete search replay and a new frozen comparison are still needed before
+considering production integration.
 
 Further detail
 --------------

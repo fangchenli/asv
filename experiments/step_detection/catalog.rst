@@ -141,7 +141,13 @@ complete saved-case search.
   outward-rounded polynomial certificate for another unresolved interval.
   The `four-piece hard-case diagnostic
   <data/sturm_fresh_v2_interval_poly_n100_hard_early_d4.json>`_ records a
-  stubborn case that this bound still cannot certify.
+  failure with a shared parent radius. Recomputing the radius for each piece
+  resolves that witness in the `eight-piece certificate
+  <data/sturm_fresh_v2_interval_poly_n100_early_local_d8.json>`_.
+  The same local-radius check certifies the `recent-change witness
+  <data/sturm_fresh_v2_interval_poly_n100_recent_local_d8.json>`_ but leaves
+  the `middle-change witness
+  <data/sturm_fresh_v2_interval_poly_n100_middle_local_d8.json>`_ unresolved.
 * `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
   and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
   verified saved-case results for the latest point-bound refinement.
