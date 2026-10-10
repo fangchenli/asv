@@ -47,6 +47,53 @@ def dense_rational_determinant(n, split, rho, a, b):
     return rational_determinant(matrix) / (split * (n - split))
 
 
+@pytest.mark.parametrize('n,split', [(3, 1), (6, 3), (9, 2)])
+def test_endpoint_difference_derivation_against_exact_dense_determinants(n, split):
+    # This checks the proposed endpoint argument; the detector does not use it.
+    a, b, left = F(7, 8), F(3, 7), F(31, 32)
+    beta = 1 - (n - 3) * (1 - left) / (1 + left)
+    assert beta > 0
+    edges = [i for i in range(n - 1) if i != split - 1]
+    gram = [[F(2 * (i == j) - (abs(i - j) == 1)) for j in edges] for i in edges]
+    gram_det = rational_determinant(gram)
+    assert gram_det == split * (n - split)
+
+    def recurrence_bound(beta):
+        product = F(1)
+        for length in (split - 1, n - split - 1):
+            previous, current = F(1), F(1)
+            for k in range(length):
+                previous, current = (
+                    current,
+                    (2 * a + b * beta) * current - (a**2 * previous if k else 0),
+                )
+            product *= current
+        return product / gram_det
+
+    lower = recurrence_bound(beta)
+    for rho in (left, (left + 1) / 2, F(1)):
+        covariance = [
+            [
+                2 / (1 + rho) if i == j else -(1 - rho) / (1 + rho) * rho ** (abs(i - j) - 1)
+                for j in edges
+            ]
+            for i in edges
+        ]
+        for i, row in enumerate(covariance):
+            # Exact row sums establish T >= beta I, including the limiting matrix.
+            assert row[i] - sum(abs(x) for j, x in enumerate(row) if j != i) >= beta
+        matrix = [
+            [a * g + b * t for g, t in zip(g_row, t_row, strict=True)]
+            for g_row, t_row in zip(gram, covariance, strict=True)
+        ]
+        exact = rational_determinant(matrix) / gram_det
+        assert lower <= exact
+        if rho < 1:
+            assert exact == dense_rational_determinant(n, split, rho, a, b / (1 - rho**2))
+        else:
+            assert exact == recurrence_bound(F(1))
+
+
 @pytest.mark.parametrize('bits', [8, 64, 192])
 def test_outward_arithmetic_contains_exact_endpoint_operations(bits):
     ar = bound.Arithmetic(bits)

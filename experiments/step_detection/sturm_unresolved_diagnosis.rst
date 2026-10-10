@@ -331,6 +331,56 @@ on those cases; they are not a new estimate of detection or false-alert
 rates. The `experiment guide <running.rst>`_ contains the reproduction
 command and output format.
 
+Next mathematical route: differences at the endpoint
+----------------------------------------------------
+
+The normalized polynomial certificate requires ``right < 1``. A search can
+therefore clear its interior cells and still stop at the final cell ending
+at 1. The following derivation suggests an endpoint certificate; it is not
+implemented or used in the replay above.
+
+For a proposed split s, take adjacent differences within each plateau,
+omitting the difference across the proposed step. Write D for this
+``(n-2) x n`` difference matrix. Its rows span exactly the residual space:
+constants on either plateau disappear under D.
+
+Let ``q = 1-rho**2`` and ``T = D R_rho D' / q``. Unlike the original
+covariance, this matrix has a simple finite limit as rho approaches 1:
+
+* Every diagonal entry is ``2/(1+rho)``.
+* Differences at edge positions i and j have covariance
+  ``-(1-rho)/(1+rho) * rho**(abs(i-j)-1)`` for distinct edges.
+* Thus T approaches the identity matrix as rho approaches 1.
+
+For every ``rho in [l, 1)`` with ``l >= 0``, each diagonal is at least 1
+and each off-diagonal magnitude is at most ``(1-l)/(1+l)``. There are at
+most ``n-3`` off-diagonal entries per row, so a row-sum eigenvalue bound gives
+``T >= beta I`` in the positive-semidefinite order, where
+``beta = 1 - (n-3)*(1-l)/(1+l)``. Use this only when beta is positive.
+
+This also gives a cheap determinant bound. Set ``G = D D'``. It has two
+tridiagonal blocks, each with diagonal 2 and adjacent entries -1, and
+``det(G) = s*(n-s)``. If U is an orthonormal residual basis and ``B = D U``,
+then ``G = B B'`` and ``T = B C B'`` for ``C = U' R_rho U / q``. Therefore,
+for positive a and b,
+
+``det(a I + b C) = det(a G + b T) / det(G)
+                  >= det(a G + b beta I) / det(G)``.
+
+The inequality follows from positive-semidefinite ordering of the two
+positive-definite matrices. The determinant on the right uses two scalar
+tridiagonal recurrences, with no factor tending to zero at rho=1. The same
+matrix ordering gives covariance eigenvalue lower bounds from beta and the
+eigenvalues of G, so the density correction can use matching units.
+
+Exact small-matrix checks confirm the difference identity, the row-sum
+bound, and the two-block determinant recurrence, including its limit at 1.
+The next implementation should certify the normalized radius and matching
+density correction over the endpoint cell, then test complete coverage.
+If it works, testing wider cells before reaching
+the depth limit could also reduce repeated neighboring calls. These are
+specific follow-ups to the replay; they do not change its recorded outcomes.
+
 Taylor-model follow-up
 ----------------------
 
