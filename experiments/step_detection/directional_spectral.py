@@ -22,11 +22,12 @@ def density_constant(count):
     return F(math.comb(2 * m - 2, m - 1), 4**m)
 
 
-def eigenvalue_lower(n, count, left, right):
+def eigenvalue_lower(n, count, left, right, *, stationary_normalized=False):
     """Uniform lower bound on the count-th largest eigenvalue of U' R U.
 
     U removes two plateau levels. Interlacing costs two eigenvalue positions;
     an AR precision comparison and sin(x)<=x remove trigonometric arithmetic.
+    In stationary_normalized mode, bound U' R U/(1-rho**2) instead.
     """
     left, right = F(left), F(right)
     density_constant(count)
@@ -42,7 +43,8 @@ def eigenvalue_lower(n, count, left, right):
     frequency_squared = F(22 * (count + 2), 7 * (n + 1)) ** 2
     # This quadratic is convex, so its maximum is at one of the endpoints.
     denominator = max((1 - value) ** 2 + value * frequency_squared for value in (lower, upper))
-    return (1 - upper**2) / denominator
+    numerator = F(1) if stationary_normalized else 1 - upper**2
+    return numerator / denominator
 
 
 def coefficient_bound_squared(weights, tilt, count):

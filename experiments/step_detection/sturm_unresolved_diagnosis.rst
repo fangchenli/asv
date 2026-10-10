@@ -88,15 +88,15 @@ the saved witness only; it does not revise the frozen study record.
 
 The exact polynomial and Bernstein setup takes tens of seconds for this one
 case. It avoids interval subdivision, though the setup cost remains high.
-Its behavior on the other three hard cases is not yet known. It has not been
-used in the frozen fresh-study results or production detector.
+At that checkpoint, the other three hard cases had not been checked with
+this method. It was not used in the frozen fresh-study results or production
+detector.
 
 I attempted the same full-interval calculation on a saved 100-reading hard
 case. Exact polynomial construction had not completed after 120 seconds, so I
 stopped the run before it could produce a certificate. This is a clear
-scaling limit of the current rational-polynomial implementation. The next
-algorithm work needs to reduce or avoid global exact coefficient growth
-before applying this proof to the other large cases.
+scaling limit of the rational-polynomial implementation. That motivated the
+outward-rounded coefficient recurrence described below.
 
 Shared-denominator arithmetic
 -----------------------------
@@ -207,15 +207,97 @@ These displayed decimals are rounded upward. The `middle-case record
 failure, and the `recent-case record
 <data/sturm_fresh_v2_interval_poly_n100_recent_local_d8.json>`_ preserves the
 second new certificate. Combined with the earlier n=40 certificate, three of
-the four stubborn witnesses are now resolved locally. No full search was
+the four stubborn witnesses were resolved at this checkpoint. No full search was
 rerun, so the fresh study's alert and unresolved counts are unchanged.
 
-The middle case is the next mathematical target. The factor ``1 - rho**2``
+Cancelling the shared stationary factor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The middle case exposes another dependency loss. The factor ``1 - rho**2``
 appears in both the covariance representation and the radius. Bounding those
-quantities separately can combine values from different correlations, which
-loses information even after subdivision. Cancelling the shared factor before
-enclosing the determinant and eigenvalue ratios is a plausible next
-refinement; it has not been implemented or validated here.
+quantities separately combines a small factor from one correlation with a
+large factor from another. The resulting ratio is more pessimistic than any
+single correlation requires.
+
+Write ``q = 1 - rho**2``. The AR(1) covariance matrix is
+``R = q * inverse(A)``, where A is tridiagonal with endpoint diagonals 1,
+interior diagonals ``1 + rho**2``, and adjacent entries ``-rho``. U removes
+the two fitted plateau levels, so the residual covariance is ``C = U' R U``.
+The observed radius is ``r = q * k``, where
+``k = ss * den(rho) / num(rho)``. Therefore, at every interior correlation::
+
+    C / r = U' inverse(A) U / k.
+
+The stationary factor cancels exactly. This changes the order of the
+calculation, without changing the statistic or the probability inequality.
+The new opt-in route bounds k directly and uses the covariance ``R/q``.
+If K is an upper bound for k, the determinant is bounded using::
+
+    det((1 - 2*tau) I + (2*tau/K) U' inverse(A) U).
+
+Here tau is the existing exponential tilt. The continuant recurrence now
+uses a constant shift ``2*tau/K`` in ``(1 - 2*tau) A + (2*tau/K) I``.
+Previously the shift was ``(2*tau/radius_upper) * q``, while radius_upper
+already included a bound on q.
+The projection determinant identity and outward-rounded Bernstein bound
+otherwise stay the same.
+
+The density correction must use the same normalization. A precision
+eigenvalue upper bound H gives a normalized covariance eigenvalue lower
+bound ``1/H``. Dividing this by K bounds the required eigenvalue-to-radius
+ratio directly. The old route used a covariance bound containing the minimum
+q and a radius bound containing the maximum q. Removing that artificial
+ratio strengthens both parts of the certificate.
+
+Exact small-matrix checks cover the normalized determinant, and dense
+covariance checks cover the normalized radius and eigenvalue bounds. At a
+fixed correlation, the normalized and original calculations agree exactly
+when supplied matching radii. The rank-group loop is also capped at the
+longer plateau's residual dimension; requesting a higher rank previously
+raised an exception when all available directions remained positive.
+
+The option is ``--stationary-normalized``. Schema version 3 records this
+choice explicitly. When enabled, all ``radius_upper`` values mean bounds on
+``r/q`` rather than r, and both the determinant and density correction use
+those units. The default continues to use the original covariance and radius.
+
+With 128-bit polynomial coefficients, this normalization certifies all four
+hard witnesses over their full saved intervals, using one piece each:
+
+.. list-table:: Normalized full-interval certificates
+   :header-rows: 1
+
+   * - Readings and change location
+     - Probability upper bound
+     - Selected tilt
+   * - 40, early
+     - 0.00743787
+     - 1/8
+   * - 100, early
+     - 0.00876185
+     - 1/16
+   * - 100, middle
+     - 0.00987724
+     - 1/16
+   * - 100, recent
+     - 0.00482682
+     - 1/16
+
+Displayed decimals are rounded upward. The exact certificates are saved for
+the `40-reading early case
+<data/sturm_fresh_v2_interval_poly_n40_early_normalized.json>`_ and the
+100-reading `early
+<data/sturm_fresh_v2_interval_poly_n100_early_normalized.json>`_, `middle
+<data/sturm_fresh_v2_interval_poly_n100_middle_normalized.json>`_, and `recent
+<data/sturm_fresh_v2_interval_poly_n100_recent_normalized.json>`_ cases. The
+middle case previously failed with eight local-radius pieces at 0.01161550;
+cancelling the shared factor brings its single-piece bound below 0.01.
+The exact middle-case bound is ``2780194237603/281474976710656``.
+
+All four certificates concern saved intervals. They do not establish that
+the full search will finish within its budget, or that more histories will
+alert. The next implementation step is an opt-in full-search fallback and
+a replay of the unresolved histories; frozen study outcomes stay unchanged.
 
 Taylor-model follow-up
 ----------------------
@@ -234,8 +316,8 @@ The Taylor model also does not solve the scaling problem: degree 2 took about
 bound. Since its remainder gets very large in the continuant recurrence, more
 Taylor terms cost more without an evident route to a useful certificate. The
 small exact tests are retained, but this is not currently a candidate for the
-search implementation. The useful next direction is to test the full-interval
-Bernstein bound on the other three hard cases and reduce coefficient growth.
+search implementation. Those negative results motivated the outward-rounded
+recurrence and normalization described above.
 
 I also tried computing the continuants directly in the Bernstein basis to
 avoid the power-to-Bernstein conversion. A Fraction-based recurrence ran for

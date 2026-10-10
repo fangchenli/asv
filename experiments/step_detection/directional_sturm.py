@@ -88,8 +88,12 @@ def _precision_eigenvalue_upper(n, index, correlation):
     return upper
 
 
-def covariance_eigenvalue_lower(n, index, left, right):
-    """Uniform lower bound on the index-th largest AR covariance eigenvalue."""
+def covariance_eigenvalue_lower(n, index, left, right, *, stationary_normalized=False):
+    """Bound the index-th largest eigenvalue of R, or R/(1-rho**2).
+
+    In normalized mode, R/(1-rho**2) equals the inverse of the precision
+    numerator matrix. Its bound is the reciprocal precision bound directly.
+    """
     left, right = F(left), F(right)
     if not -1 < left <= right < 1:
         raise ValueError('Require a stationary interval')
@@ -100,17 +104,28 @@ def covariance_eigenvalue_lower(n, index, left, right):
     # Its operator norm is bounded by the maximum absolute row sum.
     perturbation = high**2 - midpoint**2 + 2 * (high - midpoint)
     precision_upper = precision_eigenvalue_upper(n, index, midpoint)
-    return (1 - high**2) / (precision_upper + perturbation)
+    numerator = F(1) if stationary_normalized else 1 - high**2
+    return numerator / (precision_upper + perturbation)
 
 
-def residual_eigenvalue_bounds(n, split, count, left, right):
+def residual_eigenvalue_bounds(n, split, count, left, right, *, stationary_normalized=False):
     """Compare full-history and single-plateau subspaces with old bounds."""
     if not isinstance(split, int) or isinstance(split, bool) or not 1 <= split < n:
         raise ValueError('Require an interior split')
-    original = spectral.eigenvalue_lower(n, count, left, right)
-    full = covariance_eigenvalue_lower(n, count + 2, left, right)
+    original = spectral.eigenvalue_lower(
+        n, count, left, right, stationary_normalized=stationary_normalized
+    )
+    full = covariance_eigenvalue_lower(
+        n, count + 2, left, right, stationary_normalized=stationary_normalized
+    )
     length = max(split, n - split)
-    block = covariance_eigenvalue_lower(length, count + 1, left, right) if count < length else F(0)
+    block = (
+        covariance_eigenvalue_lower(
+            length, count + 1, left, right, stationary_normalized=stationary_normalized
+        )
+        if count < length
+        else F(0)
+    )
     return {'toeplitz': original, 'full_sturm': full, 'plateau_sturm': block}
 
 
@@ -211,7 +226,18 @@ def heterogeneous_density_bounds(tilted_weight_lowers, *, bits=64):
     return results
 
 
-def rank_group_weights(n, split, left, right, radius_upper, tilt, *, max_rank=48, bits=64):
+def rank_group_weights(
+    n,
+    split,
+    left,
+    right,
+    radius_upper,
+    tilt,
+    *,
+    max_rank=48,
+    bits=64,
+    stationary_normalized=False,
+):
     """Lower bounds on geometric-mean tilted weights in each four-rank block.
 
     Interlacing embeds the zero-sum vectors on the longer plateau in the
@@ -219,6 +245,9 @@ def rank_group_weights(n, split, left, right, radius_upper, tilt, *, max_rank=48
     keeps more information than assigning the weakest rank in a block to all
     four directions. AM-GM then bounds that block's Fourier factor using the
     geometric mean of its four coefficients.
+
+    In stationary_normalized mode radius_upper must bound r/(1-rho**2),
+    matching the normalized covariance used for the eigenvalue bounds.
     """
     if not 1 <= split < n or not -1 < F(left) <= F(right) < 1:
         raise ValueError('Require an interior split and stationary interval')
@@ -229,14 +258,16 @@ def rank_group_weights(n, split, left, right, radius_upper, tilt, *, max_rank=48
         raise ValueError('Require positive precision and a rank limit divisible by four')
     length, scale = max(split, n - split), 1 << bits
     result = []
-    last_rank = min(max_rank, n - 2)
+    last_rank = min(max_rank, n - 2, length - 1)
     last_rank -= last_rank % 4
     for start in range(1, last_rank + 1, 4):
         product = F(1)
         for rank in range(start, min(start + 3, n - 2) + 1):
             # A rank-r direction in the residual space is bounded below by
             # rank r+1 in the zero-sum subspace of the longer plateau.
-            eigenvalue = covariance_eigenvalue_lower(length, rank + 1, left, right)
+            eigenvalue = covariance_eigenvalue_lower(
+                length, rank + 1, left, right, stationary_normalized=stationary_normalized
+            )
             weight = eigenvalue / radius_upper - 1
             if weight <= 0:
                 product = F(0)
@@ -264,12 +295,20 @@ def at_tilt(
     determinant_certifier=None,
     rank_groups_on_intervals=False,
 ):
-    """Same determinant and density correction, with stronger eigenvalue inputs."""
+    """Same determinant and density correction, with stronger eigenvalue inputs.
+
+    A custom certifier may mark its result stationary_normalized=True only
+    if it supplies a determinant for R/(1-rho**2) and a matching radius bound.
+    The eigenvalue bounds then use that same normalization throughout.
+    """
     tilt, delta = F(tilt), F(delta)
     certifier = (
         determinant.certify_interval if determinant_certifier is None else determinant_certifier
     )
     base = certifier(model, left, right, tilt=tilt, delta=delta, bits=bits)
+    # The certifier must supply the radius and determinant in the same units.
+    # Default/frozen certifiers omit this marker and retain the original units.
+    stationary_normalized = base.get('stationary_normalized', False)
     result = {
         'tilt': str(tilt),
         'base': base,
@@ -287,7 +326,14 @@ def at_tilt(
     for count in spectral.COUNTS:
         if count > model['n'] - 2:
             continue
-        bounds = residual_eigenvalue_bounds(model['n'], model['split'], count, left, right)
+        bounds = residual_eigenvalue_bounds(
+            model['n'],
+            model['split'],
+            count,
+            left,
+            right,
+            stationary_normalized=stationary_normalized,
+        )
         selected = max(bounds, key=bounds.get)
         eigen_lower = bounds[selected]
         weight = eigen_lower / F(base['radius_upper']) - 1
@@ -346,6 +392,7 @@ def at_tilt(
         F(base['radius_upper']),
         tilt,
         max_rank=48,
+        stationary_normalized=stationary_normalized,
     )
     rank_density = heterogeneous_density_bounds(rank_groups)
     result['rank_group_weights'] = [str(value) for value in rank_groups]

@@ -80,13 +80,16 @@ def _multiply(first, second, scale):
     return _trim(result)
 
 
-def _continuants(n, split, a, b, center, scale):
+def _continuants(n, split, a, b, center, scale, *, stationary_normalized=False):
     zero, one = (_constant(0, scale),), (_constant(1, scale),)
     rho = (_constant(center, scale), _constant(1, scale))
     rho2 = _multiply(rho, rho, scale)
     q = _subtract(one, rho2)
-    end = _add((_constant(a, scale),), _scale(q, b))
-    inner = _add(_scale(_add(one, rho2), a), _scale(q, b))
+    # R_rho = q T_rho^-1. For R_rho/q the shift in a T_rho + b q I
+    # is the constant b instead. Keep the remaining projection identity intact.
+    shift = (_constant(b, scale),) if stationary_normalized else _scale(q, b)
+    end = _add((_constant(a, scale),), shift)
+    inner = _add(_scale(_add(one, rho2), a), shift)
     off2 = _scale(rho2, F(a) ** 2)
 
     leading = [one, end]
@@ -127,7 +130,6 @@ def _continuants(n, split, a, b, center, scale):
             cross_sum = _add(cross_sum, _multiply(partial, trailing[j + 1], scale))
 
     full_det = leading[n]
-    shift = _scale(q, b)
     h00 = _subtract(_scale(full_det, split), _multiply(shift, sums[0], scale))
     h11 = _subtract(_scale(full_det, n - split), _multiply(shift, sums[1], scale))
     h01 = _scale(_multiply(shift, cross_sum, scale), -1)
@@ -176,8 +178,13 @@ def _bernstein(polynomial, left, right, scale):
     return tuple(result)
 
 
-def determinant_interval(n, split, left, right, a, b, *, bits=192):
-    """Return an outward-rounded Bernstein lower bound, or ``None``."""
+def determinant_interval(n, split, left, right, a, b, *, bits=192, stationary_normalized=False):
+    """Bound det(a I + b U' R_rho U), or return ``None``.
+
+    With stationary_normalized=True, replace R_rho by R_rho/(1-rho**2)
+    pointwise before constructing the polynomial, rather than bounding that
+    factor independently over the interval.
+    """
     left, right, a, b = map(F, (left, right, a, b))
     if (
         not isinstance(n, int)
@@ -196,7 +203,9 @@ def determinant_interval(n, split, left, right, a, b, *, bits=192):
         raise ValueError('Require positive interval precision')
     scale = 1 << bits
     center, radius = (left + right) / 2, (right - left) / 2
-    numerator, denominator = _continuants(n, split, a, b, center, scale)
+    numerator, denominator = _continuants(
+        n, split, a, b, center, scale, stationary_normalized=stationary_normalized
+    )
     numerator = _bernstein(numerator, -radius, radius, scale)
     denominator = _bernstein(denominator, -radius, radius, scale)
     degree = max(len(numerator), len(denominator)) - 1

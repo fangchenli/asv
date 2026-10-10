@@ -99,18 +99,44 @@ def test_precision_perturbation_and_covariance_interval_enclosure(left, right):
 
 @pytest.mark.parametrize('n,split,count', [(8, 1, 4), (16, 8, 12), (24, 23, 16), (100, 1, 12)])
 @pytest.mark.parametrize('rho', [F(-51, 64), F(0), F(51, 64)])
-def test_each_subspace_bound_is_below_projected_eigenvalue(n, split, count, rho):
+@pytest.mark.parametrize('stationary_normalized', [False, True])
+def test_each_subspace_bound_is_below_projected_eigenvalue(
+    n, split, count, rho, stationary_normalized
+):
     width = F(1, 65536)
-    bounds = sturm.residual_eigenvalue_bounds(n, split, count, rho - width, rho + width)
+    bounds = sturm.residual_eigenvalue_bounds(
+        n, split, count, rho - width, rho + width, stationary_normalized=stationary_normalized
+    )
     assert bounds == sturm.residual_eigenvalue_bounds(
-        n, n - split, count, rho - width, rho + width
+        n, n - split, count, rho - width, rho + width, stationary_normalized=stationary_normalized
     )
     basis = direction.residual_basis(n, split)
     distance = np.abs(np.arange(n)[:, None] - np.arange(n)[None, :])
     for candidate in (rho - width, rho, rho + width):
         covariance = basis.T @ (float(candidate) ** distance) @ basis
+        if stationary_normalized:
+            covariance /= float(1 - candidate**2)
         actual = np.linalg.eigvalsh(covariance)[-count]
         assert all(float(value) <= actual + 1e-12 for value in bounds.values())
+
+
+@pytest.mark.parametrize('stationary_normalized', [False, True])
+def test_rank_groups_respect_plateau_dimension_and_dense_fourier_weights(stationary_normalized):
+    n, split, left, right, radius, tilt = 30, 15, F(4, 5), F(801, 1000), F(1, 1000), F(1, 8)
+    groups = sturm.rank_group_weights(
+        n, split, left, right, radius, tilt, stationary_normalized=stationary_normalized
+    )
+    assert len(groups) == (max(split, n - split) - 1) // 4
+    basis = direction.residual_basis(n, split)
+    distance = np.abs(np.arange(n)[:, None] - np.arange(n)[None, :])
+    for rho in (left, (left + right) / 2, right):
+        covariance = basis.T @ (float(rho) ** distance) @ basis
+        if stationary_normalized:
+            covariance /= float(1 - rho**2)
+        weights = np.linalg.eigvalsh(covariance)[::-1] / float(radius) - 1
+        tilted = weights / (1 + 2 * float(tilt) * weights)
+        for index, group in enumerate(groups):
+            assert float(group) ** 4 <= np.prod(tilted[4 * index : 4 * index + 4]) + 1e-12
 
 
 def saved_model():

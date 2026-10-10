@@ -3,6 +3,7 @@
 import hashlib
 import json
 from fractions import Fraction as F
+from functools import partial
 
 import numpy as np
 import pytest
@@ -13,8 +14,9 @@ from experiments.step_detection import residual_direction as direction
 
 @pytest.mark.parametrize('radius_scope', ['parent', 'cell'])
 @pytest.mark.parametrize('inconclusive', [False, True])
+@pytest.mark.parametrize('stationary_normalized', [False, True])
 def test_partition_uses_consistent_radius_and_reports_worst_cell(
-    monkeypatch, radius_scope, inconclusive
+    monkeypatch, radius_scope, inconclusive, stationary_normalized
 ):
     values = [1, 4, 2, 5, 3, 8]
     split, left, middle, right = 2, F(3, 4), F(13, 16), F(7, 8)
@@ -22,17 +24,18 @@ def test_partition_uses_consistent_radius_and_reports_worst_cell(
     record = {'witness': {'split': split, 'left': str(left), 'right': str(right)}}
     seen = {}
 
-    def polynomial_bound(n, candidate_split, lo, hi, a, b, *, bits):
+    def polynomial_bound(n, candidate_split, lo, hi, a, b, *, bits, stationary_normalized):
         assert (n, candidate_split, bits) == (len(values), split, 128)
         tilt = (1 - a) / 2
-        seen[lo, hi, tilt] = 2 * tilt / b
+        seen[lo, hi, tilt] = (2 * tilt / b, stationary_normalized)
         return None if inconclusive and lo == middle else F(4)
 
     def tail_bound(model, lo, hi, tilt, *, determinant_certifier, rank_groups_on_intervals):
         assert rank_groups_on_intervals
         proof = determinant_certifier(model, lo, hi, tilt=tilt, delta=F(1, 100), bits=192)
+        assert proof['stationary_normalized'] == stationary_normalized
         radius = F(proof['radius_upper'])
-        assert radius == seen[lo, hi, tilt]
+        assert (radius, stationary_normalized) == seen[lo, hi, tilt]
         # An independent dense covariance calculation checks radius containment.
         basis = direction.residual_basis(len(values), split)
         residual = basis.T @ np.array(values)
@@ -40,6 +43,8 @@ def test_partition_uses_consistent_radius_and_reports_worst_cell(
         distance = np.abs(np.arange(len(values))[:, None] - np.arange(len(values))[None, :])
         for rho in (lo, (lo + hi) / 2, hi):
             covariance = basis.T @ (float(rho) ** distance) @ basis
+            if stationary_normalized:
+                covariance /= float(1 - rho**2)
             exact_radius = 1 / (residual @ np.linalg.solve(covariance, residual))
             assert exact_radius <= float(radius)
         # Tilt choices cross between cells. Picking the global best is unsafe.
@@ -57,8 +62,17 @@ def test_partition_uses_consistent_radius_and_reports_worst_cell(
 
     monkeypatch.setattr(diagnosis.polynomial, 'determinant_interval', polynomial_bound)
     monkeypatch.setattr(diagnosis.sturm, 'at_tilt', tail_bound)
-    result = diagnosis.diagnose(case, record, bits=128, divisions=2, radius_scope=radius_scope)
+    result = diagnosis.diagnose(
+        case,
+        record,
+        bits=128,
+        divisions=2,
+        radius_scope=radius_scope,
+        stationary_normalized=stationary_normalized,
+    )
     expected = F(1) if inconclusive else F(1, 80)
+    assert result['schema_version'] == 3
+    assert result['stationary_normalized'] == stationary_normalized
     assert F(result['p_upper']) == F(result['max_cell_p_upper']) == expected
     assert F(result['p_upper_squared']) == expected**2
     assert result['worst_cell_index'] == 1
@@ -90,17 +104,27 @@ def test_invalid_radius_scope_rejected():
 
 
 @pytest.mark.parametrize(
-    'location,divisions,expected_certified',
-    [('early', 2, False), ('early', 8, True), ('middle', 8, False), ('recent', 8, True)],
+    'artifact,expected_schema,expected_certified',
+    [
+        ('n100_early_local_d2', 2, False),
+        ('n100_early_local_d8', 2, True),
+        ('n100_middle_local_d8', 2, False),
+        ('n100_recent_local_d8', 2, True),
+        ('n100_middle_normalized', 3, True),
+        ('n40_early_normalized', 3, True),
+        ('n100_early_normalized', 3, True),
+        ('n100_recent_normalized', 3, True),
+    ],
 )
 def test_saved_local_radius_partition_has_complete_consistent_coverage(
-    location, divisions, expected_certified
+    artifact, expected_schema, expected_certified
 ):
-    path = diagnosis.HERE / (
-        f'data/sturm_fresh_v2_interval_poly_n100_{location}_local_d{divisions}.json'
-    )
+    path = diagnosis.HERE / f'data/sturm_fresh_v2_interval_poly_{artifact}.json'
     proof = json.loads(path.read_text())
-    assert proof['schema_version'] == 2
+    assert proof['schema_version'] == expected_schema
+    stationary_normalized = proof.get('stationary_normalized', False)
+    assert stationary_normalized == (expected_schema == 3)
+    divisions = proof['divisions']
     assert proof['radius_scope'] == 'cell'
     assert (
         proof['input_archive_sha256'] == hashlib.sha256(diagnosis.INPUTS.read_bytes()).hexdigest()
@@ -122,8 +146,10 @@ def test_saved_local_radius_partition_has_complete_consistent_coverage(
         lo, hi = F(cell['left']), F(cell['right'])
         assert lo == left + (right - left) * F(index, divisions)
         assert hi == left + (right - left) * F(index + 1, divisions)
-        radius = diagnosis.determinant.certify_interval(model, lo, hi)['radius_upper']
-        assert cell['radius_upper'] == radius
+        radius = diagnosis._radius_upper(
+            model, lo, hi, stationary_normalized=stationary_normalized
+        )
+        assert F(cell['radius_upper']) == radius
         assert F(radius) <= F(proof['parent_radius_upper'])
         assert [F(a['tilt']) for a in cell['attempts']] == list(diagnosis.spectral.TILTS)
         for attempt in cell['attempts']:
@@ -134,6 +160,27 @@ def test_saved_local_radius_partition_has_complete_consistent_coverage(
             assert squared == F(attempt['p_upper_squared'])
             upper = F(attempt['p_upper'])
             assert (upper - F(1, 2**48)) ** 2 <= squared <= upper**2
+            if stationary_normalized:
+                tilt = F(attempt['tilt'])
+                certifier = partial(
+                    diagnosis._determinant_certifier,
+                    expected_left=lo,
+                    expected_right=hi,
+                    expected_tilt=tilt,
+                    radius=radius,
+                    determinant_lower=F(attempt['determinant_lower']),
+                    stationary_normalized=True,
+                )
+                reproduced = diagnosis.sturm.at_tilt(
+                    model,
+                    lo,
+                    hi,
+                    tilt,
+                    determinant_certifier=certifier,
+                    rank_groups_on_intervals=True,
+                )
+                for key in ('density_correction', 'p_upper_squared', 'p_upper', 'status'):
+                    assert reproduced[key] == attempt[key]
         assert cell['best'] == min(cell['attempts'], key=lambda a: F(a['p_upper_squared']))
     worst = max(proof['cells'], key=lambda c: F(c['best']['p_upper_squared']))
     assert proof['worst_cell_index'] == worst['index']

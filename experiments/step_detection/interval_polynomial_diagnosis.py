@@ -13,6 +13,8 @@ from . import determinant_interval_polynomial as polynomial
 from . import directional_determinant as determinant
 from . import directional_spectral as spectral
 from . import directional_sturm as sturm
+from . import directional_tail as tail
+from . import rational_polynomial as rational
 from . import reporting_ar1 as ar1
 from . import reporting_sturm as reporting
 
@@ -37,6 +39,7 @@ def _determinant_certifier(
     expected_tilt,
     radius,
     determinant_lower,
+    stationary_normalized=False,
 ):
     if (F(lower), F(upper), F(tilt)) != (expected_left, expected_right, expected_tilt):
         raise ValueError('Unexpected interval or tilt')
@@ -47,6 +50,7 @@ def _determinant_certifier(
         'delta': str(delta),
         'bits': bits,
         'radius_upper': str(radius),
+        'stationary_normalized': stationary_normalized,
         'determinant_enclosure': [str(determinant_lower), str(determinant_lower)],
         'status': 'rounded_polynomial_lower_bound',
     }
@@ -64,7 +68,32 @@ def saved_case(case_id):
     return inputs[case_id], records[case_id]['methods']['rank_group']
 
 
-def diagnose(case, record, *, bits, divisions=1, radius_scope='cell'):
+def _radius_upper(model, left, right, *, stationary_normalized=False):
+    """Bound the radius, optionally after cancelling its stationary factor."""
+    if not stationary_normalized:
+        return F(
+            determinant.certify_interval(model, left, right, tilt=spectral.TILTS[0])[
+                'radius_upper'
+            ]
+        )
+
+    def enclosure(poly):
+        return (
+            (rational.evaluate(poly, left),)
+            if left == right
+            else rational.bernstein(poly, left, right)
+        )
+
+    numerator = min(enclosure(model['num']))
+    denominator = enclosure(model['den'])
+    if numerator <= 0 or min(denominator) <= 0 or model['ss'] <= 0:
+        raise ArithmeticError('Normalized residual ratio enclosure is inconclusive')
+    # R/r = (R/q)/(r/q), q=1-rho**2. Bound r/q directly; dividing an
+    # existing upper bound for r by a separate bound for q loses cancellation.
+    return tail.ceil_dyadic(model['ss'] * max(denominator) / numerator, bits=determinant.BITS)
+
+
+def diagnose(case, record, *, bits, divisions=1, radius_scope='cell', stationary_normalized=False):
     if (
         not isinstance(divisions, int)
         or isinstance(divisions, bool)
@@ -78,9 +107,7 @@ def diagnose(case, record, *, bits, divisions=1, radius_scope='cell'):
     left, right = F(witness['left']), F(witness['right'])
     split = int(witness['split'])
     model = reporting.confidence_state(ar1.Models(case['values']), split)
-    parent_radius = F(
-        determinant.certify_interval(model, left, right, tilt=spectral.TILTS[0])['radius_upper']
-    )
+    parent_radius = _radius_upper(model, left, right, stationary_normalized=stationary_normalized)
     cells = []
     width = right - left
     for index in range(divisions):
@@ -90,16 +117,21 @@ def diagnose(case, record, *, bits, divisions=1, radius_scope='cell'):
         # Use the same radius in the determinant and density correction.
         radius = parent_radius
         if radius_scope == 'cell' and divisions > 1:
-            radius = F(
-                determinant.certify_interval(model, cell_left, cell_right, tilt=spectral.TILTS[0])[
-                    'radius_upper'
-                ]
+            radius = _radius_upper(
+                model, cell_left, cell_right, stationary_normalized=stationary_normalized
             )
         cell_attempts = []
         for tilt in spectral.TILTS:
             matrix_a, matrix_b = 1 - 2 * tilt, 2 * tilt / radius
             determinant_lower = polynomial.determinant_interval(
-                model['n'], split, cell_left, cell_right, matrix_a, matrix_b, bits=bits
+                model['n'],
+                split,
+                cell_left,
+                cell_right,
+                matrix_a,
+                matrix_b,
+                bits=bits,
+                stationary_normalized=stationary_normalized,
             )
             if determinant_lower is None:
                 attempt = {
@@ -121,6 +153,7 @@ def diagnose(case, record, *, bits, divisions=1, radius_scope='cell'):
                 expected_tilt=attempt_tilt,
                 radius=radius,
                 determinant_lower=determinant_lower,
+                stationary_normalized=stationary_normalized,
             )
             proof = sturm.at_tilt(
                 model,
@@ -157,7 +190,7 @@ def diagnose(case, record, *, bits, divisions=1, radius_scope='cell'):
     all_certified = all(cell['best']['status'] == 'certified_excluded' for cell in cells)
     worst_p = max(F(cell['best']['p_upper']) for cell in cells)
     return {
-        'schema_version': 2,
+        'schema_version': 3,
         'purpose': 'Post-hoc proof diagnostic; frozen outcomes are unchanged',
         'case_id': case['id'],
         'split': split,
@@ -166,6 +199,7 @@ def diagnose(case, record, *, bits, divisions=1, radius_scope='cell'):
         'tilt': best['tilt'],
         'bits': bits,
         'radius_scope': radius_scope,
+        'stationary_normalized': stationary_normalized,
         'radius_bits': determinant.BITS,
         'parent_radius_upper': str(parent_radius),
         'radius_upper': worst_cell['radius_upper'],
@@ -190,13 +224,19 @@ def main():
     parser.add_argument('--bits', type=int, default=128)
     parser.add_argument('--divisions', type=int, default=1)
     parser.add_argument('--radius-scope', choices=('parent', 'cell'), default='cell')
+    parser.add_argument('--stationary-normalized', action='store_true')
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
     case, record = saved_case(args.case_id)
     result = diagnose(
-        case, record, bits=args.bits, divisions=args.divisions, radius_scope=args.radius_scope
+        case,
+        record,
+        bits=args.bits,
+        divisions=args.divisions,
+        radius_scope=args.radius_scope,
+        stationary_normalized=args.stationary_normalized,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + '\n')
@@ -207,6 +247,7 @@ def main():
                 'bits': result['bits'],
                 'divisions': result['divisions'],
                 'radius_scope': result['radius_scope'],
+                'stationary_normalized': result['stationary_normalized'],
                 'determinant_lower': result['determinant_lower'],
                 'p_upper': result['p_upper'],
                 'max_cell_p_upper': result['max_cell_p_upper'],

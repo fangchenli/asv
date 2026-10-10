@@ -1118,6 +1118,19 @@ identifiers with separate output paths:
 
 The middle case remains above the cutoff; the recent case certifies.
 
+Cancel the shared stationary factor to certify the middle case over its
+entire saved interval without subdivision::
+
+    .venv/bin/python -m experiments.step_detection.interval_polynomial_diagnosis \
+        --case-id positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-middle-seed1602 \
+        --bits 128 --divisions 1 --stationary-normalized \
+        --output /tmp/asv-normalized-middle.json
+
+The same command with the early and recent identifiers above certifies those
+full intervals too. For the 40-reading witness, use
+``positive-sturm-ar1-fresh-v1-n40-d0.06-s0.005-early-seed1603``. Each run
+must have a different output path.
+
 To reproduce the earlier four-piece calculation with one radius shared by
 the entire parent interval::
 
@@ -1129,10 +1142,13 @@ the entire parent interval::
 ``--divisions`` must be a positive power of two. ``--radius-scope cell``
 is the default. Polynomial coefficients use the requested precision; the
 radius bound uses the existing 192-bit routine, recorded as ``radius_bits``.
-Schema version 2 stores the radius and both tilt attempts for each piece.
-Its top-level ``p_upper`` and ``p_upper_squared`` report the worst piece
+Schema version 3 adds the explicit ``stationary_normalized`` flag. When
+true, the radius values bound ``r/(1-rho**2)``, and both the determinant and
+density correction use the correspondingly scaled covariance. The option is
+off by default. As in schema version 2, the record stores each piece's radius
+and both tilt attempts. Its top-level ``p_upper`` and ``p_upper_squared`` report the worst piece
 after selecting each piece's best tilt. Older artifacts' top-level
-``p_upper`` described the best piece; compare their per-piece attempts and
+``p_upper`` in schema version 1 described the best piece; compare their per-piece attempts and
 ``max_cell_p_upper`` instead. Frozen study decisions remain unchanged.
 
 Checks

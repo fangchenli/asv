@@ -108,30 +108,27 @@ interval certificate
 <data/sturm_fresh_v2_continuant_full_interval_n40.json>`_ needs no interval
 subdivision.
 
-The outward-rounded polynomial recurrence now handles n=100 too. Its first
-success, an upper bound about 0.00543, was a scale demonstration: that witness
-already certified after one split with the previous interval method.
+The latest refinement certifies **all four hard saved intervals without
+subdivision**. Both the covariance and observed radius contain
+``1 - rho**2``. Cancelling that shared factor before bounding their ratio
+avoids combining incompatible extremes from different correlations. The
+implementation applies the cancellation consistently to the polynomial
+determinant and the eigenvalue bounds used by the density correction.
 
-The latest change resolves a harder n=100 early-change witness. The earlier
-four-piece calculation retained one radius bound from the original interval
-and stalled at about 0.02344. Recomputing the radius for each piece gives a
-worst bound about 0.01470 with two pieces and **0.00998947 with eight**. The
-`eight-piece certificate
-<data/sturm_fresh_v2_interval_poly_n100_early_local_d8.json>`_ proves the full
-saved interval below 0.01. The report now also correctly summarizes a
-partition by its worst piece, after choosing each piece's best tilt.
-
-The same eight-piece check certifies the n=100 recent-change witness at
-about **0.00550398**. The middle-change witness still misses the cutoff at
-about **0.01161549**. Together with the n=40 result, three of the four stubborn
-saved intervals now have certificates. The next mathematical target is the
-middle case: its covariance and radius share a correlation-dependent factor
-that the current calculation bounds separately.
+The previously unresolved n=100 middle-change case now has a probability
+upper bound about **0.00987724**, below 0.01 over its entire saved interval.
+The previous eight-piece calculation reached only about 0.01161550. The
+`full-interval certificate
+<data/sturm_fresh_v2_interval_poly_n100_middle_normalized.json>`_ records the
+exact bound. The `diagnosis report <sturm_unresolved_diagnosis.rst>`_ includes
+the derivation and results for the other three hard witnesses.
 
 These are post-hoc proofs of saved intervals. They do not establish that a
-complete search will finish or that additional histories will alert. A
-complete search replay and a new frozen comparison are still needed before
-considering production integration.
+complete search will finish or that additional histories will alert. The
+normalization is opt-in; the default certificate keeps its previous units.
+Next, use this certificate as an opt-in fallback in the full search and
+replay the unresolved histories. A new frozen comparison is still needed
+before considering production integration.
 
 Further detail
 --------------

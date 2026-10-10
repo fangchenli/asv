@@ -148,6 +148,10 @@ complete saved-case search.
   <data/sturm_fresh_v2_interval_poly_n100_recent_local_d8.json>`_ but leaves
   the `middle-change witness
   <data/sturm_fresh_v2_interval_poly_n100_middle_local_d8.json>`_ unresolved.
+  Cancelling the shared stationary factor subsequently certifies all four
+  hard witnesses without subdivision, including the `normalized middle-case
+  certificate <data/sturm_fresh_v2_interval_poly_n100_middle_normalized.json>`_.
+  The diagnosis report above links the other three normalized certificates.
 * `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
   and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
   verified saved-case results for the latest point-bound refinement.

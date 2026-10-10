@@ -4,6 +4,7 @@ import gzip
 import hashlib
 import json
 from fractions import Fraction as F
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -12,6 +13,7 @@ import pytest
 from experiments.step_detection import determinant_continuant as continuant
 from experiments.step_detection import determinant_interval_polynomial as interval_poly
 from experiments.step_detection import directional_determinant as bound
+from experiments.step_detection import directional_sturm as sturm
 from experiments.step_detection import directional_tail as old
 from experiments.step_detection import residual_direction as direction
 
@@ -134,6 +136,50 @@ def test_outward_polynomial_coefficients_and_bernstein_bound(n, split):
     assert lower is not None and lower > 0
     for rho in (left, (left + right) / 2, right):
         assert lower <= dense_rational_determinant(n, split, rho, a, b)
+
+
+@pytest.mark.parametrize('n,split', [(3, 1), (6, 3), (9, 2)])
+@pytest.mark.parametrize('left,right', [(F(0), F(1, 128)), (F(99, 100), F(991, 1000))])
+def test_normalized_polynomial_bound_against_dense_exact_determinants(n, split, left, right):
+    a, b = F(7, 8), F(3, 7)
+    lower = interval_poly.determinant_interval(
+        n, split, left, right, a, b, bits=128, stationary_normalized=True
+    )
+    assert lower is not None and lower > 0
+    for rho in (left, (left + right) / 2, right):
+        exact = dense_rational_determinant(n, split, rho, a, b / (1 - rho**2))
+        assert lower <= exact
+        if n == 3:
+            assert exact == a + b / (1 + rho)
+
+
+def test_probability_bound_is_invariant_to_stationary_normalization_at_a_point():
+    n, split, rho, tilt, radius = 10, 4, F(3, 4), F(1, 8), F(1, 5)
+    q = 1 - rho**2
+    exact = dense_rational_determinant(n, split, rho, 1 - 2 * tilt, 2 * tilt / (q * radius))
+
+    def certifier(_model, _left, _right, *, tilt, delta, bits, stationary_normalized=False):
+        return {
+            'radius_upper': str(radius if stationary_normalized else q * radius),
+            'determinant_enclosure': [str(exact), str(exact)],
+            'stationary_normalized': stationary_normalized,
+        }
+
+    plain = sturm.at_tilt(
+        {'n': n, 'split': split}, rho, rho, tilt, determinant_certifier=certifier
+    )
+    normalized = sturm.at_tilt(
+        {'n': n, 'split': split},
+        rho,
+        rho,
+        tilt,
+        determinant_certifier=partial(certifier, stationary_normalized=True),
+    )
+    for key in ('p_upper_squared', 'p_upper', 'density_correction', 'selected_count', 'status'):
+        assert plain[key] == normalized[key]
+    assert [d['weight_lower'] for d in plain['directions']] == [
+        d['weight_lower'] for d in normalized['directions']
+    ]
 
 
 @pytest.mark.parametrize('degree', [1, 2, 4])
