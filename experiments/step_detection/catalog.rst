@@ -34,6 +34,18 @@ Start here
 * `improvement_plan.rst <improvement_plan.rst>`_: longer-term implementation
   and evaluation plan.
 
+Large CI timing spikes
+-----------------------
+
+* `ci_noise.rst <ci_noise.rst>`_: shared 50% job slowdowns, paired baselines,
+  balanced/randomized order, contamination bounds, ASV integration points,
+  and the next measurement/evaluation design.
+* `ci_noise.py <ci_noise.py>`_: exact contrast identities and fixed-sample
+  sign-budget calculations; prints the independent-job requirements.
+* `test_ci_noise.py <test_ci_noise.py>`_: deterministic algebra and exhaustive
+  probability checks, including counterexamples to independence and drift
+  assumptions. These are not empirical benchmark results.
+
 Fitting, scoring, and noise models
 ----------------------------------
 

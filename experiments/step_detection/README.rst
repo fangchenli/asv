@@ -6,6 +6,10 @@ For the latest consolidated result, start with the `current status
 step-detection investigation. For a categorized index of all documentation
 and Python modules, use the `experiment catalog <catalog.rst>`_.
 
+For occasional large slowdowns in CI, start with the `CI noise investigation
+<ci_noise.rst>`_. It explains why fresh paired baseline measurements address
+a different problem from fitting steps to a historical timing series.
+
 A benchmark runs a repeatable task to measure performance. ASV runs benchmarks
 across versions of a program so we can see when performance changes. For a
 timing benchmark, an increase means the task became slower.

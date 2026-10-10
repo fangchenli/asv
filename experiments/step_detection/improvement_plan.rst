@@ -7,8 +7,15 @@ layers separately: finding the best fit at a fixed penalty, selecting the
 penalty and noise model, and reporting useful regressions.
 
 For the latest implementation and measured outcomes, start with
-`current_status.rst <current_status.rst>`_. The immediate follow-up to the
-normalized full-search fallback is:
+`current_status.rst <current_status.rst>`_. The immediate priority is the
+`CI noise investigation <ci_noise.rst>`_: distinguish shared job slowdowns
+from code changes using fresh paired baselines. The mathematical model and
+exact sign-budget reference are in place. Next inspect job/sample structure,
+preserve assignment and timing metadata in a separate collector, and freeze
+an evaluation design before running a study. The document lists the required
+stress cases and the assumptions behind the proposed reporting bound.
+
+The deferred follow-up to the normalized full-search fallback is:
 
 1. Implement the endpoint certificate derived in the `unresolved-search
    diagnosis <sturm_unresolved_diagnosis.rst>`_. Adjacent differences have a

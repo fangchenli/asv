@@ -13,6 +13,20 @@ From the repository root, create an environment and build the extension::
     uv venv .venv --python python3
     uv pip install --python .venv/bin/python -e '.[test,dev]' ruff==0.13.3
 
+Check the CI noise mathematics
+------------------------------
+
+The `CI noise investigation <ci_noise.rst>`_ has an exact, standard-library
+reference for balanced comparisons and independent-job sign bounds. Print
+the required job counts and run deterministic checks::
+
+    .venv/bin/python -m experiments.step_detection.ci_noise
+    .venv/bin/python -m pytest -p no:rerunfailures \
+        experiments/step_detection/test_ci_noise.py -q
+
+This checks identities and enumerates probability outcomes. It does not
+run a CI benchmark study or select a production contamination allowance.
+
 Check the reporting mathematics
 -------------------------------
 

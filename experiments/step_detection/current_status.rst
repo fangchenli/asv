@@ -12,6 +12,13 @@ certificates. Across all nine previously unresolved histories, one now
 alerts and eight remain unresolved. This is a gain on saved development
 data. Production ASV and the frozen study's results remain unchanged.
 
+The current investigation concerns occasional **50% CI timing spikes**.
+The `CI noise analysis <ci_noise.rst>`_ derives how paired baseline runs
+remove shared slowdowns, how balanced/randomized order handles drift, and
+what independent jobs can establish under contamination. Exact analytical
+checks pass; no CI study or production change has been made. This measurement
+question takes priority over the next correlation-certificate refinement.
+
 What the detector is deciding
 ------------------------------
 
@@ -104,9 +111,9 @@ What remains
 
 The rank-group bound still misses the 0.01 cutoff at the saved 99/128
 candidate. The fresh study's single gained alert does not resolve that
-mathematical gap or justify a production change. Any next step should target
-the remaining looseness in the tail bound, then use a new frozen study before
-considering integration. The `unresolved-search diagnosis
+mathematical gap or justify a production change. Further certificate work
+should target the remaining looseness in the tail bound, then use a new
+frozen study before considering integration. The `unresolved-search diagnosis
 <sturm_unresolved_diagnosis.rst>`_ shows that one extra interval split
 certifies five of nine saved witnesses; four still have at least one
 uncertified half. Those four fail at the determinant enclosure near
@@ -151,9 +158,9 @@ and the complete case table in the diagnosis report. These exact reference
 searches take seconds to minutes, so their timings do not describe ASV's
 production detector.
 
-The next implementation target is the final interval touching correlation
-1. The `diagnosis report <sturm_unresolved_diagnosis.rst>`_ derives a finite
-bound using adjacent differences and records exact small-matrix checks.
+The deferred certificate implementation target is the final interval touching
+correlation 1. The `diagnosis report <sturm_unresolved_diagnosis.rst>`_ derives
+a finite bound using adjacent differences and records exact small-matrix checks.
 After that, testing wider intervals should reduce repeated neighboring
 calls. The `implementation plan <improvement_plan.rst>`_ lists these steps.
 
