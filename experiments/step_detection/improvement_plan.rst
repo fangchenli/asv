@@ -6,6 +6,25 @@ analysis practical for long benchmark histories. We should evaluate three
 layers separately: finding the best fit at a fixed penalty, selecting the
 penalty and noise model, and reporting useful regressions.
 
+For the latest implementation and measured outcomes, start with
+`current_status.rst <current_status.rst>`_. The immediate follow-up to the
+normalized full-search fallback is:
+
+1. Implement the endpoint certificate derived in the `unresolved-search
+   diagnosis <sturm_unresolved_diagnosis.rst>`_. Adjacent differences have a
+   finite normalized covariance at correlation 1; exact small-matrix checks
+   already cover the proposed determinant bound. The normalized radius and
+   density correction must use the same covariance bound.
+2. Try certificates on wider intervals before spending separate calls on
+   neighboring depth-limit cells. Preserve complete interval coverage and
+   conservative stopping under a fixed work budget.
+3. Once the complete search rule is fixed, freeze a new paired evaluation
+   on fresh histories. Keep the existing study and post-hoc replay separate.
+
+The research history below explains how these targets arose. The remaining
+pointwise tail-bound gap is a separate mathematical problem from the
+endpoint and interval-coverage problems above.
+
 The `conceptual guide <README.rst>`_ explains why those layers exist. The
 `implementation reference <implementation_details.rst>`_ maps them to the
 code at revision ``d33754e129c025beb5c2ca440c3c280433b264f7``.

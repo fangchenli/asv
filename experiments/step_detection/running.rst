@@ -1230,4 +1230,10 @@ Check the normalized fallback, verifier, and diagnostic::
         .venv/bin/python -m pytest -p no:rerunfailures \
         experiments/step_detection/test_reporting_normalized.py \
         experiments/step_detection/test_reporting_sturm.py \
-        experiments/step_detection/test_interval_polynomial_diagnosis.py -q
+        experiments/step_detection/test_interval_polynomial_diagnosis.py \
+        experiments/step_detection/test_normalized_replay.py -q
+
+The saved `normalized replay summary <data/normalized_reporting_v1_summary.json>`_
+links its compressed archive. The archive test checks hashes, original
+inputs, work counters, the recorded gain, and complete alert coverage. The
+replay command itself reruns the full arithmetic verifier for every result.

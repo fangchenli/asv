@@ -152,6 +152,10 @@ complete saved-case search.
   hard witnesses without subdivision, including the `normalized middle-case
   certificate <data/sturm_fresh_v2_interval_poly_n100_middle_normalized.json>`_.
   The diagnosis report above links the other three normalized certificates.
+* `data/normalized_reporting_v1_summary.json <data/normalized_reporting_v1_summary.json>`_
+  and `data/normalized_reporting_v1_replay.json.gz <data/normalized_reporting_v1_replay.json.gz>`_:
+  verified full-search fallback replay. One of nine previously unresolved
+  histories becomes an alert; the other eight remain unresolved.
 * `data/sturm_reporting_v4_rank_groups_summary.json <data/sturm_reporting_v4_rank_groups_summary.json>`_
   and `data/sturm_reporting_v4_rank_groups_diagnosis.json.gz <data/sturm_reporting_v4_rank_groups_diagnosis.json.gz>`_:
   verified saved-case results for the latest point-bound refinement.

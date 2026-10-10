@@ -331,6 +331,86 @@ on those cases; they are not a new estimate of detection or false-alert
 rates. The `experiment guide <running.rst>`_ contains the reproduction
 command and output format.
 
+The 100-reading, positively correlated, recent-change history
+``positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-recent-seed1603`` now reaches
+a verified alert. The original search stopped after 122 cells; the fallback
+version finishes after 139 cells using three normalized certificates. Its
+complete coverage consists of 98 shape certificates, 15 size certificates,
+three existing tail certificates, and three normalized certificates across
+all 99 candidate step locations. This is an additional complete detection
+on a saved case, beyond certifying its original stopping interval.
+
+Across all nine histories, **one becomes a verified alert and eight remain
+unresolved**. All 46 attempted normalized certificates succeed. The remaining
+stops separate into four added-call limits, two endpoint cells that the
+normalized route cannot handle, and two unchanged overall cell limits:
+
+.. list-table:: Complete fixed-budget replay
+   :header-rows: 1
+
+   * - History
+     - Search cells, before -> after
+     - Normalized calls
+     - Final result
+   * - Positive correlation, 40, early 6%, noise 0.5%, seed 1603
+     - 42 -> 59
+     - 8
+     - Unresolved: added-call limit
+   * - Positive correlation, 100, middle 6%, noise 0.5%, seed 1603
+     - 636 -> 653
+     - 8
+     - Unresolved: added-call limit
+   * - Positive correlation, 100, early 8%, noise 0.5%, seed 1603
+     - 57 -> 67
+     - 6
+     - Unresolved: endpoint cell
+   * - Positive correlation, 100, middle 8%, noise 0.5%, seed 1602
+     - 82 -> 90
+     - 5
+     - Unresolved: endpoint cell
+   * - Positive correlation, 100, recent 8%, noise 0.5%, seed 1603
+     - 122 -> 139
+     - 3
+     - Certified alert
+   * - Positive correlation, 100, middle 8%, noise 2%, seed 1603
+     - 79 -> 94
+     - 8
+     - Unresolved: added-call limit
+   * - Independent noise, 100, recent 8%, noise 2%, seed 1602
+     - 1263 -> 2538
+     - 8
+     - Unresolved: added-call limit
+   * - Negative correlation, 100, recent 6%, noise 2%, seed 1602
+     - 4096 -> 4096
+     - 0
+     - Unresolved: overall cell limit
+   * - Negative correlation, 100, recent 6%, noise 2%, seed 1603
+     - 4096 -> 4096
+     - 0
+     - Unresolved: overall cell limit
+
+Both endpoint stops have ``left = 65535/65536`` and ``right = 1``. All their
+preceding normalized calls succeeded; the endpoint itself is outside the
+current route's supported domain. In the independent-noise history, the
+search advances from candidate split 1 to split 2 before using its eighth
+call. The two overall-limit cases make no normalized calls and reproduce
+their original stopping witnesses.
+
+The `summary <data/normalized_reporting_v1_summary.json>`_ gives full case
+identifiers, timings, stopping witnesses, and source hashes. The `verified
+archive <data/normalized_reporting_v1_replay.json.gz>`_ retains every input
+and complete result. Input and original-record hashes link the replay to the
+frozen study; archive checks also verify the alert's coverage across all
+candidate step locations.
+
+This is an exact-arithmetic research prototype. Search times in this run
+range from about 25 to 1328 seconds, with verification recorded separately.
+Workers shared CPU capacity with other work, so these wall-clock times are
+diagnostics rather than a controlled performance comparison. The numerical
+cutoffs and work budgets were not adjusted during the replay. The result
+establishes one saved-case gain; a fresh paired study is still needed to
+measure broader sensitivity and false-alert behavior.
+
 Next mathematical route: differences at the endpoint
 ----------------------------------------------------
 

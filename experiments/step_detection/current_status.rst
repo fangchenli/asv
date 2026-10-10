@@ -5,6 +5,13 @@ This page gathers the current result from the step-detection research. It
 separates the experimental changes from ASV's production detector and records
 what the latest saved-case replay does and does not establish.
 
+The latest implementation adds an opt-in normalized interval certificate to
+the full experimental search. It turns a previously unresolved 100-reading
+history with a recent change into a **verified alert**, using three fallback
+certificates. Across all nine previously unresolved histories, one now
+alerts and eight remain unresolved. This is a gain on saved development
+data. Production ASV and the frozen study's results remain unchanged.
+
 What the detector is deciding
 ------------------------------
 
@@ -25,7 +32,7 @@ withhold an alert.
 What changed in the experiment
 ------------------------------
 
-The experimental certificate now uses three refinements:
+The experimental certificate uses four refinements:
 
 * **More informative covariance bounds.** Exact Sturm counts give lower
   bounds on covariance eigenvalues. The proposed step split helps identify a
@@ -39,20 +46,24 @@ The experimental certificate now uses three refinements:
 * **Faster exact sign counting.** The Sturm recurrence uses integer-scaled
   minors instead of repeatedly simplifying fractions. The signs, and
   therefore the eigenvalue counts, are unchanged.
+* **Cancellation before interval bounds.** The covariance and observed
+  radius share a factor ``1-rho**2``. Removing it before bounding their ratio
+  makes the near-endpoint interval proofs tighter. This is used by the new
+  opt-in full-search fallback.
 
-The latest point-certificate refinement bounds individual covariance ranks.
+The point-certificate refinement bounds individual covariance ranks.
 Previously, each group of four directions used the weakest rank bound for all
 four. The new point calculation bounds each rank separately, then combines
 four lower bounds through their geometric mean in the Fourier integral. The
-interval search still uses its existing interval certificate, so this addition
-affects candidate points without changing interval coverage.
+default interval search retains its existing certificate. The normalized
+fallback also uses the individual-rank correction over intervals.
 
 The experimental reporting search also uses depth 17 instead of 16. One
 additional split was enough to certify the interval that previously stopped
 the search as unresolved.
 
-What the saved replay found
----------------------------
+Earlier seven-history replay
+----------------------------
 
 At correlation 101/128, the previous probability upper bound was about
 0.012103. The direct Fourier integral lowers it to **0.0087203** at the point
@@ -130,6 +141,21 @@ verifier reconstructs each proof and checks interval coverage. Defaults and
 the frozen study's decisions stay unchanged. The `experiment guide
 <running.rst>`_ explains how to run it. A new frozen comparison is still
 needed before considering production integration.
+
+The complete nine-history replay verifies **46 successful fallback
+certificates**. Four histories then exhaust the eight-call allowance, two
+reach the unsupported endpoint cell, and two hit the same overall cell
+limit without using the fallback. The ninth history produces the additional
+alert. See the `verified summary <data/normalized_reporting_v1_summary.json>`_
+and the complete case table in the diagnosis report. These exact reference
+searches take seconds to minutes, so their timings do not describe ASV's
+production detector.
+
+The next implementation target is the final interval touching correlation
+1. The `diagnosis report <sturm_unresolved_diagnosis.rst>`_ derives a finite
+bound using adjacent differences and records exact small-matrix checks.
+After that, testing wider intervals should reduce repeated neighboring
+calls. The `implementation plan <improvement_plan.rst>`_ lists these steps.
 
 Further detail
 --------------

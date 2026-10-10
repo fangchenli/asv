@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "purpose": "Post-hoc full-search replay; not a fresh sensitivity evaluation",
+  "work": {
+    "max_cells": 4096,
+    "max_depth": 17,
+    "max_normalized_cells": 8
+  },
+  "polynomial_bits": 128,
+  "radius_bits": 192,
+  "input_archive_sha256": "412ba1bcc33a5ff0a7032a0adc4f2a9b05f44f2ffddccb12257da7da43e89ea8",
+  "record_archive_sha256": "40bdb7656afc1df0952551d9fb6b09888a7baf3d7269a0d711a814ecd6641b70",
+  "source_hashes": {
+    "sturm_replay.py": "3f0272f659300810edaf2f5b94d118c1b7d3e68c768cb27b2002bce0646a5f05",
+    "sturm_verification.py": "e8295f9e3892195686c826e9746be4842c96d1c67bd23ca93388867d461275a4",
+    "reporting_sturm.py": "166d8031397e802ebc750f2593ecccf9a882180479a9fe99790c2536fda0cc33",
+    "directional_sturm.py": "5b13fbe432ea10bb969c944a050490a2b5bfe47a489f252655158b9d44e3905a",
+    "directional_spectral.py": "b61f7c195dd7febbdf9a303382b387579039c5bde0228c20530febea3217736c",
+    "directional_determinant.py": "74a5e39d45c48e1f234259d407a856d50f51b7e1f3c91da8ce34fe654b6b80e3",
+    "directional_diagnosis.py": "b208513653345889e1dde27d5cf3de4a1086daf253fdf2df4ae999f231620f27",
+    "reporting_directional.py": "7651b6dde95c72d3387592eca88c117bcd703aebe0b6f8bec87d6da40ade25e5",
+    "directional_tail.py": "ae51093a0475f371e74ba5a6a4bd8cfff02c1b391c7a7a8d3edb97d95f567588",
+    "residual_direction.py": "11e2e6a7cc68bdbe6fe61da4341d445199015319a0c6bc9510efe9316c63c7db",
+    "rational_polynomial.py": "bb63e487a13a96e1f20c9de6b5ce28be39efcf2feceff6c2322a062a97b7b723",
+    "reporting_ar1.py": "2a9d7bc2114af59e22cff7033336db81011703ca6a3fda4a0abdf33c5357b52e",
+    "reporting_ar1_full.py": "713d29e55ce7a139a8e81756f467729c9ff3fd225a71d8feb89910fc9928940e",
+    "reporting_covariance.py": "3507dcb1cd409e22e8e251d3b9bd26d96fa9a8bf2c86edeeda8889dd51877dea",
+    "directional_normalized.py": "b0c73b36420f14c7b0a5a9e5dbd58ee38d87fe09b031e967c632e07397ebcb50",
+    "determinant_interval_polynomial.py": "5bed38562268542497c4b9767411044d1b8934bc355b2bb7971ce9e15d0a2979",
+    "sturm_unresolved_diagnosis.py": "465fa1ce90fcb0d2db3c1cfe3921e1d7abe587b119a0ed7fcd87db5bb0e7ebd0",
+    "normalized_replay.py": "0cd590e4eff52524f80016ef19f4638ece92040be32db5cfc1530466759b61d9"
+  },
+  "case_ids": [
+    "positive-sturm-ar1-fresh-v1-n40-d0.06-s0.005-early-seed1603",
+    "positive-sturm-ar1-fresh-v1-n100-d0.06-s0.005-middle-seed1603",
+    "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-early-seed1603",
+    "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-middle-seed1602",
+    "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-recent-seed1603",
+    "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.02-middle-seed1603",
+    "independent_constant-sturm-ar1-fresh-v1-n100-d0.08-s0.02-recent-seed1602",
+    "negative-sturm-ar1-fresh-v1-n100-d0.06-s0.02-recent-seed1602",
+    "negative-sturm-ar1-fresh-v1-n100-d0.06-s0.02-recent-seed1603"
+  ],
+  "archive": {
+    "file": "normalized_reporting_v1_replay.json.gz",
+    "sha256": "ab05dd242fbd07a10a827c6a3c740f143c17551641244bfb3532166fe36649f0"
+  },
+  "statuses": {
+    "unresolved": 8,
+    "certified_alert": 1
+  },
+  "rows": [
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n40-d0.06-s0.005-early-seed1603",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 42,
+        "seconds": 1.4276532499934547,
+        "witness": {
+          "split": 10,
+          "left": "65499/65536",
+          "right": "16375/16384",
+          "reason": "max_depth"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 59,
+      "normalized_calls": 8,
+      "witness": {
+        "split": 10,
+        "left": "65507/65536",
+        "right": "16377/16384",
+        "reason": "max_normalized_cells"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 9,
+          "size": 15,
+          "direction_normalized": 8
+        }
+      },
+      "search_seconds": 25.03269624998211,
+      "verification_seconds": 22.78362804200151
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.06-s0.005-middle-seed1603",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 636,
+        "seconds": 119.85096337500727,
+        "witness": {
+          "split": 50,
+          "left": "32493/32768",
+          "right": "64987/65536",
+          "reason": "max_depth"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 653,
+      "normalized_calls": 8,
+      "witness": {
+        "split": 50,
+        "left": "32497/32768",
+        "right": "64995/65536",
+        "reason": "max_normalized_cells"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 49,
+          "size": 11,
+          "direction_sturm": 280,
+          "direction_normalized": 8
+        }
+      },
+      "search_seconds": 736.2845077920065,
+      "verification_seconds": 293.6124817089876
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-early-seed1603",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 57,
+        "seconds": 10.86597745900508,
+        "witness": {
+          "split": 25,
+          "left": "65529/65536",
+          "right": "32765/32768",
+          "reason": "max_depth"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 67,
+      "normalized_calls": 6,
+      "witness": {
+        "split": 25,
+        "left": "65535/65536",
+        "right": "1",
+        "reason": "max_depth"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 24,
+          "size": 15,
+          "direction_normalized": 6
+        }
+      },
+      "search_seconds": 336.39661529200384,
+      "verification_seconds": 285.06921316700755
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-middle-seed1602",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 82,
+        "seconds": 18.64339650000329,
+        "witness": {
+          "split": 50,
+          "left": "32765/32768",
+          "right": "65531/65536",
+          "reason": "max_depth"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 90,
+      "normalized_calls": 5,
+      "witness": {
+        "split": 50,
+        "left": "65535/65536",
+        "right": "1",
+        "reason": "max_depth"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 49,
+          "size": 15,
+          "direction_normalized": 5
+        }
+      },
+      "search_seconds": 207.55743795799208,
+      "verification_seconds": 148.174412916007
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.005-recent-seed1603",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 122,
+        "seconds": 26.376890209008707,
+        "witness": {
+          "split": 90,
+          "left": "65529/65536",
+          "right": "32765/32768",
+          "reason": "max_depth"
+        }
+      },
+      "status": "certified_alert",
+      "has_alert": true,
+      "cells_visited": 139,
+      "normalized_calls": 3,
+      "witness": null,
+      "validation": {
+        "verified": true,
+        "complete_coverage": true,
+        "certificate_routes": {
+          "shape": 98,
+          "size": 15,
+          "direction_normalized": 3,
+          "direction_tail": 3
+        }
+      },
+      "search_seconds": 96.43881525000324,
+      "verification_seconds": 52.88491520899697
+    },
+    {
+      "id": "positive-sturm-ar1-fresh-v1-n100-d0.08-s0.02-middle-seed1603",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 79,
+        "seconds": 18.93019662500592,
+        "witness": {
+          "split": 50,
+          "left": "64977/65536",
+          "right": "32489/32768",
+          "reason": "max_depth"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 94,
+      "normalized_calls": 8,
+      "witness": {
+        "split": 50,
+        "left": "64985/65536",
+        "right": "32493/32768",
+        "reason": "max_normalized_cells"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 49,
+          "size": 12,
+          "direction_normalized": 8
+        }
+      },
+      "search_seconds": 181.18987208401086,
+      "verification_seconds": 334.9592815829965
+    },
+    {
+      "id": "independent_constant-sturm-ar1-fresh-v1-n100-d0.08-s0.02-recent-seed1602",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 1263,
+        "seconds": 261.79736487500486,
+        "witness": {
+          "split": 1,
+          "left": "2031/2048",
+          "right": "64993/65536",
+          "reason": "max_depth"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 2538,
+      "normalized_calls": 8,
+      "witness": {
+        "split": 2,
+        "left": "64995/65536",
+        "right": "16249/16384",
+        "reason": "max_normalized_cells"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 15,
+          "direction_sturm": 1235,
+          "direction_normalized": 8,
+          "direction_tail": 9
+        }
+      },
+      "search_seconds": 1328.2352753329906,
+      "verification_seconds": 493.27234495800803
+    },
+    {
+      "id": "negative-sturm-ar1-fresh-v1-n100-d0.06-s0.02-recent-seed1602",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 4096,
+        "seconds": 298.09969366699806,
+        "witness": {
+          "split": 52,
+          "left": "3/4",
+          "right": "25/32",
+          "reason": "max_cells"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 4096,
+      "normalized_calls": 0,
+      "witness": {
+        "split": 52,
+        "left": "3/4",
+        "right": "25/32",
+        "reason": "max_cells"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 269,
+          "direction_uniform": 1803
+        }
+      },
+      "search_seconds": 668.305877708015,
+      "verification_seconds": 3.6304337499896064
+    },
+    {
+      "id": "negative-sturm-ar1-fresh-v1-n100-d0.06-s0.02-recent-seed1603",
+      "previous": {
+        "status": "unresolved",
+        "has_alert": false,
+        "cells_visited": 4096,
+        "seconds": 415.8986326669983,
+        "witness": {
+          "split": 42,
+          "left": "101/128",
+          "right": "51/64",
+          "reason": "max_cells"
+        }
+      },
+      "status": "unresolved",
+      "has_alert": false,
+      "cells_visited": 4096,
+      "normalized_calls": 0,
+      "witness": {
+        "split": 42,
+        "left": "101/128",
+        "right": "51/64",
+        "reason": "max_cells"
+      },
+      "validation": {
+        "verified": true,
+        "complete_coverage": false,
+        "certificate_routes": {
+          "shape": 216,
+          "direction_sturm": 768,
+          "direction_uniform": 1042,
+          "direction_tail": 41
+        }
+      },
+      "search_seconds": 677.4562381249852,
+      "verification_seconds": 110.51497537500109
+    }
+  ]
+}
